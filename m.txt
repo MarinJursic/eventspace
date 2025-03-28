@@ -1,0 +1,54 @@
+
+import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+
+export async function middleware(req: Request) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const { pathname } = req.nextUrl;
+
+  // Allow public and auth routes (including static assets)
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/auth") ||
+    pathname === "/complete-profile" ||
+    pathname === "/favicon.ico"
+  ) {
+    return NextResponse.next();
+  }
+
+  // If not authenticated, redirect to signin popup (could be a modal on the current route)
+  if (!token) {
+    return NextResponse.redirect(new URL("/auth/signin", req.url));
+  }
+
+  // Force complete profile if role is missing (account incomplete)
+  if (!token.role) {
+    // If not already on the complete profile page, redirect there.
+    if (!pathname.startsWith("/complete-profile")) {
+      return NextResponse.redirect(new URL("/complete-profile", req.url));
+    }
+  }
+
+  // Example: restrict /admin route to admin accounts only.
+  if (pathname.startsWith("/admin") && token.role !== "admin") {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  // Similarly, you can restrict /vendor routes, etc.
+  if (
+    pathname.startsWith("/vendor") &&
+    token.role !== "vendor" &&
+    token.role !== "admin"
+  ) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/((?!api/|_next/static|_next/image|favicon.ico).*)"],
+};
+
+
