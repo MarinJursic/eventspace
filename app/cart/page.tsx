@@ -23,7 +23,7 @@ const recommendedServices = [
     id: 102,
     name: "Professional DJ Services",
     image:
-      "https://images.unsplash.com/photo-1571266028258-313feb38151d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1516873240891-4bf014598ab4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
     category: "Entertainment",
     price: "$800",
   },
