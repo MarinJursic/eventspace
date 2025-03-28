@@ -107,6 +107,8 @@ const Cart: React.FC = () => {
 
   const isMultiDay = cart.selectedDates.length > 1;
 
+  console.log(cart.venue.image);
+
   return (
     <div className="mt-10 min-h-screen flex flex-col">
       <main className="flex-grow container mx-auto px-4 py-8">

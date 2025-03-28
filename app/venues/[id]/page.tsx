@@ -17,11 +17,14 @@ import { useCart } from "@/app/context/CartContext";
 const venueData = {
   id: 1,
   name: "Crystal Ballroom",
+  image:
+    "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2148&q=80",
+  location: "123 Fifth Avenue, New York, NY 10001",
   longDescription:
     "Our Crystal Ballroom is the epitome of elegance and sophistication. With its grand entrance, spectacular crystal chandeliers, and exquisite marble floors, it provides a magical setting for any special occasion. The 5,000 square foot space can accommodate up to 300 guests for a seated dinner or 500 for a standing reception. The ballroom also features a state-of-the-art sound system, customizable lighting, and a dedicated preparation area for vendors and event staff. Our in-house event coordinator will work with you to ensure every detail is perfect for your special day.",
   images: [
     "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2148&q=80",
-    "https://images.unsplash.com/photo-1549895058-36748fa6c6a7?q=80&w=2816&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D    ",
+    "https://images.unsplash.com/photo-1549895058-36748fa6c6a7?q=80&w=2816&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2073&q=80",
     "https://images.unsplash.com/photo-1579254216547-a90bea451479?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   ],
