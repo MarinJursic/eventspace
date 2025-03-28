@@ -128,7 +128,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       id: 0, // Special ID for external venues
       name: venueName,
       image:
-        "https://images.unsplash.com/photo-1531058020387-3be344556be6?q=80&w=2070",
+        "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2148&q=80",
       location,
       price: "N/A",
       rating: 0,
