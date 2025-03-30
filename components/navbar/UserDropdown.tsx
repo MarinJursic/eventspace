@@ -104,25 +104,25 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
         <DropdownMenuItem className="font-medium">
           {user?.name}
           <span className="ml-2 text-xs text-muted-foreground capitalize">
-            {user?.accountType === "admin" ? (
+            {user?.role === "admin" ? (
               <span className="flex items-center">
                 <Shield className="h-3 w-3 mr-1" />
                 Admin
               </span>
             ) : (
-              user?.accountType
+              user?.role
             )}
           </span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
 
-        {user?.accountType === "admin"
+        {user?.role === "admin"
           ? renderAdminMenuItems()
-          : user?.accountType === "vendor"
+          : user?.role === "vendor"
           ? renderVendorMenuItems()
           : renderCustomerMenuItems()}
 
-        {user?.accountType === "vendor" && (
+        {user?.role === "vendor" && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
@@ -131,7 +131,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
           </>
         )}
 
-        {user?.accountType === "customer" && (
+        {user?.role === "customer" && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
@@ -140,7 +140,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
           </>
         )}
 
-        {user?.accountType === "admin" && (
+        {user?.role === "admin" && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>

@@ -45,7 +45,7 @@ const Services: React.FC = () => {
       id: 2,
       name: "Capture Moments Photography",
       image:
-        "https://images.unsplash.com/photo-1567947121469-241e6493f5ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&w=2070&q=80",
+        "https://images.unsplash.com/photo-1567947121469-241e6493f5ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&w=2070&q=80 ",
       category: "Photography",
       price: "$1,200",
       priceNumeric: 1200,
