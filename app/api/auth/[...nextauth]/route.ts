@@ -4,7 +4,11 @@ import GoogleProvider from "next-auth/providers/google";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import { compare, hash } from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
-import clientPromise from "@/lib/mongodb";
+import connectToDatabase from "@/lib/database/mongodb";
+
+const clientPromise = connectToDatabase().then((mongoose) =>
+  mongoose.connection.getClient()
+);
 
 export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise),
