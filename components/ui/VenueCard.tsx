@@ -9,7 +9,8 @@ interface VenueCardProps {
   name: string;
   image: string;
   location: string;
-  price: string;
+  minPrice: number;
+  maxPrice: number;
   rating: number;
   reviewCount: number;
   className?: string;
@@ -20,7 +21,8 @@ const VenueCard: React.FC<VenueCardProps> = ({
   name,
   image,
   location,
-  price,
+  minPrice,
+  maxPrice,
   rating,
   reviewCount,
   className,
@@ -56,7 +58,7 @@ const VenueCard: React.FC<VenueCardProps> = ({
         <p className="mt-1 text-sm text-muted-foreground">{location}</p>
 
         <div className="mt-3 flex items-center text-sm">
-          <span className="font-semibold">{price}</span>
+          <span className="font-semibold">{minPrice}$ - {maxPrice}$</span>
           <span className="ml-1 text-muted-foreground">/event</span>
         </div>
 
