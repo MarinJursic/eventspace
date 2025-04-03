@@ -2,58 +2,117 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IService extends Document {
     name: string;
-    location: string;
-    pricePerDay: number;
+    location: {
+        address: string;
+        city: string;
+        street: string;
+        houseNumber: number;
+        country: string;
+        postalCode: number;
+    };
+    price: {
+        basePrice: number,
+        model: string;
+    };
     reviews: mongoose.Types.ObjectId[];
     description?: string;
     features: string[];
-    policies?: string;
-    images: mongoose.Types.ObjectId[];
-    bookedDates: Date[];
+    images: {
+        url: string;
+        alt: string;
+        width?: number;
+        height?: number;
+        caption: string;
+    }[];
+    policies?: {
+        listOfPolicies: {
+            name: string;
+            description: string;
+        }[];
+    };
+    bookedDates: {
+        date: Date;
+        bookingRef?: mongoose.Types.ObjectId;
+    }[];
+    availabilityRules: {
+        blockedWeekdays: {
+            weekday: string;
+            recurrenceRule: string;
+        }[];
+    };
+    category:mongoose.Types.ObjectId,
     type?: string;
-    status: 'pending' | 'approved' | 'rejected';
+    status: 'pending' | 'approved' | 'rejected' | 'softDeleted' | 'deleted' | 'active' | 'inactive';
     owner: mongoose.Types.ObjectId;
-    rating: number;
+    rating: {
+        average: number;
+        count: number;
+    };
+    sponsored: {
+        isActive: boolean;
+        until?: Date;
+        planType?: string;
+    };
 }
 
 const ServiceSchema: Schema<IService> = new Schema({
     name: { type: String, required: true },
-    location: { type: String, required: true },
-    pricePerDay: { type: Number, required: true },
-    reviews: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Review'
-    }],
+    location: {
+        address: {type: String, requried: true},
+        city: { type: String, required: true },
+        street: { type: String, required: true },
+        houseNumber: { type: Number, required: true },
+        country: { type: String, required: true },
+        postalCode: { type: Number, required: true },
+    },
+    price: {
+        basePrice: { type: Number, required: true },
+        model: { type: String, enum: ['hour', 'day', 'week'], default: 'day' }
+    },
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
     description: { type: String },
-    features: [{
-        type: String,
-        required: true
-    }],
-    policies: { type: String },
+    features: [{ type: String, required: true }],
     images: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Image'
+        url: { type: String, required: true },
+        alt: { type: String, required: true },
+        width: { type: Number },
+        height: { type: Number },
+        caption: { type: String, required: true }
     }],
+    policies: {
+        listOfPolicies: [{
+            name: { type: String, required: true },
+            description: { type: String, required: true }
+        }]
+    },
     bookedDates: [{
-        type: Date
+        date: { type: Date, required: true },
+        bookingRef: { type: mongoose.Schema.Types.ObjectId, ref: 'Booking' }
     }],
+    availabilityRules: {
+        blockedWeekdays: [{
+            weekday: { type: String, required: true },
+            recurrenceRule: { type: String, enum: ['weekly', 'biweekly', 'monthly'], required: true },
+        }],
+    },
+    category:[{ type: mongoose.Schema.Types.ObjectId, ref: "Enum" }],
     type: { type: String },
     status: {
         type: String,
-        enum: ['pending', 'approved', 'rejected'],
+        enum: ['pending', 'approved', 'rejected', 'softDeleted', 'deleted', 'active', 'inactive'],
         default: 'pending'
     },
-    owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     rating: {
-        type: Number,
-        min: 0,
-        max: 5,
-        default: 0
+        average: { type: Number, min: 0, max: 5, default: 0 },
+        count: { type: Number, default: 0 }
+    },
+    sponsored: {
+        isActive: { type: Boolean, default: false },
+        until: { type: Date },
+        planType: { type: String }
     }
 }, { timestamps: true });
 
-export default mongoose.model<IService>('Service', ServiceSchema);
+const Service = mongoose.models.Service || mongoose.model<IService>('Service', ServiceSchema);
+export default Service;

@@ -1,3 +1,0 @@
-Treba popraviti: 
-
-- zapnem na /complete-profile pageu nakon neuspjesnog logina i ne mogu izaci

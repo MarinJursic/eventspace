@@ -6,6 +6,7 @@ export interface IReview extends Document {
     comment?: string;
     target: mongoose.Types.ObjectId; // Referenca na venue ili service
     targetModel: 'Venue' | 'Service';
+    isDeleted: boolean;
 }
 
 const ReviewSchema: Schema<IReview> = new Schema({
@@ -14,7 +15,9 @@ const ReviewSchema: Schema<IReview> = new Schema({
     comment: { type: String },
     // Using refPath allows dynamic reference to either Venue or Service based on targetModel field
     target: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: 'targetModel' },
-    targetModel: { type: String, required: true, enum: ['Venue', 'Service'] }
+    targetModel: { type: String, required: true, enum: ['Venue', 'Service'] },
+    isDeleted: { type: Boolean, required: true },
 }, { timestamps: true });
 
-export const Review = mongoose.model<IReview>('Review', ReviewSchema);
+const Review = mongoose.models.Review || mongoose.model<IReview>('Review', ReviewSchema);
+export default Review;

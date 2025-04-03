@@ -24,5 +24,5 @@ const AccountSchema: Schema<IAccount> = new Schema({
     userId: { type: mongoose.Schema.Types.ObjectId }
 }, { timestamps: true });
 
-export const User = mongoose.model<IAccount>('Account', AccountSchema);
-
+const Account = mongoose.models.Account || mongoose.model<IAccount>('Account', AccountSchema);
+export default Account;
