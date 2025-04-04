@@ -98,7 +98,7 @@ export const venues: Venue[] = [
         width: 600,
         height: 400,
         caption: "Main event area."
-      },
+      }
     ],
     amenities: ["parking", "catering", "av"],
     policies: {

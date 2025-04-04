@@ -167,7 +167,7 @@ const Venues: React.FC = () => {
 
                 <div className="mb-6">
                   <h3 className="font-medium mb-3">Price Range</h3>
-                  <Slider min={0} max={10000} step={100} value={priceRange} onValueChange={setPriceRange} />
+                  <Slider min={0} max={10000} step={100} value={priceRange} onValueChange={setPriceRange} className="mb-2" />
                   <div className="flex justify-between text-sm">
                     <span>${priceRange[0]}</span>
                     <span>${priceRange[1]}+</span>

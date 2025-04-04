@@ -15,6 +15,17 @@ import { useToast } from "@/hooks/useToast";
 import { useCart } from "@/app/context/CartContext";
 import { venues } from "@/lib/mockVenues"; 
 
+const availableDates = [
+  { date: "2025-04-15", slots: ["Morning", "Evening"] },
+  { date: "2025-04-16", slots: ["Morning", "Afternoon", "Evening"] },
+  { date: "2025-04-17", slots: ["Afternoon"] },
+  { date: "2025-04-18", slots: ["Morning", "Evening"] },
+  { date: "2025-04-19", slots: ["Morning", "Afternoon", "Evening"] },
+  { date: "2025-04-20", slots: ["Morning", "Evening"] },
+  { date: "2025-04-21", slots: ["Afternoon", "Evening"] },
+  { date: "2025-04-22", slots: ["Morning", "Afternoon"] },
+];
+
 const VenueDetailPage: React.FC = () => {
   const { id } = useParams();
   const router = useRouter();
@@ -129,7 +140,7 @@ const VenueDetailPage: React.FC = () => {
         isOpen={isDatePickerOpen}
         onClose={() => setIsDatePickerOpen(false)}
         onSelect={handleDateTimeSelection}
-        availableDates={venue.bookedDates.map((date) => date.date.toISOString().split("T")[0])}
+        availableDates={availableDates}
         initialSelectedDates={selectedVenueDates}
       />
 

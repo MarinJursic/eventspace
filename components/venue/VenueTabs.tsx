@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "../ui/separator";
 import { MapPin } from "lucide-react";
@@ -27,6 +27,8 @@ interface VenueTabsProps {
   policies: { name: string; description: string }[];
 }
 
+const DEFAULT_VISIBLE_REVIEWS: number = 5;
+
 const VenueTabs: React.FC<VenueTabsProps> = ({
   longDescription,
   address,
@@ -34,6 +36,9 @@ const VenueTabs: React.FC<VenueTabsProps> = ({
   reviews,
   policies,
 }) => {
+
+  const [visibleReviews, setVisibleReviews] = useState<number>(DEFAULT_VISIBLE_REVIEWS);
+
   return (
     <Tabs defaultValue="about" className="w-full">
       <TabsList className="grid grid-cols-4 mb-6">
@@ -93,7 +98,7 @@ const VenueTabs: React.FC<VenueTabsProps> = ({
           </div>
         </div>
         <div className="space-y-4">
-          {reviews.map((review) => (
+          {reviews.slice(0, Math.min(visibleReviews, reviews.length)).map((review) => (
             <div
               key={review.id}
               className="border border-border rounded-lg p-4"
@@ -113,9 +118,13 @@ const VenueTabs: React.FC<VenueTabsProps> = ({
             </div>
           ))}
         </div>
-        <Button variant="outline" className="w-full">
-          View All Reviews
-        </Button>
+        {
+          reviews.length > DEFAULT_VISIBLE_REVIEWS &&         
+          <Button variant="outline" className="w-full" onClick={() => setVisibleReviews(visibleReviews === reviews.length ? DEFAULT_VISIBLE_REVIEWS : reviews.length)}>
+            View {visibleReviews === reviews.length ? "Less" : "More"} Reviews
+          </Button>
+        }
+
       </TabsContent>
 
       <TabsContent value="policies" className="space-y-6">
