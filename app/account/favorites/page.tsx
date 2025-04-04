@@ -23,46 +23,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSession } from "next-auth/react";
+import {venues} from "@/lib/mockVenues"
 
 // Mock favorites data
-const mockVenueFavorites = [
-  {
-    id: "v1",
-    name: "Crystal Ballroom",
-    image:
-      "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1548&q=80",
-    location: "New York, NY",
-    type: "Ballroom",
-    capacity: 250,
-    priceRange: "$$$",
-    rating: 4.8,
-    savedDate: "2023-06-10",
-  },
-  {
-    id: "v2",
-    name: "Urban Loft Studio",
-    image:
-      "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?ixlib=rb-4.0.3&auto=format&fit=crop&w=1469&q=80",
-    location: "Chicago, IL",
-    type: "Studio",
-    capacity: 100,
-    priceRange: "$$",
-    rating: 4.5,
-    savedDate: "2023-06-22",
-  },
-  {
-    id: "v3",
-    name: "Seaside Pavilion",
-    image:
-      "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1450&q=80",
-    location: "Miami, FL",
-    type: "Beachfront",
-    capacity: 150,
-    priceRange: "$$$$",
-    rating: 4.9,
-    savedDate: "2023-05-18",
-  },
-];
+const mockVenueFavorites = venues;
 
 const mockServiceFavorites = [
   {
@@ -116,7 +80,7 @@ const Favorites: React.FC = () => {
     (venue) =>
       venue.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       venue.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      venue.type.toLowerCase().includes(searchQuery.toLowerCase())
+      (venue.type && venue.type.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const filteredServices = mockServiceFavorites.filter(
@@ -241,7 +205,7 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onRemove, onView }) => {
         <div className="flex flex-col md:flex-row">
           <div className="w-full md:w-1/3 h-48 md:h-auto">
             <img
-              src={venue.image}
+              src={venue.images[0]}
               alt={venue.name}
               className="w-full h-full object-cover"
             />
@@ -259,7 +223,7 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onRemove, onView }) => {
                 <div className="flex flex-wrap gap-2 mb-4">
                   <Badge variant="outline">{venue.type}</Badge>
                   <Badge variant="outline">Up to {venue.capacity} guests</Badge>
-                  <Badge variant="outline">{venue.priceRange}</Badge>
+                  <Badge variant="outline">{venue.pricePerDay}</Badge>
                 </div>
               </div>
               <div className="flex flex-col items-start md:items-end gap-2">
@@ -287,7 +251,7 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onRemove, onView }) => {
                 <div className="flex items-center">
                   <CalendarIcon className="h-4 w-4 text-muted-foreground mr-1" />
                   <span className="text-xs text-muted-foreground">
-                    Saved on {new Date(venue.savedDate).toLocaleDateString()}
+                    Saved on {new Date().toLocaleDateString()}
                   </span>
                 </div>
               </div>

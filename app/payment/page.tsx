@@ -43,7 +43,7 @@ const PaymentPage: React.FC = () => {
   const getVenuePrice = (): number => {
     if (!cart.venue.price) return 0;
     const numDays = cart.selectedDates.length;
-    return extractPrice(cart.venue.price) * numDays;
+    return cart.venue.price.basePrice * numDays;
   };
 
   const getServicesTotal = (): number => {

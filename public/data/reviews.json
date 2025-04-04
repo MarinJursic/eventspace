@@ -1,0 +1,51 @@
+[
+    {
+        "id": "661508a9f1a7a7e34f123456",
+        "user": "66150d01f1a7a7e34f444444",
+        "rating": 5,
+        "comment": "Absolutely stunning venue with top-notch amenities. Highly recommended!",
+        "target": "66150f45f1a7a7e34f111111",
+        "targetModel": "Venue",
+        "isDeleted": false
+    },
+    {
+        "user": "66150d01f1a7a7e34f555555",
+        "rating": 3.5,
+        "comment": "Venue was okay, but the staff wasn't very responsive.",
+        "target": "66150f45f1a7a7e34f444444",
+        "targetModel": "Venue",
+        "isDeleted": false
+    },
+    {
+        "user": "66150d01f1a7a7e34f666666",
+        "rating": 4.8,
+        "comment": "The catering service exceeded all expectations. Delicious and professional!",
+        "target": "66151067f1a7a7e34f222222",
+        "targetModel": "Service",
+        "isDeleted": false
+    },
+    {
+        "user": "66150d01f1a7a7e34f777777",
+        "rating": 2,
+        "comment": "DJ arrived late and some of the equipment didn’t work. Wouldn’t book again.",
+        "target": "66151067f1a7a7e34f333333",
+        "targetModel": "Service",
+        "isDeleted": false
+    },
+    {
+        "user": "66150d01f1a7a7e34f888888",
+        "rating": 4.2,
+        "comment": "The venue had beautiful lighting but the parking situation was difficult.",
+        "target": "66150f45f1a7a7e34f555555",
+        "targetModel": "Venue",
+        "isDeleted": true
+    },
+    {
+        "user": "66150d01f1a7a7e34f141414",
+        "rating": 5,
+        "comment": "Outstanding decor and seamless setup process. Worth every penny.",
+        "target": "66151067f1a7a7e34f131313",
+        "targetModel": "Service",
+        "isDeleted": false
+    }
+]

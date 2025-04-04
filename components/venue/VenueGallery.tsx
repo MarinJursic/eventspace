@@ -3,7 +3,13 @@
 import React from "react";
 
 interface VenueGalleryProps {
-  images: string[];
+  images: {
+    url: string;
+    alt: string;
+    width?: number;
+    height?: number;
+    caption: string;
+  }[];
   mainImage: string;
   onSelectImage: (image: string) => void;
   venueName: string;
@@ -19,7 +25,7 @@ const VenueGallery: React.FC<VenueGalleryProps> = ({
     <div className="space-y-4">
       <div className="aspect-[16/9] overflow-hidden rounded-xl">
         <img
-          src={mainImage || images[0]}
+          src={mainImage || images[0].url}
           alt={venueName}
           className="w-full h-full object-cover"
         />
@@ -29,12 +35,12 @@ const VenueGallery: React.FC<VenueGalleryProps> = ({
           <div
             key={index}
             className={`aspect-square overflow-hidden rounded-lg cursor-pointer border-2 ${
-              mainImage === image ? "border-primary" : "border-transparent"
+              mainImage === image.url ? "border-primary" : "border-transparent"
             }`}
-            onClick={() => onSelectImage(image)}
+            onClick={() => onSelectImage(image.url)}
           >
             <img
-              src={image}
+              src={image.url}
               alt={`${venueName} - view ${index + 1}`}
               className="w-full h-full object-cover"
             />
