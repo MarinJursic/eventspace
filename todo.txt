@@ -1,7 +1,8 @@
 Treba napraviti:
 
-Konsistentne podatke priko svega - trenutno se minjaju seme za podatke u /venue ili u /cart i na drugim mistima, treba naci definirat tocno ka scheme za database za venue service 
-i dodati to u database i vuci podatke iz databasea i displayat - Luka
+Konsistentne podatke priko svega - trenutno se minjaju seme za podatke u /venue ili u /cart i na drugim mistima - Brkic
+
+Definirat tocno ka scheme za database za venue service i dodati to u database i vuci podatke iz databasea i displayat - Luka
 
 API i dohvati podataka: Implementacija API endpointova (ili Next.js server akcija) za dohvat podataka iz baze (npr. popisi prostora/usluga, detalji, pretraga, filtriranje). - Luka
 
@@ -11,11 +12,17 @@ Slike i fileovi - treba dodat storage za to, cloudinary moja preporuka al ak se 
 
 Landing page search funkcionalnost - Brkic
 
-Filter funkcionalnost i fixevi - na /venues i na /services - Brkic
+Filter funkcionalnost i fixevi - na /services - Brkic
 
 Booking system i cart context - pobosljati ako se more viditi kako trenutno sve stoji - Luka
 
 UI popraviti - di god se nadu greske to risavati - Svi
+
+Venue policy nema padding
+
+Venue amenities styling
+
+Venue detail pages full width
 
 Blokirati stvari ako nisi sign inan - tipa booking - Marin
 
@@ -29,4 +36,4 @@ Customer Dashboard napraviti - Brkic
 
 Vendor Dashboard napraviti - Marin 
 
-Admin Dashboard napraviti 
+Admin Dashboard napraviti

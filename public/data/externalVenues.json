@@ -1,0 +1,76 @@
+[
+    {
+        "name": "Lakeside Banquet Hall",
+        "location": {
+            "address": "301 Blue Lake Drive",
+            "city": "Chicago",
+            "street": "Blue Lake Drive",
+            "houseNumber": 301,
+            "country": "USA",
+            "postalCode": 60601
+        },
+        "bookedDates": [
+            {
+                "date": "2025-06-10T00:00:00.000Z",
+                "bookingRef": "66150b29f1a7a7e34f111111"
+            },
+            {
+                "date": "2025-06-11T00:00:00.000Z",
+                "bookingRef": "66150b29f1a7a7e34f222222"
+            }
+        ],
+        "owner": "66150d01f1a7a7e34f444444"
+    },
+    {
+        "name": "Old Town Garden",
+        "location": {
+            "address": "75 Heritage Ave",
+            "city": "Prague",
+            "street": "Heritage Ave",
+            "houseNumber": 75,
+            "country": "Czech Republic",
+            "postalCode": 11000
+        },
+        "bookedDates": [],
+        "owner": "66150d01f1a7a7e34f555555"
+    },
+    {
+        "name": "Skyline Rooftop Lounge",
+        "location": {
+            "address": "400 Sunset Blvd",
+            "city": "Los Angeles",
+            "street": "Sunset Blvd",
+            "houseNumber": 400,
+            "country": "USA",
+            "postalCode": 90028
+        },
+        "bookedDates": [
+            {
+                "date": "2025-07-04T00:00:00.000Z",
+                "bookingRef": "66150b29f1a7a7e34f333333"
+            }
+        ],
+        "owner": "66150d01f1a7a7e34f666666"
+    },
+    {
+        "name": "Villa d'Amour",
+        "location": {
+            "address": "12 Rue de Paris",
+            "city": "Nice",
+            "street": "Rue de Paris",
+            "houseNumber": 12,
+            "country": "France",
+            "postalCode": 6000
+        },
+        "bookedDates": [
+            {
+                "date": "2025-05-20T00:00:00.000Z",
+                "bookingRef": "66150b29f1a7a7e34f444444"
+            },
+            {
+                "date": "2025-05-21T00:00:00.000Z"
+            }
+        ],
+        "owner": "66150d01f1a7a7e34f777777"
+    }
+]

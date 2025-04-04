@@ -1,22 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "../ui/separator";
 import { MapPin } from "lucide-react";
 import { Button } from "../ui/button";
+import { Review, reviews } from "@/lib/mockReviews";
 
 interface Amenity {
   name: string;
   icon: React.ComponentType<any>;
-}
-
-interface Review {
-  id: number;
-  user: string;
-  date: string;
-  rating: number;
-  comment: string;
 }
 
 interface Policies {
@@ -29,10 +22,12 @@ interface Policies {
 interface VenueTabsProps {
   longDescription: string;
   address: string;
-  amenities: Amenity[];
+  amenities: string[];
   reviews: Review[];
-  policies: Policies;
+  policies: { name: string; description: string }[];
 }
+
+const DEFAULT_VISIBLE_REVIEWS: number = 5;
 
 const VenueTabs: React.FC<VenueTabsProps> = ({
   longDescription,
@@ -41,6 +36,9 @@ const VenueTabs: React.FC<VenueTabsProps> = ({
   reviews,
   policies,
 }) => {
+
+  const [visibleReviews, setVisibleReviews] = useState<number>(DEFAULT_VISIBLE_REVIEWS);
+
   return (
     <Tabs defaultValue="about" className="w-full">
       <TabsList className="grid grid-cols-4 mb-6">
@@ -78,8 +76,8 @@ const VenueTabs: React.FC<VenueTabsProps> = ({
               key={index}
               className="flex items-center p-4 bg-secondary/20 rounded-lg"
             >
-              <amenity.icon className="h-5 w-5 mr-3 text-primary" />
-              <span>{amenity.name}</span>
+              {/*<amenity.icon className="h-5 w-5 mr-3 text-primary" />*/}
+              <span>{amenity}</span>
             </div>
           ))}
         </div>
@@ -100,7 +98,7 @@ const VenueTabs: React.FC<VenueTabsProps> = ({
           </div>
         </div>
         <div className="space-y-4">
-          {reviews.map((review) => (
+          {reviews.slice(0, Math.min(visibleReviews, reviews.length)).map((review) => (
             <div
               key={review.id}
               className="border border-border rounded-lg p-4"
@@ -108,7 +106,7 @@ const VenueTabs: React.FC<VenueTabsProps> = ({
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <p className="font-medium">{review.user}</p>
-                  <p className="text-sm text-muted-foreground">{review.date}</p>
+                  <p className="text-sm text-muted-foreground">{review.createdAt.toDateString()}</p>
                 </div>
                 <div className="flex items-center bg-primary/5 px-2 py-1 rounded-full">
                   <span className="text-xs font-medium">
@@ -120,34 +118,29 @@ const VenueTabs: React.FC<VenueTabsProps> = ({
             </div>
           ))}
         </div>
-        <Button variant="outline" className="w-full">
-          View All Reviews
-        </Button>
+        {
+          reviews.length > DEFAULT_VISIBLE_REVIEWS &&         
+          <Button variant="outline" className="w-full" onClick={() => setVisibleReviews(visibleReviews === reviews.length ? DEFAULT_VISIBLE_REVIEWS : reviews.length)}>
+            View {visibleReviews === reviews.length ? "Less" : "More"} Reviews
+          </Button>
+        }
+
       </TabsContent>
 
       <TabsContent value="policies" className="space-y-6">
         <div className="space-y-4">
-          <div>
-            <h4 className="font-medium mb-1">Cancellation Policy</h4>
-            <p className="text-sm text-muted-foreground">
-              {policies.cancellation}
-            </p>
-          </div>
-          <Separator />
-          <div>
-            <h4 className="font-medium mb-1">Security Deposit</h4>
-            <p className="text-sm text-muted-foreground">{policies.security}</p>
-          </div>
-          <Separator />
-          <div>
-            <h4 className="font-medium mb-1">Noise Restrictions</h4>
-            <p className="text-sm text-muted-foreground">{policies.noise}</p>
-          </div>
-          <Separator />
-          <div>
-            <h4 className="font-medium mb-1">Cleaning</h4>
-            <p className="text-sm text-muted-foreground">{policies.cleaning}</p>
-          </div>
+          {
+            policies.map((policy, i) => 
+            <div key={i}>
+              <div>
+                <h4 className="font-medium mb-1">{policy.name}</h4>
+                <p className="text-sm text-muted-foreground">
+                  {policy.description}
+                </p>
+              </div>
+              <Separator />
+            </div>)
+          }
         </div>
       </TabsContent>
     </Tabs>

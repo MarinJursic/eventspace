@@ -2,50 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import VenueCard from "../ui/VenueCard";
 import AnimatedSection from "@/components/ui/AnimatedSection";
-
-// Sample venue data
-const venues = [
-  {
-    id: 1,
-    name: "Crystal Ballroom",
-    image:
-      "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2148&q=80",
-    location: "Downtown, New York",
-    price: "$2,500",
-    rating: 4.8,
-    reviewCount: 124,
-  },
-  {
-    id: 2,
-    name: "Sunset Beach Resort",
-    image:
-      "https://images.unsplash.com/photo-1439130490301-25e322d88054?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1932&q=80",
-    location: "Miami Beach, Florida",
-    price: "$4,200",
-    rating: 4.9,
-    reviewCount: 89,
-  },
-  {
-    id: 3,
-    name: "Alpine Lodge",
-    image:
-      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    location: "Aspen, Colorado",
-    price: "$3,750",
-    rating: 4.7,
-    reviewCount: 65,
-  },
-  {
-    id: 4,
-    name: "Urban Loft Space",
-    image:
-      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    location: "Chicago, Illinois",
-    price: "$1,900",
-    rating: 4.6,
-    reviewCount: 42,
-  },
-];
+import {venues} from "@/lib/mockVenues"
 
 const FeaturedVenues: React.FC = () => {
   return (
@@ -83,12 +40,7 @@ const FeaturedVenues: React.FC = () => {
               threshold={0.1}
             >
               <VenueCard
-                name={venue.name}
-                image={venue.image}
-                location={venue.location}
-                price={venue.price}
-                rating={venue.rating}
-                reviewCount={venue.reviewCount}
+                venue={venue}
               />
             </AnimatedSection>
           ))}

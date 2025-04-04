@@ -1,0 +1,283 @@
+[
+    {
+        "name": "Sunset Gardens",
+        "location": {
+            "address": "123 Palm Drive",
+            "city": "Los Angeles",
+            "street": "Palm Drive",
+            "houseNumber": 123,
+            "country": "USA",
+            "postalCode": 90210
+        },
+        "price": {
+            "basePrice": 1000,
+            "model": "day"
+        },
+        "reviews": [
+            "661508a9f1a7a7e34f123456"
+        ],
+        "seating": {
+            "seated": 100,
+            "standing": 200
+        },
+        "description": "Beautiful outdoor venue perfect for weddings and receptions.",
+        "images": [
+            {
+                "url": "https://example.com/image1.jpg",
+                "alt": "Sunset Gardens Entrance",
+                "width": 1920,
+                "height": 1080,
+                "caption": "Main entrance view"
+            }
+        ],
+        "amenities": [
+            "661509fdf1a7a7e34f123456"
+        ],
+        "services": [
+            "661509fdf1a7a7e34f123457"
+        ],
+        "policies": {
+            "bannedServices": [
+                "661509fdf1a7a7e34f123458"
+            ],
+            "listOfPolicies": [
+                {
+                    "name": "Noise restriction",
+                    "description": "Music must stop after 10 PM"
+                }
+            ]
+        },
+        "bookedDates": [
+            {
+                "date": "2025-06-01T00:00:00.000Z",
+                "bookingRef": "66150b29f1a7a7e34f123456"
+            }
+        ],
+        "availabilityRules": {
+            "blockedWeekdays": [
+                {
+                    "weekday": "Monday",
+                    "recurrenceRule": "weekly"
+                }
+            ]
+        },
+        "category": [
+            "66150c9df1a7a7e34f123456"
+        ],
+        "type": "Outdoor",
+        "status": "active",
+        "capacity": 300,
+        "owner": "66150d01f1a7a7e34f123456",
+        "rating": {
+            "average": 4.7,
+            "count": 25
+        },
+        "sponsored": {
+            "isActive": true,
+            "until": "2025-12-31T00:00:00.000Z",
+            "planType": "gold"
+        }
+    },
+    {
+        "name": "Cozy Loft Space",
+        "location": {
+            "address": "45 Maple Street",
+            "city": "Toronto",
+            "street": "Maple Street",
+            "houseNumber": 45,
+            "country": "Canada",
+            "postalCode": 10010
+        },
+        "price": {
+            "basePrice": 250,
+            "model": "hour"
+        },
+        "reviews": [],
+        "seating": {},
+        "description": "Modern loft ideal for creative events or pop-ups.",
+        "images": [],
+        "amenities": [],
+        "services": [],
+        "policies": {
+            "bannedServices": [],
+            "listOfPolicies": []
+        },
+        "bookedDates": [],
+        "availabilityRules": {
+            "blockedWeekdays": []
+        },
+        "category": [],
+        "type": "Loft",
+        "status": "pending",
+        "capacity": 50,
+        "owner": "66150d01f1a7a7e34f654321",
+        "rating": {
+            "average": 0,
+            "count": 0
+        },
+        "sponsored": {
+            "isActive": false
+        }
+    },
+    {
+        "name": "Seaside Conference Hall",
+        "location": {
+            "address": "10 Ocean Avenue",
+            "city": "Miami",
+            "street": "Ocean Avenue",
+            "houseNumber": 10,
+            "country": "USA",
+            "postalCode": 33101
+        },
+        "price": {
+            "basePrice": 8000,
+            "model": "week"
+        },
+        "reviews": [
+            "661508a9f1a7a7e34f654321",
+            "661508a9f1a7a7e34f987654"
+        ],
+        "seating": {
+            "seated": 300,
+            "standing": 100
+        },
+        "description": "High-end venue ideal for large-scale corporate events.",
+        "images": [
+            {
+                "url": "https://example.com/hall.jpg",
+                "alt": "Conference Hall Interior",
+                "caption": "Fully equipped interior view"
+            }
+        ],
+        "amenities": [
+            "661509fdf1a7a7e34f123123",
+            "661509fdf1a7a7e34f124124"
+        ],
+        "services": [
+            "661509fdf1a7a7e34f125125"
+        ],
+        "policies": {
+            "bannedServices": [],
+            "listOfPolicies": [
+                {
+                    "name": "Damage Deposit",
+                    "description": "A refundable deposit of $500 is required."
+                }
+            ]
+        },
+        "bookedDates": [],
+        "availabilityRules": {
+            "blockedWeekdays": [
+                {
+                    "weekday": "Sunday",
+                    "recurrenceRule": "biweekly"
+                }
+            ]
+        },
+        "category": [
+            "66150c9df1a7a7e34f112233"
+        ],
+        "type": "Conference",
+        "status": "approved",
+        "capacity": 400,
+        "owner": "66150d01f1a7a7e34f556677",
+        "rating": {
+            "average": 4.9,
+            "count": 120
+        },
+        "sponsored": {
+            "isActive": false
+        }
+    },
+    {
+        "name": "Vintage Banquet Hall",
+        "location": {
+            "address": "789 Heritage Lane",
+            "city": "Paris",
+            "street": "Heritage Lane",
+            "houseNumber": 789,
+            "country": "France",
+            "postalCode": 75001
+        },
+        "price": {
+            "basePrice": 1500,
+            "model": "day"
+        },
+        "reviews": [
+            "661508a9f1a7a7e34fabcd1",
+            "661508a9f1a7a7e34fabcd2"
+        ],
+        "seating": {
+            "seated": 150,
+            "standing": 50
+        },
+        "description": "Elegant banquet hall with vintage charm, ideal for weddings.",
+        "images": [
+            {
+                "url": "https://example.com/vintage1.jpg",
+                "alt": "Main Hall",
+                "width": 1200,
+                "height": 800,
+                "caption": "Banquet setup with vintage decor"
+            },
+            {
+                "url": "https://example.com/vintage2.jpg",
+                "alt": "Buffet Area",
+                "width": 1200,
+                "height": 800,
+                "caption": "Buffet and lounge"
+            }
+        ],
+        "amenities": [
+            "661509fdf1a7a7e34f126789"
+        ],
+        "services": [
+            "661509fdf1a7a7e34f127890"
+        ],
+        "policies": {
+            "bannedServices": [
+                "661509fdf1a7a7e34f128901"
+            ],
+            "listOfPolicies": [
+                {
+                    "name": "Cleaning Policy",
+                    "description": "Additional fee for post-event cleaning"
+                },
+                {
+                    "name": "No smoking",
+                    "description": "Smoking is strictly prohibited inside the venue"
+                }
+            ]
+        },
+        "bookedDates": [
+            {
+                "date": "2025-04-15T00:00:00.000Z",
+                "bookingRef": "66150b29f1a7a7e34f456789"
+            }
+        ],
+        "availabilityRules": {
+            "blockedWeekdays": [
+                {
+                    "weekday": "Saturday",
+                    "recurrenceRule": "monthly"
+                }
+            ]
+        },
+        "category": [
+            "66150c9df1a7a7e34f334455"
+        ],
+        "type": "Banquet",
+        "status": "active",
+        "capacity": 200,
+        "owner": "66150d01f1a7a7e34f778899",
+        "rating": {
+            "average": 4.5,
+            "count": 30
+        },
+        "sponsored": {
+            "isActive": true,
+            "until": "2025-07-01T00:00:00.000Z",
+            "planType": "silver"
+        }
+    }
+]

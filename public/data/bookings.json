@@ -1,0 +1,62 @@
+[
+    {
+        "user": "66150d01f1a7a7e34f444444",
+        "venue": "66150f45f1a7a7e34f111111",
+        "service": [
+            "66151067f1a7a7e34f222222",
+            "66151067f1a7a7e34f333333"
+        ],
+        "isExternalVenue": false,
+        "datesBooked": [
+            "2025-05-15T00:00:00.000Z",
+            "2025-05-16T00:00:00.000Z"
+        ],
+        "status": "confirmed"
+    },
+    {
+        "user": "66150d01f1a7a7e34f555555",
+        "venue": "66150f45f1a7a7e34f444444",
+        "service": [],
+        "isExternalVenue": false,
+        "datesBooked": [
+            "2025-06-01T00:00:00.000Z"
+        ],
+        "status": "pending"
+    },
+    {
+        "user": "66150d01f1a7a7e34f666666",
+        "venue": null,
+        "service": [
+            "66151067f1a7a7e34f777777"
+        ],
+        "isExternalVenue": true,
+        "datesBooked": [
+            "2025-04-10T00:00:00.000Z"
+        ],
+        "status": "confirmed"
+    },
+    {
+        "user": "66150d01f1a7a7e34f888888",
+        "venue": "66150f45f1a7a7e34f555555",
+        "service": [],
+        "isExternalVenue": false,
+        "datesBooked": [
+            "2025-04-22T00:00:00.000Z",
+            "2025-04-23T00:00:00.000Z"
+        ],
+        "status": "cancelled"
+    },
+    {
+        "user": "66150d01f1a7a7e34f141414",
+        "venue": null,
+        "service": [
+            "66151067f1a7a7e34f131313",
+            "66151067f1a7a7e34f141414"
+        ],
+        "isExternalVenue": true,
+        "datesBooked": [
+            "2025-07-01T00:00:00.000Z"
+        ],
+        "status": "pending"
+    }
+]

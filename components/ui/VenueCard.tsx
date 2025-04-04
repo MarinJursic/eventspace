@@ -3,27 +3,16 @@ import Link from "next/link";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
+import { Venue } from "@/lib/mockVenues";
 
 interface VenueCardProps {
-  id?: number;
-  name: string;
-  image: string;
-  location: string;
-  price: string;
-  rating: number;
-  reviewCount: number;
+  venue: Venue;
   className?: string;
 }
 
 const VenueCard: React.FC<VenueCardProps> = ({
-  id = 1, // Default ID if not provided
-  name,
-  image,
-  location,
-  price,
-  rating,
-  reviewCount,
-  className,
+  venue,
+  className
 }) => {
   return (
     <div
@@ -34,8 +23,8 @@ const VenueCard: React.FC<VenueCardProps> = ({
     >
       <div className="aspect-[16/10] w-full overflow-hidden rounded-t-2xl">
         <img
-          src={image}
-          alt={name}
+          src={venue.images[0].url || "/placeholder.jpg"}
+          alt={venue.images[0].alt}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
         />
@@ -45,23 +34,23 @@ const VenueCard: React.FC<VenueCardProps> = ({
       <div className="flex flex-col flex-grow p-5">
         <div className="flex justify-between items-start">
           <h3 className="font-display font-semibold text-lg leading-tight">
-            {name}
+            {venue.name}
           </h3>
           <div className="flex items-center bg-secondary px-2 py-1 rounded-full">
             <Star className="w-4 h-4 text-yellow-500 fill-yellow-500 mr-1" />
-            <span className="text-xs font-medium">{rating.toFixed(1)}</span>
+            <span className="text-xs font-medium">{venue.rating.average}</span>
           </div>
         </div>
 
-        <p className="mt-1 text-sm text-muted-foreground">{location}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{venue.location.city}</p>
 
         <div className="mt-3 flex items-center text-sm">
-          <span className="font-semibold">{price}</span>
-          <span className="ml-1 text-muted-foreground">/event</span>
+          <span className="font-semibold">${venue.price.basePrice}</span>
+          <span className="ml-1 text-muted-foreground">/day</span>
         </div>
 
         <p className="mt-1 text-xs text-muted-foreground">
-          {reviewCount} reviews
+          {venue.reviews.length} reviews
         </p>
 
         <div className="mt-auto pt-4">
@@ -70,7 +59,7 @@ const VenueCard: React.FC<VenueCardProps> = ({
             className="w-full rounded-xl group-hover:bg-primary group-hover:text-primary-foreground transition-all"
             asChild
           >
-            <Link href={`/venues/${id}`}>View Details</Link>
+            <Link href={`/venues/${venue.id}`}>View Details</Link>
           </Button>
         </div>
       </div>

@@ -1,0 +1,251 @@
+[
+    {
+        "name": "On-Site Catering",
+        "location": {
+            "address": "12 Gourmet Street",
+            "city": "New York",
+            "street": "Gourmet Street",
+            "houseNumber": 12,
+            "country": "USA",
+            "postalCode": 10001
+        },
+        "price": {
+            "basePrice": 500,
+            "model": "day"
+        },
+        "reviews": [
+            "661508a9f1a7a7e34f111111"
+        ],
+        "description": "Premium catering service with customizable menus.",
+        "features": [
+            "Buffet setup",
+            "Chef on site",
+            "Custom menu"
+        ],
+        "images": [
+            {
+                "url": "https://example.com/catering1.jpg",
+                "alt": "Buffet Table",
+                "caption": "Our signature buffet layout",
+                "width": 1024,
+                "height": 768
+            }
+        ],
+        "policies": {
+            "listOfPolicies": [
+                {
+                    "name": "Allergy Disclaimer",
+                    "description": "Inform us of any food allergies in advance."
+                }
+            ]
+        },
+        "bookedDates": [
+            {
+                "date": "2025-05-20T00:00:00.000Z",
+                "bookingRef": "66150b29f1a7a7e34f222222"
+            }
+        ],
+        "availabilityRules": {
+            "blockedWeekdays": [
+                {
+                    "weekday": "Sunday",
+                    "recurrenceRule": "weekly"
+                }
+            ]
+        },
+        "category": [
+            "66150c9df1a7a7e34f333333"
+        ],
+        "type": "Food Service",
+        "status": "approved",
+        "owner": "66150d01f1a7a7e34f444444",
+        "rating": {
+            "average": 4.8,
+            "count": 15
+        },
+        "sponsored": {
+            "isActive": true,
+            "until": "2025-12-31T00:00:00.000Z",
+            "planType": "premium"
+        }
+    },
+    {
+        "name": "Event Security",
+        "location": {
+            "address": "99 Guard Lane",
+            "city": "London",
+            "street": "Guard Lane",
+            "houseNumber": 99,
+            "country": "UK",
+            "postalCode": 45567
+        },
+        "price": {
+            "basePrice": 200,
+            "model": "hour"
+        },
+        "reviews": [],
+        "features": [
+            "Licensed guards",
+            "Emergency response"
+        ],
+        "images": [],
+        "bookedDates": [],
+        "availabilityRules": {
+            "blockedWeekdays": []
+        },
+        "category": [
+            "66150c9df1a7a7e34f555555"
+        ],
+        "status": "pending",
+        "owner": "66150d01f1a7a7e34f666666",
+        "rating": {
+            "average": 0,
+            "count": 0
+        },
+        "sponsored": {
+            "isActive": false
+        }
+    },
+    {
+        "name": "DJ Entertainment",
+        "location": {
+            "address": "88 Club Ave",
+            "city": "Berlin",
+            "street": "Club Ave",
+            "houseNumber": 88,
+            "country": "Germany",
+            "postalCode": 10243
+        },
+        "price": {
+            "basePrice": 750,
+            "model": "day"
+        },
+        "reviews": [
+            "661508a9f1a7a7e34fabcd1"
+        ],
+        "description": "Professional DJ with lighting and sound equipment.",
+        "features": [
+            "Sound setup",
+            "Lighting effects",
+            "MC services"
+        ],
+        "images": [
+            {
+                "url": "https://example.com/dj.jpg",
+                "alt": "DJ Booth",
+                "caption": "Live setup at an event"
+            }
+        ],
+        "bookedDates": [
+            {
+                "date": "2025-06-10T00:00:00.000Z"
+            }
+        ],
+        "availabilityRules": {
+            "blockedWeekdays": [
+                {
+                    "weekday": "Monday",
+                    "recurrenceRule": "monthly"
+                }
+            ]
+        },
+        "category": [
+            "66150c9df1a7a7e34f777777"
+        ],
+        "type": "Entertainment",
+        "status": "active",
+        "owner": "66150d01f1a7a7e34f888888",
+        "rating": {
+            "average": 4.5,
+            "count": 8
+        },
+        "sponsored": {
+            "isActive": false
+        }
+    },
+    {
+        "name": "Luxury Decoration Service",
+        "location": {
+            "address": "55 Deco Plaza",
+            "city": "Dubai",
+            "street": "Deco Plaza",
+            "houseNumber": 55,
+            "country": "UAE",
+            "postalCode": 123456
+        },
+        "price": {
+            "basePrice": 1200,
+            "model": "week"
+        },
+        "reviews": [
+            "661508a9f1a7a7e34f999999",
+            "661508a9f1a7a7e34f000000"
+        ],
+        "description": "Premium decor packages for weddings and corporate events.",
+        "features": [
+            "Floral arrangements",
+            "Thematic decor",
+            "Custom installations"
+        ],
+        "images": [
+            {
+                "url": "https://example.com/decor1.jpg",
+                "alt": "Reception area",
+                "caption": "Luxury floral entrance",
+                "width": 1280,
+                "height": 960
+            },
+            {
+                "url": "https://example.com/decor2.jpg",
+                "alt": "Stage design",
+                "caption": "Stage setup with golden lights",
+                "width": 1920,
+                "height": 1080
+            }
+        ],
+        "policies": {
+            "listOfPolicies": [
+                {
+                    "name": "Damage Coverage",
+                    "description": "Client covers accidental damage over $100"
+                },
+                {
+                    "name": "Setup Time",
+                    "description": "Minimum 3 hours setup required before event"
+                }
+            ]
+        },
+        "bookedDates": [
+            {
+                "date": "2025-05-05T00:00:00.000Z",
+                "bookingRef": "66150b29f1a7a7e34f121212"
+            },
+            {
+                "date": "2025-05-12T00:00:00.000Z"
+            }
+        ],
+        "availabilityRules": {
+            "blockedWeekdays": [
+                {
+                    "weekday": "Wednesday",
+                    "recurrenceRule": "biweekly"
+                }
+            ]
+        },
+        "category": [
+            "66150c9df1a7a7e34f131313"
+        ],
+        "type": "Decoration",
+        "status": "approved",
+        "owner": "66150d01f1a7a7e34f141414",
+        "rating": {
+            "average": 4.9,
+            "count": 22
+        },
+        "sponsored": {
+            "isActive": true,
+            "until": "2025-09-30T00:00:00.000Z",
+            "planType": "gold"
+        }
+    }
+]
