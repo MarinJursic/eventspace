@@ -1,0 +1,72 @@
+[
+    {
+        "booking": "66150b29f1a7a7e34f111111",
+        "user": "66150d01f1a7a7e34f444444",
+        "amount": 1800,
+        "currency": "USD",
+        "method": "credit_card",
+        "status": "completed",
+        "transactionDate": "2025-04-01T10:00:00.000Z",
+        "updatedAt": "2025-04-02T10:00:00.000Z",
+        "recepientUrl": "https://payments.example.com/txn/1",
+        "refundAmount": 0,
+        "refundDate": "2025-04-01T00:00:00.000Z",
+        "isRefunded": false
+    },
+    {
+        "booking": "66150b29f1a7a7e34f222222",
+        "user": "66150d01f1a7a7e34f555555",
+        "amount": 500,
+        "currency": "USD",
+        "method": "paypal",
+        "status": "completed",
+        "transactionDate": "2025-04-03T11:00:00.000Z",
+        "updatedAt": "2025-04-03T11:30:00.000Z",
+        "recepientUrl": "https://payments.example.com/txn/2",
+        "refundAmount": 0,
+        "refundDate": "2025-04-03T00:00:00.000Z",
+        "isRefunded": false
+    },
+    {
+        "booking": "66150b29f1a7a7e34f333333",
+        "user": "66150d01f1a7a7e34f666666",
+        "amount": 250,
+        "currency": "USD",
+        "method": "bank_transfer",
+        "status": "failed",
+        "transactionDate": "2025-04-05T08:00:00.000Z",
+        "updatedAt": null,
+        "recepientUrl": "https://payments.example.com/txn/3",
+        "refundAmount": 0,
+        "refundDate": "2025-04-05T00:00:00.000Z",
+        "isRefunded": false
+    },
+    {
+        "booking": "66150b29f1a7a7e34f444444",
+        "user": "66150d01f1a7a7e34f777777",
+        "amount": 1500,
+        "currency": "EUR",
+        "method": "credit_card",
+        "status": "completed",
+        "transactionDate": "2025-04-06T09:15:00.000Z",
+        "updatedAt": "2025-04-06T10:00:00.000Z",
+        "recepientUrl": "https://payments.example.com/txn/4",
+        "refundAmount": 300,
+        "refundDate": "2025-04-07T00:00:00.000Z",
+        "isRefunded": true
+    },
+    {
+        "booking": "66150b29f1a7a7e34f121212",
+        "user": "66150d01f1a7a7e34f141414",
+        "amount": 1200,
+        "currency": "AED",
+        "method": "paypal",
+        "status": "completed",
+        "transactionDate": "2025-04-08T14:30:00.000Z",
+        "updatedAt": "2025-04-08T15:00:00.000Z",
+        "recepientUrl": "https://payments.example.com/txn/5",
+        "refundAmount": 0,
+        "refundDate": "2025-04-08T00:00:00.000Z",
+        "isRefunded": false
+    }
+]

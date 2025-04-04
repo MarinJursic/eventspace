@@ -1,0 +1,134 @@
+[
+    {
+        "_id": "amenities",
+        "values": [
+            {
+                "key": "wifi",
+                "label": "Wi-Fi",
+                "icon": "wifi"
+            },
+            {
+                "key": "parking",
+                "label": "Parking",
+                "icon": "car"
+            },
+            {
+                "key": "air_conditioning",
+                "label": "Air Conditioning",
+                "icon": "snowflake"
+            },
+            {
+                "key": "restroom",
+                "label": "Restroom",
+                "icon": "toilet"
+            },
+            {
+                "key": "wheelchair_accessible",
+                "label": "Wheelchair Accessible",
+                "icon": "wheelchair"
+            }
+        ],
+        "updatedAt": "2025-04-04T10:00:00.000Z"
+    },
+    {
+        "_id": "services",
+        "values": [
+            {
+                "key": "catering",
+                "label": "Catering",
+                "icon": "utensils"
+            },
+            {
+                "key": "dj",
+                "label": "DJ",
+                "icon": "music"
+            },
+            {
+                "key": "security",
+                "label": "Security",
+                "icon": "shield-alt"
+            },
+            {
+                "key": "decoration",
+                "label": "Decoration",
+                "icon": "palette"
+            },
+            {
+                "key": "lighting",
+                "label": "Lighting",
+                "icon": "lightbulb"
+            }
+        ],
+        "updatedAt": "2025-04-04T10:05:00.000Z"
+    },
+    {
+        "_id": "venueCategories",
+        "values": [
+            {
+                "key": "wedding",
+                "label": "Wedding",
+                "icon": "heart"
+            },
+            {
+                "key": "corporate",
+                "label": "Corporate",
+                "icon": "briefcase"
+            },
+            {
+                "key": "concert",
+                "label": "Concert",
+                "icon": "microphone"
+            },
+            {
+                "key": "party",
+                "label": "Party",
+                "icon": "glass-cheers"
+            },
+            {
+                "key": "exhibition",
+                "label": "Exhibition",
+                "icon": "image"
+            }
+        ],
+        "updatedAt": "2025-04-04T10:10:00.000Z"
+    },
+    {
+        "_id": "policyTypes",
+        "values": [
+            {
+                "key": "no_smoking",
+                "label": "No Smoking",
+                "icon": "ban-smoking"
+            },
+            {
+                "key": "noise_limit",
+                "label": "Noise Limit",
+                "icon": "volume-down"
+            },
+            {
+                "key": "damage_deposit",
+                "label": "Damage Deposit",
+                "icon": "money-check-alt"
+            }
+        ],
+        "updatedAt": "2025-04-04T10:15:00.000Z"
+    },
+    {
+        "_id": "priceModels",
+        "values": [
+            {
+                "key": "hour",
+                "label": "Per Hour"
+            },
+            {
+                "key": "day",
+                "label": "Per Day"
+            },
+            {
+                "key": "week",
+                "label": "Per Week"
+            }
+        ],
+        "updatedAt": "2025-04-04T10:20:00.000Z"
+    }
+]

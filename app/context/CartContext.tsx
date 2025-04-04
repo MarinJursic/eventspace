@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useToast } from "../../hooks/useToast";
+import { Venue } from "@/lib/mockVenues";
 
 type ServiceCustomization = {
   id: number;
@@ -23,17 +24,6 @@ export type Service = {
   selectedCustomizations?: ServiceCustomization[];
   selectedDays?: string[]; // Specific days this service is for
   totalPrice?: string;
-};
-
-export type Venue = {
-  id: number;
-  name: string;
-  image: string;
-  location: string;
-  price: string;
-  rating: number;
-  reviewCount: number;
-  isExternal?: boolean; // Flag to indicate external venue
 };
 
 export type CartItem = {
@@ -58,7 +48,6 @@ type CartContextType = {
   selectedDates: string[];
   eventTimeSlot: string;
   isMultiDay: boolean;
-  isExternalVenue: boolean;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -125,15 +114,53 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     selectedDates: string[]
   ) => {
     const externalVenue: Venue = {
-      id: 0, // Special ID for external venues
+      id: "0",
       name: venueName,
-      image:
-        "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2148&q=80",
-      location,
-      price: "N/A",
-      rating: 0,
-      reviewCount: 0,
-      isExternal: true,
+      location: {
+        address: location,
+        city: "Los Angeles",
+        street: "Sunset Blvd",
+        houseNumber: 123,
+        country: "USA",
+        postalCode: 90026
+      },
+      price: {
+        basePrice: 500,
+        model: "day"
+      },
+      reviews: [],
+      seating: {
+        seated: 150,
+        standing: 50
+      },
+      description: "",
+      images: [],
+      amenities: [],
+      policies: {
+        bannedServices: [],
+        listOfPolicies: []
+      },
+      bookedDates: selectedDates.map((date) =>{ return {
+          date: new Date(date),
+          bookingRef: "0"
+        }}),
+      availabilityRules: {
+        blockedWeekdays: []
+      },
+      category: [],
+      type: "",
+      status: "pending",
+      capacity: 200,
+      owner: "0",
+      rating: {
+        average: 0,
+        count: 0
+      },
+      sponsored: {
+        isActive: false,
+        until: new Date(),
+        planType: ""
+      }
     };
 
     setCart({
@@ -235,7 +262,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const isMultiDay = cart ? cart.selectedDates.length > 1 : false;
-  const isExternalVenue = cart?.venue?.isExternal || false;
 
   return (
     <CartContext.Provider
@@ -250,7 +276,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         selectedDates: cart?.selectedDates || [],
         eventTimeSlot: cart?.timeSlot || "",
         isMultiDay,
-        isExternalVenue,
       }}
     >
       {children}

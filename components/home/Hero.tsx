@@ -36,7 +36,7 @@ const Hero: React.FC = () => {
           className="absolute inset-0 pointer-events-none"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')",
+              "url('https://images.unsplash.com/photo-1590448822674-0e86e24ef333?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
             backgroundPosition: "center",
             backgroundSize: "cover",
             opacity: 0.15,

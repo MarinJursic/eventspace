@@ -222,7 +222,7 @@ const ServiceDetail: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-16">
           <AnimatedSection animation="fade-in">
             <Link
               href="/services"
