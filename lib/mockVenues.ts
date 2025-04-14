@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { reviews, Review } from './mockReviews';
+import { reviews, MockReview } from './mockReviews';
 
 export interface Venue {
   id: string;
@@ -17,7 +17,7 @@ export interface Venue {
     basePrice: number;
     model: 'hour' | 'day' | 'week';
   };
-  reviews: Review[];
+  reviews: MockReview[];
   seating: {
     seated: number;
     standing: number;

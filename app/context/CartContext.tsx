@@ -2,37 +2,29 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useToast } from "../../hooks/useToast";
-import { Venue } from "@/lib/mockVenues";
+// Assuming Venue type is correctly imported from its location
+import { Venue } from "@/lib/mockVenues"; // Adjust path if needed
 
-type ServiceCustomization = {
-  id: number;
-  name: string;
-  price: string;
-  default: boolean;
-};
-
+// --- Updated Service type to match data from ServiceDetail ---
 export type Service = {
-  id: number;
+  id: string; // Changed to string to match MockService id
   name: string;
   image: string;
-  category: string;
-  price: string;
-  priceNumeric?: number;
-  perUnit?: string;
-  rating: number;
-  reviewCount: number;
-  selectedCustomizations?: ServiceCustomization[];
-  selectedDays?: string[]; // Specific days this service is for
-  totalPrice?: string;
+  price: number; // Base price (numeric)
+  priceModel: 'hour' | 'day' | 'week'; // Added price model
+  selectedDays: string[]; // Specific days this service is for (can be empty for single day)
+  totalCalculatedPrice: number; // Pre-calculated total price from ServiceDetail
 };
 
+// CartItem uses the updated Service type
 export type CartItem = {
   venue: Venue;
   selectedDates: string[]; // Selected dates for the booking
-  timeSlot: string;
+  timeSlot: string; // Consider if this is always needed or optional
   services: Service[];
 };
 
+// CartContextType updated for string ID in removeService
 type CartContextType = {
   cart: CartItem | null;
   addVenue: (venue: Venue, selectedDates: string[], timeSlot: string) => void;
@@ -41,12 +33,12 @@ type CartContextType = {
     location: string,
     selectedDates: string[]
   ) => void;
-  addService: (service: Service, selectedDays?: string[]) => void;
-  removeService: (serviceId: number) => void;
+  addService: (service: Service) => void; // Simplified signature
+  removeService: (serviceId: string) => void; // Changed serviceId to string
   clearCart: () => void;
   hasVenue: boolean;
   selectedDates: string[];
-  eventTimeSlot: string;
+  eventTimeSlot: string; // Keep for now, maybe adjust based on venue logic
   isMultiDay: boolean;
 };
 
@@ -64,9 +56,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       const savedCart = localStorage.getItem("eventCart");
       if (savedCart) {
         try {
-          setCart(JSON.parse(savedCart));
+          // Add validation/migration logic if needed for old cart structures
+          const parsedCart = JSON.parse(savedCart);
+           // Basic check to see if it looks like a valid cart
+          if (parsedCart && parsedCart.venue && parsedCart.selectedDates) {
+                setCart(parsedCart);
+          } else {
+              console.warn("Invalid cart structure found in localStorage. Clearing.");
+              localStorage.removeItem("eventCart");
+          }
         } catch (e) {
           console.error("Failed to parse cart from localStorage", e);
+          localStorage.removeItem("eventCart"); // Clear invalid data
         }
       }
     }
@@ -83,16 +84,30 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [cart]);
 
+  // addVenue remains mostly the same, ensure Venue type matches
   const addVenue = (
     venue: Venue,
     selectedDates: string[],
     timeSlot: string
   ) => {
+     // If switching venue, decide whether to keep services or clear them
+     const shouldClearServices = cart?.venue?.id !== venue.id; // Clear if venue changes
+     const existingServices = shouldClearServices ? [] : cart?.services || [];
+
+     if (shouldClearServices && (cart?.services?.length ?? 0) > 0) {
+         toast({
+             title: "Venue Changed",
+             description: `Venue updated to ${venue.name}. Previous services removed.`,
+             variant: "default", // Use default or info variant
+         });
+     }
+
+
     setCart({
       venue,
       selectedDates,
       timeSlot,
-      services: cart?.services || [],
+      services: existingServices, // Reset services if venue changed
     });
 
     const dateText =
@@ -103,71 +118,73 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
           })`;
 
     toast({
-      title: "Venue added",
-      description: `${venue.name} has been added to your booking for ${dateText}`,
+      title: "Venue Added",
+      description: `${venue.name} added for ${dateText}.`,
     });
   };
 
+  // addExternalVenue remains mostly the same, ensure Venue structure is correct
   const addExternalVenue = (
     venueName: string,
     location: string,
     selectedDates: string[]
   ) => {
+    // External venue creation logic (ensure it matches Venue type)
     const externalVenue: Venue = {
-      id: "0",
+      id: `external`, // Generate a unique ID for external venues
       name: venueName,
-      location: {
+      location: { // Basic location structure
         address: location,
-        city: "Los Angeles",
-        street: "Sunset Blvd",
-        houseNumber: 123,
-        country: "USA",
-        postalCode: 90026
+        city: "", // May need more detailed inputs in the modal later
+        street: "",
+        houseNumber: 0,
+        country: "",
+        postalCode: 0,
       },
-      price: {
-        basePrice: 500,
-        model: "day"
-      },
+      // Add other required fields with default/placeholder values
+      price: { basePrice: 0, model: 'day' },
       reviews: [],
-      seating: {
-        seated: 150,
-        standing: 50
-      },
-      description: "",
-      images: [],
+      description: "Externally added venue",
+      images: [], // Provide a default placeholder image?
+      policies: undefined, // Keep optional fields undefined or provide defaults
+      bookedDates: [], // May not be relevant for external
+      category: ["external"],
+      type: "External Venue",
+      status: 'active',
+      owner: 'external',
+      rating: { average: 0, count: 0 },
+      sponsored: { isActive: false },
+      // Add any other mandatory fields from Venue type with defaults
       amenities: [],
-      policies: {
-        bannedServices: [],
-        listOfPolicies: []
+      capacity: 0,
+      seating: {
+        seated: 0,
+        standing: 0
       },
-      bookedDates: selectedDates.map((date) =>{ return {
-          date: new Date(date),
-          bookingRef: "0"
-        }}),
       availabilityRules: {
-        blockedWeekdays: []
+        blockedWeekdays: [
+          { weekday: "Sunday", recurrenceRule: "weekly" }
+        ]
       },
-      category: [],
-      type: "",
-      status: "pending",
-      capacity: 200,
-      owner: "0",
-      rating: {
-        average: 0,
-        count: 0
-      },
-      sponsored: {
-        isActive: false,
-        until: new Date(),
-        planType: ""
-      }
     };
+
+     // Clear services if switching from a non-external venue or another external one
+     const shouldClearServices = cart?.venue && !cart.venue.id.startsWith('external-');
+     const existingServices = shouldClearServices ? [] : cart?.services || [];
+      if (shouldClearServices && (cart?.services?.length ?? 0) > 0) {
+          toast({
+              title: "Venue Changed",
+              description: `External venue ${venueName} added. Previous services removed.`,
+              variant: "default",
+          });
+      }
+
 
     setCart({
       venue: externalVenue,
       selectedDates,
-      timeSlot: "Full day", // Default time slot for external venues
-      services: cart?.services || [],
+      timeSlot: "Full day", // Default time slot seems reasonable
+      services: existingServices,
     });
 
     const dateText =
@@ -178,86 +195,83 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
           })`;
 
     toast({
-      title: "External venue added",
-      description: `${venueName} has been added to your booking for ${dateText}`,
+      title: "External Venue Added",
+      description: `${venueName} added for ${dateText}.`,
     });
   };
 
-  const addService = (service: Service, selectedDays?: string[]) => {
-    if (!cart) {
+  // --- Updated addService ---
+  const addService = (service: Service) => { // Parameter now expects the new Service type
+    if (!cart || !cart.venue) { // Ensure cart and venue exist
       toast({
         title: "No venue selected",
-        description: "Please select a venue first before adding services",
+        description: "Please select a venue first before adding services.",
         variant: "destructive",
       });
       return;
     }
 
-    // Check if the service is already added
+    // Check if the service (by string ID) is already added
     if (cart.services.some((s) => s.id === service.id)) {
       toast({
         title: "Service already added",
-        description: `${service.name} is already in your booking`,
-        variant: "destructive",
+        description: `${service.name} is already in your booking.`,
+        // Consider allowing updates instead of just showing an error?
+        // variant: "destructive", // Maybe use 'default' or 'info' instead
       });
-      return;
+      return; // Stop if service already exists
     }
 
-    const serviceDays = selectedDays || [...cart.selectedDates];
-
-    const serviceWithDays = {
-      ...service,
-      selectedDays: serviceDays,
-      totalPrice: calculateServiceTotalPrice(service, serviceDays.length),
-    };
+    // The 'service' object passed in already contains the correct:
+    // - id, name, image, price, priceModel, selectedDays, totalCalculatedPrice
+    // No need to recalculate price or manually set selectedDays here.
 
     setCart({
       ...cart,
-      services: [...cart.services, serviceWithDays],
+      services: [...cart.services, service], // Add the service object directly
     });
 
-    const daysText =
-      serviceDays.length === 1 ? "1 day" : `${serviceDays.length} days`;
+    // Determine days text based on the service's selectedDays
+    const daysCount = service.selectedDays.length;
+    const daysText = daysCount === 0 // Handle single-day case (empty selectedDays array)
+        ? "your event date"
+        : daysCount === 1
+        ? `1 selected day (${service.selectedDays[0]})`
+        : `${daysCount} selected days`;
 
     toast({
-      title: "Service added",
-      description: `${service.name} has been added to your booking for ${daysText}`,
+      title: "Service Added",
+      description: `${service.name} added to your booking for ${daysText}.`,
     });
   };
 
-  // Helper: calculate total price for a service
-  const calculateServiceTotalPrice = (
-    service: Service,
-    numberOfDays: number
-  ): string => {
-    if (service.priceNumeric) {
-      const total = service.priceNumeric * numberOfDays;
-      return `$${total.toLocaleString()}`;
-    }
-    return `${service.price} (per day)`;
-  };
+  // Helper removed - no longer needed
+  // const calculateServiceTotalPrice = (...) => { ... };
 
-  const removeService = (serviceId: number) => {
+  // --- Updated removeService ---
+  const removeService = (serviceId: string) => { // serviceId is now string
     if (!cart) return;
-    const service = cart.services.find((s) => s.id === serviceId);
+    const service = cart.services.find((s) => s.id === serviceId); // Find by string ID
     setCart({
       ...cart,
-      services: cart.services.filter((s) => s.id !== serviceId),
+      services: cart.services.filter((s) => s.id !== serviceId), // Filter by string ID
     });
 
     if (service) {
       toast({
         title: "Service removed",
-        description: `${service.name} has been removed from your booking`,
+        description: `${service.name} has been removed from your booking.`,
       });
     }
   };
 
   const clearCart = () => {
     setCart(null);
+    // Optional: Clear localStorage explicitly if needed, though useEffect handles it
+    // if (typeof window !== "undefined") { localStorage.removeItem("eventCart"); }
     toast({
-      title: "Booking cleared",
-      description: "Your booking has been cleared",
+      title: "Booking Cleared",
+      description: "Your current booking details have been cleared.",
     });
   };
 
@@ -274,7 +288,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         clearCart,
         hasVenue: !!cart?.venue,
         selectedDates: cart?.selectedDates || [],
-        eventTimeSlot: cart?.timeSlot || "",
+        eventTimeSlot: cart?.timeSlot || "", // Ensure this is handled appropriately
         isMultiDay,
       }}
     >

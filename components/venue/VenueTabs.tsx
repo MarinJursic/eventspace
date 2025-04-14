@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "../ui/separator";
 import { MapPin } from "lucide-react";
 import { Button } from "../ui/button";
-import { Review, reviews } from "@/lib/mockReviews";
+import { MockReview, reviews } from "@/lib/mockReviews";
 
 interface Amenity {
   name: string;
@@ -23,7 +23,7 @@ interface VenueTabsProps {
   longDescription: string;
   address: string;
   amenities: string[];
-  reviews: Review[];
+  reviews: MockReview[];
   policies: { name: string; description: string }[];
 }
 
@@ -133,12 +133,12 @@ const VenueTabs: React.FC<VenueTabsProps> = ({
             policies.map((policy, i) => 
             <div key={i}>
               <div>
-                <h4 className="font-medium mb-1">{policy.name}</h4>
+                <h4 className="font-medium mb-1 text-sm">{policy.name}</h4>
                 <p className="text-sm text-muted-foreground">
                   {policy.description}
                 </p>
               </div>
-              <Separator />
+              <Separator className="my-4" />
             </div>)
           }
         </div>
