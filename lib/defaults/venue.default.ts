@@ -1,0 +1,47 @@
+import { IVenueClientState } from "@/types/venue.types";
+
+export const defaultVenueClientState: IVenueClientState = {
+    name: '', 
+    location: {
+        address: '', 
+        city: '', 
+        street: '', 
+        houseNumber: 0,
+        country: '', 
+        postalCode: 0,
+    },
+    price: {
+        basePrice: 0,
+        model: 'day', 
+    },
+    reviews: [], 
+    seating: {
+        seated: 0, 
+        standing: 0, 
+    },
+    description: '',
+    images: [], 
+    amenities: [],
+    services: [], 
+    policies: {
+        bannedServices: [],
+        listOfPolicies: [],
+    },
+    bookedDates: [], 
+    availabilityRules: {
+        blockedWeekdays: [], 
+    },
+    category: ' ',
+    status: 'pending',
+    capacity: 0,
+    owner: '',
+    rating: {
+        average: 0,
+        count: 0,
+    },
+    sponsored: {
+        isActive: false,
+        until: undefined,
+        planType: undefined,
+    },
+};

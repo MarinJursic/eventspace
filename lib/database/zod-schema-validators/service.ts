@@ -54,7 +54,7 @@ export const createServiceSchema = z.object({
             })
         ).default([]),
     }),
-    category: z.array(z.string()).default([]),
+    category: z.string(),
     type: z.string().optional(),
     status: z.enum([
         "pending",

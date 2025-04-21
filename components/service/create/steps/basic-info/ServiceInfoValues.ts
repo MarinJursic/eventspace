@@ -1,0 +1,18 @@
+export const serviceTypes = [
+    "Conference Hall",
+    "Wedding Venue",
+    "Exhibition Space",
+    "Concert Hall",
+    "Corporate Event Space",
+    "Banquet Hall",
+    "Studio",
+    "Private Dining Room",
+    "Rooftop",
+    "Outdoor Space",
+    "Theater",
+    "Meeting Room",
+    "Coworking Space",
+    "Hotel Ballroom",
+    "Party Venue",
+    "Other",
+];

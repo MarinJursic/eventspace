@@ -3,7 +3,7 @@ import { z } from "zod";
 export const createVenueSchema = z.object({
     name: z.string().min(1, "Name is required"),
     location: z.object({
-        address: z.string().min(1, "Address is required"),
+        address: z.string(),
         city: z.string().min(1, "City is required"),
         street: z.string().min(1, "Street is required"),
         houseNumber: z.number({ invalid_type_error: "House number must be a number" }),
@@ -54,7 +54,7 @@ export const createVenueSchema = z.object({
             })
         ).default([]),
     }).optional(),
-    category: z.array(z.string()).default([]),
+    category: z.string().min(1, "Category is required"),
     type: z.string().optional(),
     status: z.enum(["pending", "approved", "rejected", "softDeleted", "deleted", "active", "inactive"]).default("pending"),
     capacity: z.number(),

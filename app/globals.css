@@ -170,3 +170,11 @@
     @apply opacity-0 transition-opacity duration-300;
   }
 }
+
+body{
+  overflow-y: auto !important;
+}
+
+::-webkit-scrollbar{
+  display: none;
+}
