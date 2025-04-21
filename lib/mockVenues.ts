@@ -108,7 +108,7 @@ export const venues: Venue[] = [
       ]
     },
     bookedDates: [
-      { date: new Date("2025-06-15"), bookingRef: uuidv4() }
+      { date: new Date("2025-04-28"), bookingRef: uuidv4() }
     ],
     availabilityRules: {
       blockedWeekdays: [
