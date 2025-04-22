@@ -16,10 +16,10 @@ import { mockServices, findServiceById, MockService } from "@/lib/mockServices";
 import { findServiceReviewsByServiceIds, MockReview } from "@/lib/mockReviews";
 
 // Import the new components
-import ServiceImageGallery from "@/components/service/ServiceImageGallery"; // Adjust path
-import ServiceHeaderInfo from "@/components/service/ServiceHeaderInfo"; // Adjust path
-import ServiceTabs from "@/components/service/ServiceTabs"; // Adjust path
-import ServiceBookingSidebar from "@/components/service/ServiceBookingSidebar"; // Adjust path
+import ServiceImageGallery from "@/components/service/details/ServiceImageGallery"; // Adjust path
+import ServiceHeaderInfo from "@/components/service/details/ServiceHeaderInfo"; // Adjust path
+import ServiceTabs from "@/components/service/details/ServiceTabs"; // Adjust path
+import ServiceBookingSidebar from "@/components/service/details/ServiceBookingSidebar"; // Adjust path
 
 const ServiceDetail: React.FC = () => {
   const params = useParams();
@@ -87,10 +87,10 @@ const ServiceDetail: React.FC = () => {
   // --- Handlers ---
   const handleAddToBooking = useCallback(() => {
     if (!service || !hasVenue || (isMultiDay && !isDaySelectionValid)) {
-        // Add specific toasts if needed
-         if (!hasVenue) toast({ title: "Venue Required", description: "Please select or add a venue first.", variant: "destructive" });
-         else if (isMultiDay && !isDaySelectionValid) toast({ title: "Days Required", description: "Please select the day(s) this service is needed.", variant: "destructive" });
-        return;
+      // Add specific toasts if needed
+      if (!hasVenue) toast({ title: "Venue Required", description: "Please select or add a venue first.", variant: "destructive" });
+      else if (isMultiDay && !isDaySelectionValid) toast({ title: "Days Required", description: "Please select the day(s) this service is needed.", variant: "destructive" });
+      return;
     }
     const serviceToAdd = {
       id: service.id,
@@ -127,12 +127,12 @@ const ServiceDetail: React.FC = () => {
 
   // --- Render Logic ---
   if (service === undefined) {
-    return ( <div className="flex items-center justify-center min-h-[60vh]"> <p>Loading service details...</p> </div> );
+    return (<div className="flex items-center justify-center min-h-[60vh]"> <p>Loading service details...</p> </div>);
   }
   if (service === null) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-         <AlertCircle className="w-12 h-12 text-destructive mb-4" />
+        <AlertCircle className="w-12 h-12 text-destructive mb-4" />
         <h2 className="text-2xl font-semibold mb-2">Service Not Found</h2>
         <p className="text-muted-foreground mb-6">The service ID might be incorrect or the service removed.</p>
         <Button asChild variant="outline"><Link href="/services"><ArrowLeft className="mr-2 h-4 w-4" />Back to Services</Link></Button>
