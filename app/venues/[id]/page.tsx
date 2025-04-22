@@ -13,18 +13,8 @@ import DatePicker from "@/components/venue/DateTimePickerModal";
 import ExternalVenueModal from "@/components/venue/ExternalVenueModal";
 import { useToast } from "@/hooks/useToast";
 import { useCart } from "@/app/context/CartContext";
-import { venues } from "@/lib/mockVenues"; 
-
-const availableDates = [
-  { date: "2025-04-15", slots: ["Morning", "Evening"] },
-  { date: "2025-04-16", slots: ["Morning", "Afternoon", "Evening"] },
-  { date: "2025-04-17", slots: ["Afternoon"] },
-  { date: "2025-04-18", slots: ["Morning", "Evening"] },
-  { date: "2025-04-19", slots: ["Morning", "Afternoon", "Evening"] },
-  { date: "2025-04-20", slots: ["Morning", "Evening"] },
-  { date: "2025-04-21", slots: ["Afternoon", "Evening"] },
-  { date: "2025-04-22", slots: ["Morning", "Afternoon"] },
-];
+import { venues, Venue } from "@/lib/mockVenues"; 
+import { Button } from "@/components/ui/button";
 
 const VenueDetailPage: React.FC = () => {
   const { id } = useParams();
@@ -32,24 +22,49 @@ const VenueDetailPage: React.FC = () => {
   const { toast } = useToast();
   const { addVenue } = useCart();
 
-  const [venue, setVenue] = useState(() => venues.find((v) => v.id === id) || null);
-  const [mainImage, setMainImage] = useState<string>(venue?.images[0].url || "");
+  // Find venue - Use useState with initial function for performance
+  const [venue, setVenue] = useState<Venue | null>(() => {
+      // Find the venue based on the ID from params
+      const venueId = typeof id === 'string' ? id : undefined;
+      return venueId ? venues.find((v) => v.id === venueId) ?? null : null;
+  });
+
+  const [mainImage, setMainImage] = useState<string>("");
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  const [isExternalVenueModalOpen, setIsExternalVenueModalOpen] = useState(false);
+  const [isExternalVenueModalOpen, setIsExternalVenueModalOpen] = useState(false); // Keep this if needed
   const [selectedVenueDates, setSelectedVenueDates] = useState<string[]>([]);
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>("");
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>("Full day"); // Default to Full day
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+      // Update venue if ID changes (e.g., navigating between venue pages)
+      const venueId = typeof id === 'string' ? id : undefined;
+      const foundVenue = venueId ? venues.find((v) => v.id === venueId) ?? null : null;
+      setVenue(foundVenue);
+
+      // Reset selections if venue changes
+      setSelectedVenueDates([]);
+      setMainImage(foundVenue?.images?.[0]?.url || "");
+
+      window.scrollTo(0, 0);
+  }, [id]); // Depend on id
+
+  // Effect to set initial main image when venue loads
+  useEffect(() => {
+      if (venue && venue.images.length > 0 && !mainImage) {
+          setMainImage(venue.images[0].url);
+      }
+  }, [venue, mainImage]);
+
 
   const handleDateTimeSelection = (selectedDates: string[], timeSlot: string) => {
     if (!venue) return;
-    setSelectedVenueDates(selectedDates);
-    setSelectedTimeSlot(timeSlot);
+    // Sort dates before setting state
+    const sortedDates = selectedDates.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+    setSelectedVenueDates(sortedDates);
+    setSelectedTimeSlot(timeSlot); // Keep this, even if it's always "Full day" for now
     toast({
-      title: "Dates selected",
-      description: `${selectedDates.length} day(s) selected for ${venue.name}`,
+      title: "Dates Updated",
+      description: `${sortedDates.length} day(s) selected for ${venue.name}`,
     });
   };
 
@@ -57,23 +72,45 @@ const VenueDetailPage: React.FC = () => {
     if (!venue || selectedVenueDates.length === 0) {
       toast({
         title: "No dates selected",
-        description: "Please select dates for your booking",
+        description: "Please select dates using the 'Check Availability' button.",
         variant: "destructive",
       });
       return;
     }
 
-    addVenue(venue, selectedVenueDates, selectedTimeSlot);
+    // Sort dates just in case before adding to cart
+    const sortedDates = selectedVenueDates.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
-    toast({
-      title: "Venue booked",
-      description: `${venue.name} has been added to your booking for ${selectedVenueDates.length} day(s)`,
-    });
+    addVenue(venue, sortedDates, selectedTimeSlot); // addVenue should handle the Venue object
 
-    router.push("/cart");
+    // No need for a separate toast here, addVenue in CartContext handles it
+    // toast({ ... });
+
+    router.push("/services"); // Navigate to services page after adding venue
   };
 
-  if (!venue) return <p className="text-center text-gray-500">Venue not found</p>;
+    // --- External Venue Modal Confirmation ---
+    // We need the confirmation handler for the ExternalVenueModal
+    const handleExternalVenueConfirm = (name: string, location: string, dates: string[]) => {
+        // You might want to use the addExternalVenue function from useCart here
+        console.log("External Venue Confirmed:", { name, location, dates });
+        toast({ title: "External Venue Added (Placeholder)", description: `${name} details noted.` });
+        setIsExternalVenueModalOpen(false);
+        // Potentially call addExternalVenue from context here
+        // addExternalVenue(name, location, dates); // Uncomment if context handles this
+        // router.push('/services'); // Navigate after adding external venue
+    };
+
+
+  if (!venue) return (
+       <div className="flex items-center justify-center min-h-[60vh]">
+           <p className="text-center text-gray-500">Venue not found or ID is invalid.</p>
+           {/* Optional: Add a back button */}
+           <Button asChild variant="outline" className="mt-4">
+             <Link href="/venues"><ArrowLeft className="mr-2 h-4 w-4" />Back to Venues</Link>
+           </Button>
+       </div>
+  );
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -140,7 +177,9 @@ const VenueDetailPage: React.FC = () => {
         isOpen={isDatePickerOpen}
         onClose={() => setIsDatePickerOpen(false)}
         onSelect={handleDateTimeSelection}
-        availableDates={availableDates}
+        // Pass bookedDates and availabilityRules from the specific venue
+        bookedDates={venue.bookedDates || []}
+        availabilityRules={venue.availabilityRules} // Pass the whole rules object
         initialSelectedDates={selectedVenueDates}
       />
 

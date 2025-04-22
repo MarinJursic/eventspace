@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { reviews, Review } from './mockReviews';
+import { reviews, MockReview } from './mockReviews';
 
 export interface Venue {
   id: string;
@@ -17,7 +17,7 @@ export interface Venue {
     basePrice: number;
     model: 'hour' | 'day' | 'week';
   };
-  reviews: Review[];
+  reviews: MockReview[];
   seating: {
     seated: number;
     standing: number;
@@ -108,7 +108,7 @@ export const venues: Venue[] = [
       ]
     },
     bookedDates: [
-      { date: new Date("2025-06-15"), bookingRef: uuidv4() }
+      { date: new Date("2025-04-28"), bookingRef: uuidv4() }
     ],
     availabilityRules: {
       blockedWeekdays: [

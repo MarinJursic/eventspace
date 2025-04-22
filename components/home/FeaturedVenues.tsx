@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import VenueCard from "../ui/VenueCard";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 import {venues} from "@/lib/mockVenues"
+import Link from "next/link";
 
 const FeaturedVenues: React.FC = () => {
   return (
@@ -52,7 +53,10 @@ const FeaturedVenues: React.FC = () => {
           className="mt-12 text-center"
         >
           <Button size="lg" variant="outline" className="rounded-xl">
-            Explore All Venues
+             {/* Link the button to the main venues page */}
+             <Link href="/venues">
+                Browse All Venues
+            </Link>
           </Button>
         </AnimatedSection>
       </div>
