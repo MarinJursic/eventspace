@@ -1,6 +1,7 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-export interface IService extends Document {
+export interface IService {
+    _id?: string;
     name: string;
     location: {
         address: string;
@@ -16,7 +17,7 @@ export interface IService extends Document {
     };
     reviews: mongoose.Types.ObjectId[];
     description?: string;
-    features: string[];
+    features: mongoose.Types.ObjectId[];
     images: {
         url: string;
         alt: string;
@@ -53,6 +54,8 @@ export interface IService extends Document {
         until?: Date;
         planType?: string;
     };
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 const ServiceSchema: Schema<IService> = new Schema({

@@ -19,6 +19,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/useToast";
+import { createServiceRoute, createVenueRoute } from "@/lib/constants/route.constants";
 
 // Mock data for venues
 const mockVenues = [
@@ -157,12 +158,12 @@ const VendorVenues: React.FC = () => {
           Manage and track all your listings
         </p>
         {activeTab === "venues" ? (
-          <Button onClick={() => setIsAddVenueOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Add New Venue
+          <Button onClick={() => router.push(createVenueRoute.value)}>
+            <Plus className="mr-2 h-4 w-4" /> Create Venue
           </Button>
         ) : (
-          <Button onClick={() => setIsAddServiceOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Add New Service
+            <Button onClick={() => router.push(createServiceRoute.value)}>
+            <Plus className="mr-2 h-4 w-4" /> Create Service
           </Button>
         )}
       </div>

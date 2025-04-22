@@ -1,6 +1,7 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import { Types, Schema, models, model } from 'mongoose';
 
-export interface IVenue extends Document {
+export interface IVenue {
+    _id?: string;
     name: string;
     location: {
         address: string;
@@ -14,7 +15,7 @@ export interface IVenue extends Document {
         basePrice: number,
         model: string;
     };
-    reviews: mongoose.Types.ObjectId[];
+    reviews: Types.ObjectId[];
     seating?: {
         seated: number;
         standing: number;
@@ -27,8 +28,8 @@ export interface IVenue extends Document {
         height?: number;
         caption: string;
     }[];
-    amenities?: mongoose.Types.ObjectId[];
-    services: mongoose.Types.ObjectId[];
+    amenities?: Types.ObjectId[];
+    services: Types.ObjectId[];
     policies?: {
         bannedServices: string[];
         listOfPolicies: {
@@ -38,7 +39,7 @@ export interface IVenue extends Document {
     };
     bookedDates: {
         date: Date;
-        bookingRef?: mongoose.Types.ObjectId;
+        bookingRef?: Types.ObjectId;
     }[];
     availabilityRules?: {
         blockedWeekdays: {
@@ -46,11 +47,11 @@ export interface IVenue extends Document {
             recurrenceRule: string;
         }[];
     };
-    category: string;
+    category: Types.ObjectId;
     type?: string;
     status: 'pending' | 'approved' | 'rejected' | 'softDeleted' | 'deleted' | 'active' | 'inactive';
     capacity: number;
-    owner: mongoose.Types.ObjectId;
+    owner: Types.ObjectId;
     rating: {
         average: number;
         count: number;
@@ -60,6 +61,8 @@ export interface IVenue extends Document {
         until?: Date;
         planType?: string;
     };
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 const VenueSchema: Schema<IVenue> = new Schema({
@@ -76,7 +79,7 @@ const VenueSchema: Schema<IVenue> = new Schema({
         basePrice: { type: Number, required: true },
         model: { type: String, enum: ['hour', 'day', 'week'], default: 'day' }
     },
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
+    reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
     seating: {
         seated: { type: Number, default: 0 },
         standing: { type: Number, default: 0 }
@@ -89,10 +92,10 @@ const VenueSchema: Schema<IVenue> = new Schema({
         height: { type: Number },
         caption: { type: String, required: true }
     }],
-    amenities:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'Enum' }],
-    services: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Enum' }],
+    amenities:  [{ type: Schema.Types.ObjectId, ref: 'Enum' }],
+    services: [{ type: Schema.Types.ObjectId, ref: 'Enum' }],
     policies: {
-        bannedServices: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Enum' }],
+        bannedServices: [{ type: Schema.Types.ObjectId, ref: 'Enum' }],
         listOfPolicies: [{
             name: { type: String, required: true },
             description: { type: String, required: true }
@@ -100,7 +103,7 @@ const VenueSchema: Schema<IVenue> = new Schema({
     },
     bookedDates: [{
         date: { type: Date, required: true },
-        bookingRef: { type: mongoose.Schema.Types.ObjectId, ref: 'Booking' }
+        bookingRef: { type: Schema.Types.ObjectId, ref: 'Booking' }
     }],
     availabilityRules: {
         blockedWeekdays: [{
@@ -108,7 +111,7 @@ const VenueSchema: Schema<IVenue> = new Schema({
             recurrenceRule: { type: String,enum: ['weekly', 'biweekly', 'monthly'], required: true }
         }]
     },
-    category: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Enum' }],
+    category: [{ type: Schema.Types.ObjectId, ref: 'Enum' }],
     type: { type: String },
     status: {
         type: String,
@@ -116,7 +119,7 @@ const VenueSchema: Schema<IVenue> = new Schema({
         default: 'pending'
     },
     capacity: { type: Number },
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    owner: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     rating: {
         average: { type: Number, min: 0, max: 5, default: 0 },
         count: { type: Number, default: 0 }
@@ -128,5 +131,5 @@ const VenueSchema: Schema<IVenue> = new Schema({
     }
 }, { timestamps: true });
 
-const Venue = mongoose.models.Venue || mongoose.model<IVenue>('Venue', VenueSchema);
+const Venue = models.Venue || model<IVenue>('Venue', VenueSchema);
 export default Venue;

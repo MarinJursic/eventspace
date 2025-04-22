@@ -3,10 +3,16 @@ import User from "@/lib/database/schemas/user";
 import { createUserSchema } from "@/lib/database/zod-schema-validators/user";
 import connectToDatabase from "@/lib/database/mongodb";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
+        const email = req.nextUrl.searchParams.get("email");
         await connectToDatabase();
-        const users = await User.find();
+        let users;
+        if(email){
+            users = await User.findOne({email: email});
+        }else{
+            users = await User.find();
+        }
         return NextResponse.json({ data: users }, { status: 200 });
     } catch (error) {
         console.error("GET /users error:", error);

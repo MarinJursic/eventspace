@@ -18,11 +18,12 @@ export async function POST(req: NextRequest) {
         const parsed = createServiceSchema.safeParse(body);
 
         if (!parsed.success) {
+            console.error(parsed.error)
             return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
         }
 
         const newService = await Service.create(parsed.data);
-        return NextResponse.json({ message: "Service created", data: newService }, { status: 201 });
+        return NextResponse.json({ message: "Service created", data: newService, status: 201 }, { status: 201 });
     } catch (error) {
         console.error("POST /services error:", error);
         return NextResponse.json({ error: "Failed to create service" }, { status: 500 });
