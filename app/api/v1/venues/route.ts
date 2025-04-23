@@ -20,11 +20,12 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const parsed = createVenueSchema.safeParse(body);
         if (!parsed.success) {
-            console.log(parsed.error);
             return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
         }
+        console.log("aaaa")
 
         const validatedData = parsed.data;
+        console.log(validatedData)
         const newVenue = await Venue.create(validatedData);
 
         return NextResponse.json({ message: "Venue created", data: newVenue, status: 201 }, { status: 201 });

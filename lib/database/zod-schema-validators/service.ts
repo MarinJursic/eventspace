@@ -3,16 +3,14 @@ import { z } from "zod";
 export const createServiceSchema = z.object({
     name: z.string().min(1, "Name is required"),
     location: z.object({
-        address: z.string().min(1, "Address is required"),
+        address: z.string(),
         city: z.string().min(1, "City is required"),
         street: z.string().min(1, "Street is required"),
-        houseNumber: z.number({
-            invalid_type_error: "House number must be a number",
-        }),
+        houseNumber: z.string().min(1, "House number is required"),
         country: z.string().min(1, "Country is required"),
-        postalCode: z.number({
-            invalid_type_error: "Postal code must be a number",
-        }),
+        postalCode: z.string().min(1, "Postal code is required"),
+        lat: z.number().optional(),
+        lng: z.number().optional(),
     }),
     price: z.object({
         basePrice: z.number({

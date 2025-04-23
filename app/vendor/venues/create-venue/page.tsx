@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, Save } from 'lucide-react';
@@ -63,8 +63,6 @@ const CreateVenue: React.FC = () => {
 
             const venueData: IVenue = mapClientStateToVenueData(venueWithAdditionalValues);
             const venueCreationResult = await createVenue(venueData);
-
-            console.log(venueCreationResult)
 
             if(venueCreationResult){
                 toast({

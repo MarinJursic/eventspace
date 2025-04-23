@@ -1,10 +1,12 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin } from 'lucide-react';
 import { IVenueClientState } from '@/types/venue.types';
 import { countries } from './VenueLocationValues';
+import VenueMap from './VenueMap';
 
 export default function LocationStep(
     { venue, setVenue }
@@ -24,13 +26,8 @@ export default function LocationStep(
         <div className="space-y-6">
             <h1 className='font-bold text-3xl pb-2'>Location</h1>
             
-            <div className="p-6 border rounded-lg bg-gray-50 flex items-center justify-center">
-                <div className="text-center">
-                    <MapPin className="mx-auto h-10 w-10 text-muted-foreground" />
-                    <p className="mt-2 text-sm text-muted-foreground">
-                        Map preview will be available soon
-                    </p>
-                </div>
+            <div className='w-full h-64 overflow-hidden rounded-md border-gray-300'>
+                <VenueMap venue={venue} setVenue={setVenue}/>
             </div>
 
             <div className="space-y-4">
@@ -48,8 +45,8 @@ export default function LocationStep(
                         <Label htmlFor="houseNumber" className="text-base">
                             House Number <span className="text-red-500">*</span>
                         </Label>
-                        <Input id="houseNumber" type='number' placeholder="House number"
-                            onChange={(e) => handleLocationChange('houseNumber', parseInt(e.target.value))} className="mt-1" required
+                        <Input id="houseNumber" type='string' placeholder="House number" value={venue.location.houseNumber}
+                            onChange={(e) => handleLocationChange('houseNumber', e.target.value)} className="mt-1" required
                         />
                     </div>
 
@@ -57,8 +54,8 @@ export default function LocationStep(
                         <Label htmlFor="postalCode" className="text-base">
                             Postal Code <span className="text-red-500">*</span>
                         </Label>
-                        <Input id="postalCode" type='number' placeholder="Postal code"
-                            onChange={(e) => handleLocationChange('postalCode', parseInt(e.target.value))} className="mt-1" required
+                        <Input id="postalCode" type='text' placeholder="Postal code" value={venue.location.postalCode}
+                            onChange={(e) => handleLocationChange('postalCode', e.target.value)} className="mt-1" required
                         />
                     </div>
                 </div>

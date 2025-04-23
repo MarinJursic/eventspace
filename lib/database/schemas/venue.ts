@@ -7,9 +7,11 @@ export interface IVenue {
         address: string;
         city: string;
         street: string;
-        houseNumber: number;
+        houseNumber: string;
         country: string;
-        postalCode: number;
+        postalCode: string;
+        lat?: number;
+        lng?: number;
     };
     price: {
         basePrice: number,
@@ -71,9 +73,11 @@ const VenueSchema: Schema<IVenue> = new Schema({
         address: { type: String, required: true },
         city: { type: String, required: true },
         street: { type: String, required: true },
-        houseNumber: { type: Number, required: true },
+        houseNumber: { type: String, required: true },
         country: { type: String, required: true },
-        postalCode: { type: Number, required: true },
+        postalCode: { type: String, required: true },
+        lat: { type: Number, required: false },
+        lng: { type: Number, required: false },
     },
     price: {
         basePrice: { type: Number, required: true },

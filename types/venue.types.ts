@@ -5,9 +5,11 @@ export interface IVenueClientState {
         address: string;
         city: string;
         street: string;
-        houseNumber: number;
+        houseNumber: string;
         country: string;
-        postalCode: number;
+        postalCode: string;
+        lat?: number;
+        lng?: number;
     };
     price: {
         basePrice: number,
