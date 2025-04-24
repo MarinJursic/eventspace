@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from 'mongoose';
+import mongoose, { Mongoose } from "mongoose";
 
 const MONGODB_URI: string | undefined = process.env.MONGODB_URI;
 
@@ -10,10 +10,10 @@ export default async function connectToDatabase(): Promise<Mongoose> {
     const mongooseClient: Mongoose = await mongoose.connect(MONGODB_URI, {
       maxPoolSize: 10,
     });
-    console.error("Connected to MongoDB");
+    console.log("Connected to MongoDB");
     return mongooseClient;
-  } catch (error){
+  } catch (error) {
     console.error("MongoDB connection error: ", error);
-    throw new Error(error as string)
+    throw new Error(error as string);
   }
 }
