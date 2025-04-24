@@ -10,10 +10,6 @@ Evidencija booking-a: Postavljanje modela za booking (rezervacije) kako bi se us
 
 Slike i fileovi - treba dodat storage za to, cloudinary moja preporuka al ak se nade jos nes bolje recite. - Marin
 
-Landing page search funkcionalnost - Brkic
-
-Filter funkcionalnost i fixevi - na /services - Brkic
-
 Booking system i cart context - pobosljati ako se more viditi kako trenutno sve stoji - Luka
 
 UI popraviti - di god se nadu greske to risavati - Svi
@@ -29,11 +25,3 @@ Blokirati stvari ako nisi sign inan - tipa booking - Marin
 Popravit typescript errore - SVI
 
 Optimizirat kod - splittat sve hookove napravit typeove performance poboljsat etc etc sve znas kume - SVI
-
----------------NAKON----------------------
-
-Customer Dashboard napraviti - Brkic
-
-Vendor Dashboard napraviti - Marin 
-
-Admin Dashboard napraviti
