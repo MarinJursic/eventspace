@@ -11,6 +11,7 @@ import {
   MapPin,
   Plus,
   Trash2,
+  Building, // Added for recommended section
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -18,6 +19,8 @@ import { useCart, Service as CartServiceType } from "@/app/context/CartContext";
 import { useToast } from "@/hooks/useToast";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 import { mockServices } from "@/lib/mockServices"; // Assuming you still use this for recommendations
+import ServiceCard from "@/components/ui/ServiceCard"; // Added for recommended section
+import { Badge } from "@/components/ui/badge"; // Added for recommended section
 
 // Stripe imports
 import { loadStripe, StripeError } from "@stripe/stripe-js";
@@ -46,37 +49,47 @@ const formatDisplayPrice = (
   }
 };
 
-// Recommended services data (adjust as needed)
+// Recommended services data (adjust as needed or fetch dynamically)
+// Ensure IDs match actual service IDs if possible
 const recommendedServicesData = [
   {
-    id: mockServices[2]?.id || "rec-101",
-    name: "Gourmet Gatherings Catering",
-    image: mockServices[2]?.images[0]?.url || "",
-    category: "Catering",
+    id: mockServices[2]?.id || "rec-101", // Use actual ID or fallback
+    name: mockServices[2]?.name || "Gourmet Gatherings Catering",
+    image: mockServices[2]?.images[0]?.url || "https://via.placeholder.com/300x200?text=Catering",
+    category: mockServices[2]?.type || "Catering",
     price: formatDisplayPrice(
-      mockServices[2]?.price.basePrice || 1500,
+      mockServices[2]?.price.basePrice || 95,
       mockServices[2]?.price.model
     ),
+    rating: mockServices[2]?.rating.average || 4.6,
+    reviewCount: mockServices[2]?.rating.count || 115,
+    sponsored: mockServices[2]?.sponsored.isActive || false,
   },
   {
     id: mockServices[3]?.id || "rec-102",
-    name: "Rhythm Revolution DJ Services",
-    image: mockServices[3]?.images[0]?.url || "",
-    category: "Entertainment",
+    name: mockServices[3]?.name || "Rhythm Revolution DJ Services",
+    image: mockServices[3]?.images[0]?.url || "https://via.placeholder.com/300x200?text=DJ",
+    category: mockServices[3]?.type || "Entertainment",
     price: formatDisplayPrice(
-      mockServices[3]?.price.basePrice || 800,
+      mockServices[3]?.price.basePrice || 1200,
       mockServices[3]?.price.model
     ),
+     rating: mockServices[3]?.rating.average || 4.8,
+    reviewCount: mockServices[3]?.rating.count || 68,
+    sponsored: mockServices[3]?.sponsored.isActive || false,
   },
   {
     id: mockServices[0]?.id || "rec-103",
-    name: "Ethereal Blooms Floral Design",
-    image: mockServices[0]?.images[0]?.url || "",
-    category: "Decoration",
+    name: mockServices[0]?.name || "Ethereal Blooms Floral Design",
+    image: mockServices[0]?.images[0]?.url || "https://via.placeholder.com/300x200?text=Florist",
+    category: mockServices[0]?.type || "Decoration",
     price: formatDisplayPrice(
-      mockServices[0]?.price.basePrice || 1200,
+      mockServices[0]?.price.basePrice || 1500,
       mockServices[0]?.price.model
     ),
+    rating: mockServices[0]?.rating.average || 4.9,
+    reviewCount: mockServices[0]?.rating.count || 55,
+    sponsored: mockServices[0]?.sponsored.isActive || false,
   },
 ];
 
@@ -131,7 +144,7 @@ const Cart: React.FC = () => {
         })`,
         price: venuePrice, // Send the calculated TOTAL price for the venue duration
         quantity: 1,
-        image: cart.venue.images?.[0]?.url || undefined,
+        image: cart.venue.images?.[0]?.url || undefined, // Send the first venue image URL
       });
     }
 
@@ -145,7 +158,7 @@ const Cart: React.FC = () => {
           })`,
           price: service.totalCalculatedPrice,
           quantity: 1,
-          image: service.image || undefined,
+          image: service.image || undefined, // Send the service image URL
         });
       }
     });
@@ -208,8 +221,6 @@ const Cart: React.FC = () => {
       });
       setIsCheckingOut(false); // Reset loading state on failure
     }
-    // Removed the finally block as the state should only be reset on error here,
-    // successful redirect means the component might unmount anyway.
   };
 
   // --- Date Formatting Helper ---
@@ -285,8 +296,7 @@ const Cart: React.FC = () => {
               {/* --- Selected Venue Section --- */}
               <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
                 <h2 className="text-xl font-display font-semibold mb-4">
-                  {" "}
-                  Selected Venue{" "}
+                  Selected Venue
                 </h2>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <div className="w-full sm:w-1/3 flex-shrink-0">
@@ -303,12 +313,10 @@ const Cart: React.FC = () => {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-display font-semibold text-lg">
-                      {" "}
-                      {cart.venue.name}{" "}
+                      {cart.venue.name}
                     </h3>
                     <div className="flex items-center text-sm text-muted-foreground mt-1">
                       <MapPin className="h-4 w-4 mr-1.5 flex-shrink-0" />
-                      {/* Ensure location object exists and has address */}
                       <span>
                         {cart.venue.location?.address ||
                           cart.venue.location?.city ||
@@ -339,14 +347,12 @@ const Cart: React.FC = () => {
                     </div>
                     {/* Display venue price correctly */}
                     <div className="mt-3">
-                      {/* Use helper to format venue base price */}
                       <span className="font-semibold">
                         {formatDisplayPrice(
                           cart.venue.price.basePrice,
                           cart.venue.price.model
                         )}
                       </span>
-                      {/* Clarify multiplication only if price model is 'day' */}
                       {cart.venue.price.model === "day" && (
                         <span className="text-sm text-muted-foreground ml-1">
                           × {cart.selectedDates.length} day
@@ -362,8 +368,7 @@ const Cart: React.FC = () => {
               <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-display font-semibold">
-                    {" "}
-                    Added Services ({cart.services.length}){" "}
+                    Added Services ({cart.services.length})
                   </h2>
                   <Button asChild variant="outline" size="sm">
                     <Link href="/services" className="flex items-center gap-1">
@@ -376,8 +381,7 @@ const Cart: React.FC = () => {
                   <div className="text-center py-8 text-muted-foreground border border-dashed rounded-md bg-secondary/20">
                     <p className="font-medium">No services added yet.</p>
                     <p className="text-sm mt-1">
-                      {" "}
-                      Browse services to enhance your event.{" "}
+                      Browse services to enhance your event.
                     </p>
                   </div>
                 ) : (
@@ -415,15 +419,13 @@ const Cart: React.FC = () => {
                           <div className="flex items-center mt-1 text-xs bg-secondary px-1.5 py-0.5 rounded-full w-fit border">
                             <Calendar className="h-3 w-3 mr-1 text-muted-foreground" />
                             <span className="text-muted-foreground">
-                              {" "}
-                              {formatServiceDates(service)}{" "}
+                              {formatServiceDates(service)}
                             </span>
                           </div>
                           <p className="text-sm font-semibold mt-2">
-                            {" "}
                             {formatDisplayPrice(
                               service.totalCalculatedPrice
-                            )}{" "}
+                            )}
                           </p>
                         </div>
                       </div>
@@ -435,46 +437,31 @@ const Cart: React.FC = () => {
               {/* --- Recommended Services Section --- */}
               <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
                 <h2 className="text-xl font-display font-semibold mb-4">
-                  {" "}
-                  You Might Also Need{" "}
+                  You Might Also Need
                 </h2>
                 {recommendedServicesData.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {recommendedServicesData.map((recService) => (
-                      <div
+                      <ServiceCard
                         key={recService.id}
-                        className="border border-border rounded-lg overflow-hidden bg-background transition-shadow hover:shadow-md"
+                        id={recService.id}
+                        name={recService.name}
+                        image={recService.image}
+                        category={recService.category}
+                        price={recService.price}
+                        rating={recService.rating}
+                        reviewCount={recService.reviewCount}
+                        className="h-full" // Ensure card takes full height if grid items vary
                       >
-                        <div className="aspect-video overflow-hidden bg-muted">
-                          <img
-                            src={
-                              recService.image ||
-                              "https://via.placeholder.com/300x200?text=No+Image"
-                            }
-                            alt={recService.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="p-3">
-                          <h3 className="font-medium text-sm truncate">
-                            {recService.name}
-                          </h3>
-                          <p className="text-xs text-muted-foreground mb-2">
-                            {" "}
-                            {recService.category}{" "}
-                          </p>
-                          <div className="flex justify-between items-center">
-                            <span className="font-semibold text-sm">
-                              {recService.price}
-                            </span>
-                            <Button variant="outline" size="sm" asChild>
-                              <Link href={`/services/${recService.id}`}>
-                                View
-                              </Link>
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
+                        {recService.sponsored && (
+                           <Badge
+                              variant="secondary"
+                              className="absolute top-3 right-3 z-10 bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-none px-2 py-0.5 text-xs"
+                           >
+                                Sponsored
+                           </Badge>
+                        )}
+                      </ServiceCard>
                     ))}
                   </div>
                 ) : (
@@ -489,15 +476,14 @@ const Cart: React.FC = () => {
             <div className="lg:col-span-1">
               <div className="sticky top-24 bg-card border border-border rounded-xl p-6 shadow-sm">
                 <h2 className="text-xl font-display font-semibold mb-4">
-                  {" "}
-                  Summary{" "}
+                  Summary
                 </h2>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Venue Total</span>
                     <span>{formatDisplayPrice(getVenuePrice())}</span>
                   </div>
-                  {cart.venue.price.model === "day" && (
+                  {cart.venue.price.model === "day" && isMultiDay && (
                     <div className="text-xs text-muted-foreground pl-4">
                       ({formatDisplayPrice(cart.venue.price.basePrice)} ×{" "}
                       {cart.selectedDates.length} day
@@ -506,8 +492,7 @@ const Cart: React.FC = () => {
                   )}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">
-                      {" "}
-                      Services Total ({cart.services.length}){" "}
+                      Services Total ({cart.services.length})
                     </span>
                     <span>{formatDisplayPrice(getServicesTotal())}</span>
                   </div>

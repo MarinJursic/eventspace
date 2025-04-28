@@ -20,7 +20,7 @@ export default async function RootLayout(
 
   return (
     <html lang="en">
-      <body>
+      <body suppressHydrationWarning>
         <Provider session={session}>
           <Toaster />
           <Navbar />
