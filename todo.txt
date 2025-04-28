@@ -44,6 +44,12 @@ Static site generation - stavit na static pageve, SSR isto
 
 Connect to MongoDB - fixat da se samo jednom connecta
 
+Booking thank you - lokacija se pokazuje samo "/", cart se ne emptya
+
+Mapa - dodati da se moze otvorit u novom tabu google maps
+
+External Venue - sjebano radi, triba fixat ili mozda maknut
+
 Hydration error - fixat
 
 Error handling - dodat loganje, Sentry koristit. Monitoring svega, /api/health ruta za provjeru da li servisi rade
@@ -62,5 +68,5 @@ Testing - unit a i dok se builda i to, ako failaju testovi nemoze se buildat ni 
 
 CI/CD
 
-
+POPRAVITI Footer
 

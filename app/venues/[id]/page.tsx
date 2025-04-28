@@ -11,10 +11,10 @@ import { getVenueById } from '@/lib/actions/venueActions'; // Adjust path
 // Import the Client Component Wrapper
 import VenueDetailClient from '@/components/venue/VenueDetailClient'; // Adjust path
 
-type VenueDetailParams = { params: { id: string } };
+type VenueDetailParams = { params: Promise<{ id: string }> };
 
 export default async function VenueDetailPage({ params }: VenueDetailParams) {
-  const { id } = params;
+  const { id } = await params;
 
   // Fetch data using Server Actions
   const [venueData] = await Promise.all([

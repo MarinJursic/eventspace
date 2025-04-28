@@ -19,6 +19,7 @@ export interface IServiceClientState {
   description?: string;
   features: string[];
   images: {
+    file?:File;
     url: string;
     alt: string;
     width?: number;

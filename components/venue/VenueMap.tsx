@@ -6,16 +6,18 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { MapPin } from 'lucide-react'; // Keep for placeholder
 
-// --- !! ICON FIX START (Public Folder Method) !! ---
-delete (L.Icon.Default.prototype as any)._getIconUrl; // Keep this line!
+import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
+// @ts-ignore Cannot find module or its corresponding type declarations. - This is a known issue with leaflet's types sometimes
+delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  // Paths relative to the 'public' directory
-  iconRetinaUrl: 'leaflet/dist/images/marker-icon-2x.png',
-  iconUrl: 'leaflet/dist/images/marker-icon.png',
-  shadowUrl: 'leaflet/dist/images/marker-shadow.png',
+    iconRetinaUrl: iconRetinaUrl.src,
+    iconUrl: iconUrl.src,
+    shadowUrl: shadowUrl.src,
 });
-// --- !! ICON FIX END !! ---
+// --- End Icon Fix ---
 
 // ... (Rest of the component: Props, ChangeView, VenueMap logic) ...
 
@@ -45,6 +47,8 @@ const VenueMap: React.FC<VenueMapProps> = ({
     className = "h-64 md:h-80",
 }) => {
 
+    console.log(latitude + "///////////" + longitude)
+
     const hasValidCoords = typeof latitude === 'number' && typeof longitude === 'number';
 
     if (!hasValidCoords) {
@@ -66,7 +70,7 @@ const VenueMap: React.FC<VenueMapProps> = ({
             <MapContainer
                 center={position}
                 zoom={zoomLevel}
-                scrollWheelZoom={false}
+                scrollWheelZoom={true}
                 style={{ height: '100%', width: '100%' }}
             >
                 <ChangeView center={position} zoom={zoomLevel} />
