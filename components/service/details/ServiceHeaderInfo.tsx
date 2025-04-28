@@ -1,13 +1,19 @@
+// components/service/details/ServiceHeaderInfo.tsx
 import React from 'react';
-import { MockService } from '@/lib/mockServices'; // Import type
 import { Badge } from '@/components/ui/badge';
 import { Star, MapPin } from 'lucide-react';
 
+// --- Import or Define Serialized Types ---
+interface SerializedLocation { city?: string; /* other fields */ }
+interface SerializedRating { average: number; count: number; }
+// --- End Type Definitions ---
+
+// --- Updated Props ---
 interface ServiceHeaderInfoProps {
     name: string;
     type?: string;
-    rating: MockService['rating'];
-    location?: MockService['location'];
+    rating: SerializedRating; // Use serialized type
+    location?: SerializedLocation; // Use serialized type
 }
 
 const ServiceHeaderInfo: React.FC<ServiceHeaderInfoProps> = ({
@@ -23,7 +29,8 @@ const ServiceHeaderInfo: React.FC<ServiceHeaderInfoProps> = ({
             </h1>
             {type && <Badge variant="outline" className="mt-2">{type}</Badge>}
             <div className="flex items-center flex-wrap gap-x-4 gap-y-1 mt-3 text-sm">
-                {rating.count > 0 ? (
+                {/* Access rating data correctly */}
+                {rating && rating.count > 0 ? (
                     <div className="flex items-center text-amber-600">
                         <Star className="w-4 h-4 fill-amber-400 text-amber-500 mr-1" />
                         <span className="font-medium">{rating.average.toFixed(1)}</span>
@@ -35,6 +42,7 @@ const ServiceHeaderInfo: React.FC<ServiceHeaderInfoProps> = ({
                         <span>No reviews yet</span>
                     </div>
                 )}
+                 {/* Access location data correctly */}
                 {location?.city && (
                     <div className="flex items-center text-muted-foreground">
                         <MapPin className="w-4 h-4 mr-1" />

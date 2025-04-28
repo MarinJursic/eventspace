@@ -10,7 +10,7 @@ export default async function connectToDatabase(): Promise<Mongoose> {
     const mongooseClient: Mongoose = await mongoose.connect(MONGODB_URI, {
       maxPoolSize: 10,
     });
-    console.error("Connected to MongoDB");
+    console.log("Connected to MongoDB");
     return mongooseClient;
   } catch (error){
     console.error("MongoDB connection error: ", error);
