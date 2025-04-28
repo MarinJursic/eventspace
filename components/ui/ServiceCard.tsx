@@ -1,24 +1,26 @@
-import React from "react"; // Import memo
+// components/ui/ServiceCard.tsx
+import React from "react";
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { Star } from "lucide-react"; // Only Star needed here directly
 import { cn } from "@/lib/utils";
-import { Button } from "./button"; // Assuming path is correct
+import { Button } from "./button";
+import { Badge } from "./badge"; // Import Badge
 
 interface ServiceCardProps {
-  id: string; // Changed to required string (UUID or Mongoose ObjectId string)
+  id: string;
   name: string;
-  image: string; // URL string
+  image: string;
   category: string; // Service type/category label
-  price: string; // Pre-formatted price string (e.g., "$100 / hour")
-  rating: number; // Average rating
+  price: string; // Pre-formatted price string
+  rating: number;
   reviewCount: number;
   className?: string;
-  children?: React.ReactNode; // For badges like 'Recommended' or 'Sponsored'
+  children?: React.ReactNode; // For Sponsored badge etc.
 }
 
-// Renamed component for use with memo
-const ServiceCardComponent: React.FC<ServiceCardProps> = ({
-  id, // No default needed, should always be provided
+// Use React.FC directly
+const ServiceCard: React.FC<ServiceCardProps> = ({
+  id,
   name,
   image,
   category,
@@ -26,78 +28,82 @@ const ServiceCardComponent: React.FC<ServiceCardProps> = ({
   rating,
   reviewCount,
   className,
-  children, // Render any passed children (like badges)
+  children, // Render children (e.g., Sponsored badge)
 }) => {
   return (
     <div
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-card text-card-foreground shadow-sm transition-all duration-300 hover:shadow-lg", // Use card theme variables, ensure full height
+        "group relative flex h-full flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm transition-all duration-300 hover:shadow-lg", // Consistent rounding, shadow
         className
       )}
     >
-      {/* Category Badge - Placed inside for better layering context */}
-      <div className="absolute top-3 left-3 z-10">
-        <span className="inline-block bg-background/80 backdrop-blur-sm px-2.5 py-1 text-xs font-medium rounded-full border">
-          {category}
-        </span>
-      </div>
+      {/* Category Badge (Top Left) */}
+      {category && ( // Check if category exists
+        <Badge
+            variant="secondary" // Use secondary or outline
+            className="absolute top-3 left-3 z-10 bg-background/80 backdrop-blur-sm px-2.5 py-0.5 text-xs" // Consistent style
+        >
+            {category}
+        </Badge>
+      )}
 
-      {/* Slot for additional badges/children (e.g., 'Recommended') */}
+      {/* Slot for other badges like Sponsored (Top Right) */}
       {children}
 
       {/* Image Section */}
-      <div className="aspect-[3/2] w-full overflow-hidden"> {/* Common aspect ratio */}
-        {/* Use Next.js Image component in the future for optimization if applicable */}
+      <div className="aspect-[16/10] w-full overflow-hidden bg-muted"> {/* Consistent Aspect Ratio & BG */}
         <img
-          src={image}
-          alt={`Image for ${name}`} // More descriptive alt text
+          src={image || "https://via.placeholder.com/400x267?text=No+Image"} // Fallback image
+          alt={`Image for ${name}`}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
-          width={300} // Provide width/height hints if known
-          height={200}
+          width={400} // Hint
+          height={240} // Hint
         />
       </div>
 
       {/* Content Section */}
-      <div className="flex flex-grow flex-col p-4"> {/* Slightly less padding */}
+      <div className="flex flex-grow flex-col p-4"> {/* Consistent padding */}
         {/* Name and Rating */}
-        <div className="flex justify-between items-start gap-2">
-          <h3 className="font-semibold text-base leading-snug flex-1 mr-1"> {/* Adjusted size/leading */}
-            {/* Link wrapper for name could be added here if desired */}
-            {name}
+        <div className="flex justify-between items-start gap-2 mb-1"> {/* Consistent spacing */}
+          <h3 className="font-semibold text-base leading-snug flex-1 mr-1"> {/* Consistent font */}
+            {/* Link the name */}
+            <Link href={`/services/${id}`} className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm">
+                {name}
+            </Link>
           </h3>
-          {/* Rating Badge - only show if rating > 0 */}
+          {/* Rating */}
           {rating > 0 && (
-             <div className="flex shrink-0 items-center bg-amber-100/70 text-amber-900 px-2 py-0.5 rounded-full border border-amber-300/50">
-                <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 mr-1" />
+             <div className="flex shrink-0 items-center bg-amber-100/70 text-amber-900 px-1.5 py-0.5 rounded-full border border-amber-300/50"> {/* Consistent style */}
+                <Star className="w-3 h-3 text-amber-500 fill-amber-500 mr-1" />
                 <span className="text-xs font-medium">{rating.toFixed(1)}</span>
              </div>
           )}
         </div>
 
+        {/* Spacer to push price/reviews/button down */}
+        <div className="flex-grow" />
+
         {/* Price */}
-        <div className="mt-2 text-sm"> {/* Adjusted margin */}
-          <span className="font-medium text-foreground">{price}</span>
-          {/* Potential addition: price model clarification if needed */}
-          {/* {priceModel && <span className="text-muted-foreground text-xs"> ({priceModel})</span>} */}
+        <div className="mt-2 text-sm"> {/* Consistent margin/size */}
+          <span className="font-semibold text-foreground">{price}</span>
         </div>
 
-        {/* Review Count - only show if reviews exist */}
+        {/* Review Count */}
         {reviewCount > 0 && (
             <p className="mt-1 text-xs text-muted-foreground">
-              Based on {reviewCount} review{reviewCount !== 1 ? 's' : ''}
+              ({reviewCount} review{reviewCount !== 1 ? 's' : ''})
             </p>
         )}
 
-        {/* Action Button - Pushed to bottom */}
-        <div className="mt-auto pt-4">
+        {/* View Details Button */}
+        <div className="mt-4"> {/* Consistent margin */}
           <Button
             variant="outline"
-            size="sm" // Slightly smaller button
-            className="w-full rounded-lg group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors duration-200"
+            size="sm" // Consistent size
+            className="w-full rounded-lg group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors duration-200" // Consistent style
             asChild
           >
-            {/* Use the string ID in the link */}
             <Link href={`/services/${id}`} prefetch={false}>View Details</Link>
           </Button>
         </div>
@@ -106,7 +112,5 @@ const ServiceCardComponent: React.FC<ServiceCardProps> = ({
   );
 };
 
-// Wrap the component with React.memo for performance optimization
-const ServiceCard = React.memo(ServiceCardComponent);
-
+// Removed React.memo wrapper unless specifically needed and profiled
 export default ServiceCard;

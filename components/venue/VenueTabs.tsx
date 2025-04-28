@@ -1,147 +1,196 @@
+// src/components/venue/VenueTabs.tsx
 "use client";
 
 import React, { useState } from "react";
+import dynamic from 'next/dynamic';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "../ui/separator";
-import { MapPin } from "lucide-react";
-import { Button } from "../ui/button";
-import { MockReview, reviews } from "@/lib/mockReviews";
+import { Separator } from "@/components/ui/separator"; // Corrected path
+import { Button } from "@/components/ui/button"; // Corrected path
+import { IReview } from "@/lib/database/schemas/review"; // Use Mongoose type
 
-interface Amenity {
-  name: string;
-  icon: React.ComponentType<any>;
+// Import amenity mapping and default icon
+import { amenityIconMap, DefaultAmenityIcon } from './amenityIcons'; // Adjust path
+
+// Import icons needed within this component
+import { MapPin, Star } from "lucide-react"; // Removed Check unless needed elsewhere
+
+// Dynamically import VenueMap
+const VenueMap = dynamic(() => import('./VenueMap'), {
+  ssr: false,
+  loading: () => ( <div className="aspect-[16/9] w-full rounded-lg bg-muted animate-pulse flex items-center justify-center border"><p className="text-muted-foreground text-sm">Loading Map...</p></div> ),
+});
+
+// --- Define type for populated/serialized Amenity Enum ---
+// Adjust this based on the actual structure you fetch/serialize
+interface PopulatedAmenity {
+    _id: string; // Or ObjectId if not serialized fully
+    id?: string; // Virtual id if added
+    key: string; // The identifier used in amenityIconMap (e.g., 'wifi', 'parking')
+    label: string; // The display name (e.g., 'WiFi', 'Parking')
+    icon?: string; // Optional: Icon name string if stored in DB
 }
 
-interface Policies {
-  cancellation: string;
-  security: string;
-  noise: string;
-  cleaning: string;
+// --- Define type for serialized Review data passed as prop ---
+// (Similar to previous SerializedReview, ensure fields match)
+interface SerializedReviewData {
+    id: string;
+    user: string; // User ObjectId as string
+    rating: number;
+    comment?: string;
+    createdAt: string; // Date as string
+    updatedAt: string; // Date as string
 }
 
+
+// --- Updated Props Interface ---
 interface VenueTabsProps {
-  longDescription: string;
-  address: string;
-  amenities: string[];
-  reviews: MockReview[];
+  name: string;
+  description: string;
+  location: {
+      address: string;
+      city?: string;
+      longitude?: number;
+      latitude?: number;
+  };
+  // Expect populated or detailed amenity data
+  amenities: PopulatedAmenity[];
+  reviews: SerializedReviewData[]; // Use the serialized type
   policies: { name: string; description: string }[];
 }
 
-const DEFAULT_VISIBLE_REVIEWS: number = 5;
+const DEFAULT_VISIBLE_REVIEWS: number = 3;
 
 const VenueTabs: React.FC<VenueTabsProps> = ({
-  longDescription,
-  address,
-  amenities,
-  reviews,
-  policies,
+  name,
+  description,
+  location,
+  amenities = [],
+  reviews = [],
+  policies = [],
 }) => {
-
   const [visibleReviews, setVisibleReviews] = useState<number>(DEFAULT_VISIBLE_REVIEWS);
+
+  const averageRating = reviews.length > 0
+      ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+      : 0;
+  const totalReviewCount = reviews.length;
 
   return (
     <Tabs defaultValue="about" className="w-full">
-      <TabsList className="grid grid-cols-4 mb-6">
+      <TabsList className="grid w-full grid-cols-4 mb-6 bg-muted/50 rounded-lg p-1 h-auto">
         <TabsTrigger value="about">About</TabsTrigger>
         <TabsTrigger value="amenities">Amenities</TabsTrigger>
         <TabsTrigger value="reviews">Reviews</TabsTrigger>
         <TabsTrigger value="policies">Policies</TabsTrigger>
       </TabsList>
 
+      {/* About Tab */}
       <TabsContent value="about" className="space-y-6">
         <div>
-          <h3 className="font-display text-lg font-semibold mb-2">
-            Description
-          </h3>
-          <p className="text-muted-foreground">{longDescription}</p>
+          <h3 className="font-semibold text-lg mb-2">Description</h3>
+          <p className="text-muted-foreground whitespace-pre-wrap">
+            {description || "No description provided."}
+          </p>
         </div>
         <div>
-          <h3 className="font-display text-lg font-semibold mb-2">Location</h3>
-          <div className="aspect-[16/9] overflow-hidden rounded-lg bg-secondary/50 flex items-center justify-center">
-            <div className="text-center p-8">
-              <MapPin className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-              <p className="text-muted-foreground">
-                Interactive map would be displayed here
-              </p>
-              <p className="font-medium mt-2">{address}</p>
-            </div>
-          </div>
+          <h3 className="font-semibold text-lg mb-2">Location</h3>
+            <VenueMap
+              latitude={location.latitude}
+              longitude={location.longitude}
+              venueName={name}
+              address={location.address}
+            />
         </div>
       </TabsContent>
 
-      <TabsContent value="amenities" className="space-y-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {amenities.map((amenity, index) => (
-            <div
-              key={index}
-              className="flex items-center p-4 bg-secondary/20 rounded-lg"
-            >
-              {/*<amenity.icon className="h-5 w-5 mr-3 text-primary" />*/}
-              <span>{amenity}</span>
+      {/* Amenities Tab */}
+      <TabsContent value="amenities">
+         <h3 className="font-semibold text-lg mb-3">Amenities</h3>
+         {amenities && amenities.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Map over PopulatedAmenity objects */}
+                {amenities.map((amenity) => {
+                    // Use the 'key' field for mapping, fallback to label if key unavailable
+                    const iconKey = amenity.key || amenity.label.toLowerCase().trim();
+                    const IconComponent = amenityIconMap[iconKey] || DefaultAmenityIcon;
+                    return (
+                    // Use amenity._id or amenity.id for a stable key
+                    <div key={amenity._id || amenity.id || amenity.label} className="flex items-start p-3 bg-secondary/30 rounded-lg border">
+                        <IconComponent className="h-5 w-5 mr-3 text-primary shrink-0 mt-0.5" />
+                         {/* Display the label */}
+                        <span className="text-sm">{amenity.label}</span>
+                    </div>
+                    );
+                })}
             </div>
-          ))}
-        </div>
+         ) : (
+            <p className="text-muted-foreground text-sm">No specific amenities listed.</p>
+         )}
       </TabsContent>
 
+      {/* Reviews Tab */}
       <TabsContent value="reviews" className="space-y-6">
-        <div className="flex items-center mb-4">
-          <div className="bg-primary/5 text-primary px-3 py-2 rounded-lg flex items-center mr-4">
-            <span className="font-semibold text-xl">
-              {reviews[0]?.rating.toFixed(1)}
-            </span>
-          </div>
-          <div>
-            <p className="font-medium">{reviews.length} reviews</p>
-            <p className="text-sm text-muted-foreground">
-              From verified bookings
-            </p>
-          </div>
-        </div>
-        <div className="space-y-4">
-          {reviews.slice(0, Math.min(visibleReviews, reviews.length)).map((review) => (
-            <div
-              key={review.id}
-              className="border border-border rounded-lg p-4"
-            >
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <p className="font-medium">{review.user}</p>
-                  <p className="text-sm text-muted-foreground">{review.createdAt.toDateString()}</p>
+         {reviews && reviews.length > 0 ? (
+            <>
+                {/* Rating summary */}
+                <div className="flex items-center mb-4 gap-4">
+                  <div className="bg-amber-100/60 border border-amber-300/50 text-amber-900 px-3 py-2 rounded-lg flex items-center">
+                     <span className="font-semibold text-xl">{averageRating.toFixed(1)}</span>
+                     <Star className="w-5 h-5 text-amber-500 fill-amber-500 ml-2" />
+                  </div>
+                  <div>
+                    <p className="font-medium">Based on {totalReviewCount} reviews</p>
+                    <p className="text-sm text-muted-foreground">From verified bookings</p>
+                  </div>
                 </div>
-                <div className="flex items-center bg-primary/5 px-2 py-1 rounded-full">
-                  <span className="text-xs font-medium">
-                    {review.rating.toFixed(1)}
-                  </span>
-                </div>
-              </div>
-              <p className="text-muted-foreground">{review.comment}</p>
-            </div>
-          ))}
-        </div>
-        {
-          reviews.length > DEFAULT_VISIBLE_REVIEWS &&         
-          <Button variant="outline" className="w-full" onClick={() => setVisibleReviews(visibleReviews === reviews.length ? DEFAULT_VISIBLE_REVIEWS : reviews.length)}>
-            View {visibleReviews === reviews.length ? "Less" : "More"} Reviews
-          </Button>
-        }
-
+                 {/* Review List */}
+                 <div className="space-y-4">
+                    {reviews.slice(0, visibleReviews).map((review) => (
+                        <div key={review.id} className="border border-border rounded-lg p-4 bg-background">
+                            <div className="flex justify-between items-start mb-2">
+                                <div>
+                                <p className="font-medium text-sm">User (...{review.user.slice(-6)})</p>
+                                {/* Use createdAt string from SerializedReviewData */}
+                                <p className="text-xs text-muted-foreground">{new Date(review.createdAt).toLocaleDateString()}</p>
+                                </div>
+                                <div className="flex items-center bg-amber-100/60 px-1.5 py-0.5 rounded-full border border-amber-300/50">
+                                <Star className="w-3 h-3 text-amber-500 fill-amber-500 mr-1" />
+                                <span className="text-xs font-medium text-amber-900">{review.rating.toFixed(1)}</span>
+                                </div>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{review.comment || "No comment."}</p>
+                        </div>
+                    ))}
+                 </div>
+                 {/* View More/Less Button */}
+                 {totalReviewCount > DEFAULT_VISIBLE_REVIEWS &&
+                 <Button variant="outline" className="w-full" onClick={() => setVisibleReviews( V => V === totalReviewCount ? DEFAULT_VISIBLE_REVIEWS : totalReviewCount )}>
+                     View {visibleReviews === totalReviewCount ? "Less" : "More"} Reviews
+                 </Button>}
+            </>
+         ) : (
+             <p className="text-muted-foreground text-sm">No reviews yet for this venue.</p>
+         )}
       </TabsContent>
 
-      <TabsContent value="policies" className="space-y-6">
-        <div className="space-y-4">
-          {
-            policies.map((policy, i) => 
-            <div key={i}>
-              <div>
-                <h4 className="font-medium mb-1 text-sm">{policy.name}</h4>
-                <p className="text-sm text-muted-foreground">
-                  {policy.description}
-                </p>
-              </div>
-              <Separator className="my-4" />
-            </div>)
-          }
-        </div>
+      {/* Policies Tab */}
+      <TabsContent value="policies">
+         <h3 className="font-semibold text-lg mb-3">Venue Policies</h3>
+         {policies && policies.length > 0 ? (
+             <div className="space-y-4">
+                {policies.map((policy, i) => (
+                    <div key={policy.name + i}>
+                        <div>
+                            <h4 className="font-medium mb-1 text-sm">{policy.name}</h4>
+                            <p className="text-sm text-muted-foreground">{policy.description}</p>
+                        </div>
+                        {i < policies.length - 1 && <Separator className="my-4" />}
+                    </div>
+                ))}
+            </div>
+         ) : (
+             <p className="text-muted-foreground text-sm">No specific policies listed.</p>
+         )}
       </TabsContent>
     </Tabs>
   );

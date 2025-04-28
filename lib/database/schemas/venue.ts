@@ -1,6 +1,7 @@
 import { Types, Schema, models, model } from 'mongoose';
 
 export interface IVenue {
+    toObject(arg0: { virtuals: boolean; }): unknown;
     _id?: string;
     name: string;
     location: {
