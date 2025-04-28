@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
               href="/"
               className="text-xl font-display font-bold text-primary"
             >
-              Gatherly
+              EventSpace
             </Link>
             <p className="mt-4 text-sm text-muted-foreground max-w-xs">
               The all-in-one platform for finding and booking venues and event
@@ -194,7 +194,7 @@ const Footer: React.FC = () => {
             </a>
           </div>
           <div className="text-sm text-muted-foreground">
-            <p>© {new Date().getFullYear()} Gatherly. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} EventSpace. All rights reserved.</p>
           </div>
         </div>
       </div>

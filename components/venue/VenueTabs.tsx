@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator"; // Corrected path
 import { Button } from "@/components/ui/button"; // Corrected path
 import { IReview } from "@/lib/database/schemas/review"; // Use Mongoose type
+import 'leaflet/dist/leaflet.css'
 
 // Import amenity mapping and default icon
 import { amenityIconMap, DefaultAmenityIcon } from './amenityIcons'; // Adjust path
@@ -49,8 +50,8 @@ interface VenueTabsProps {
   location: {
       address: string;
       city?: string;
-      longitude?: number;
-      latitude?: number;
+      lat?: number;
+      lng?: number;
   };
   // Expect populated or detailed amenity data
   amenities: PopulatedAmenity[];
@@ -75,6 +76,9 @@ const VenueTabs: React.FC<VenueTabsProps> = ({
       : 0;
   const totalReviewCount = reviews.length;
 
+  console.log("U Venue Tab: ");
+  console.log(location)
+
   return (
     <Tabs defaultValue="about" className="w-full">
       <TabsList className="grid w-full grid-cols-4 mb-6 bg-muted/50 rounded-lg p-1 h-auto">
@@ -95,8 +99,8 @@ const VenueTabs: React.FC<VenueTabsProps> = ({
         <div>
           <h3 className="font-semibold text-lg mb-2">Location</h3>
             <VenueMap
-              latitude={location.latitude}
-              longitude={location.longitude}
+              latitude={location.lat}
+              longitude={location.lng}
               venueName={name}
               address={location.address}
             />

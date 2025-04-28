@@ -9,7 +9,7 @@ import { getAllServices, getDbServiceTypes, getDbServiceCities } from '@/lib/act
 import ServiceListClient from '@/components/service/details/ServiceListClient';
 
 interface ServicesPageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // --- Loading Component ---
@@ -31,7 +31,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
         serviceTypeData,
         serviceCityData
     ] = await Promise.all([
-        getAllServices(searchParams),
+        getAllServices((await searchParams)),
         getDbServiceTypes(),
         getDbServiceCities()
     ]);

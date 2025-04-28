@@ -18,7 +18,7 @@ import AnimatedSection from '@/components/ui/AnimatedSection'; // Keep if needed
 
 // Define SearchParams type
 interface VenuesPageProps {
-  searchParams: { [key: string]: string | string[] | undefined }; // This is the type Next.js passes
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>; // This is the type Next.js passes
 }
 
 // --- Loading Component ---
@@ -36,9 +36,13 @@ export default async function VenuesPage({ searchParams }: VenuesPageProps) {
     // --- Pass searchParams DIRECTLY to the action ---
     // The action's type ReadonlyURLSearchParams can handle the object
     const [initialVenuesData, citiesData] = await Promise.all([
-        getAllVenues(searchParams as any), // Pass the object directly, use 'as any' if TS complains initially
+        getAllVenues((await searchParams) as any), // Pass the object directly, use 'as any' if TS complains initially
         getDbCities()
     ]);
+
+    getAllVenues(searchParams as any).then((data)=>{
+        console.log(data);
+    })
     // --- End Direct Pass ---
 
     // Basic error handling or check if data is as expected

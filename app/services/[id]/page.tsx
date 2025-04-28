@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 
 // Define Params type
-type ServiceDetailParams = { params: { id: string } };
+type ServiceDetailParams = { params: Promise<{ id: string }> };
 
 // --- Loading Component ---
 function LoadingState() {
@@ -30,7 +30,7 @@ function LoadingState() {
 
 // --- Server Component ---
 export default async function ServiceDetailPage({ params }: ServiceDetailParams) {
-  const { id } = params;
+  const { id } = await params;
 
    // --- Basic ID Validation ---
    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) { // Example validation
