@@ -25,3 +25,42 @@ Blokirati stvari ako nisi sign inan - tipa booking - Marin
 Popravit typescript errore - SVI
 
 Optimizirat kod - splittat sve hookove napravit typeove performance poboljsat etc etc sve znas kume - SVI
+
+
+
+
+
+NOVO
+
+Figma - pretvoriti cilu str u design i napraviti prototype koji more cili flow odraditi. (design.txt)
+
+Autorizacija - protectati sve API rute, middleware
+
+Venue Details Page - kada se stisne book now triba vodit na cart
+
+Footer - fixat gatherly
+
+Static site generation - stavit na static pageve, SSR isto
+
+Connect to MongoDB - fixat da se samo jednom connecta
+
+Hydration error - fixat
+
+Error handling - dodat loganje, Sentry koristit. Monitoring svega, /api/health ruta za provjeru da li servisi rade
+
+Build errori - build treba raditi bez ikakvih erorra il warninga
+
+npm errori - npm triba moc installat bez forcea ili iceg
+
+Security - Stripe, podatci iz baze, booking itd
+
+Metadata - dodat metadata na pageve
+
+Optimizirat kod - u svakom pogledu, imat 4 sloja, componenta, hook,service,api
+
+Testing - unit a i dok se builda i to, ako failaju testovi nemoze se buildat ni deployat
+
+CI/CD
+
+
+

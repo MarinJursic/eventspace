@@ -1,27 +1,28 @@
 // /app/api/checkout_sessions/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { headers } from "next/headers"; // To get the origin URL
+import { headers } from "next/headers";
+import { Resend } from 'resend';
 
-// Initialize Stripe with your secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const resend = new Resend(process.env.RESEND_API_KEY!);
 
-// Define the structure of items expected from the frontend
+// Update interface to include optional image
 interface CheckoutItem {
   id: string;
   name: string;
-  price: number; // Price in DOLLARS (e.g., 50.00)
+  price: number;
   quantity: number;
-  image?: string; // Optional image URL
+  image?: string; // Make image optional
 }
 
 export async function POST(req: NextRequest) {
-  const headersList = await headers();
-  const origin = headersList.get("origin") || "http://localhost:3000"; // Default for local dev
+  const headersList = headers();
+  const origin = (await headersList).get("origin") || "http://localhost:3000";
 
   try {
     const body = await req.json();
-    const items: CheckoutItem[] = body.items; // Expect an array of items
+    const items: CheckoutItem[] = body.items;
 
     if (!items || items.length === 0) {
       return NextResponse.json(
@@ -30,37 +31,44 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // **SECURITY NOTE:** In a real application, you should NOT trust the price sent from the client.
-    // You should fetch the price from your database based on the item ID to prevent manipulation.
-    // For this example, we'll proceed with the client-sent price.
-
+    // --- MODIFY line_items MAPPING ---
     const line_items = items.map((item) => ({
       price_data: {
-        currency: "usd", // Or your desired currency
+        currency: "usd",
         product_data: {
           name: item.name,
-          // Optionally add description or images:
-          // description: item.description,
-          // images: item.image ? [item.image] : [],
+          // --- USE THE IMAGE URL ---
+          // Stripe expects an array of image URLs
+          images: item.image ? [item.image] : [],
+          // -------------------------
         },
-        unit_amount: Math.round(item.price * 100), // Convert price to cents
+        unit_amount: Math.round(item.price * 100), // Price in cents
       },
       quantity: item.quantity,
     }));
+    // ---------------------------------
 
-    // Create a Checkout Session
+    // --- Add Metadata (Example) ---
+    // It's highly recommended to add metadata to link the Stripe session
+    // back to your internal booking or order ID. You'll need this in the webhook.
+    // You might need to get the user ID from the session or pass your internal ID from the frontend.
+    const metadata = {
+        // internalBookingId: cart.internalId, // Example: if you have an ID in your cart context
+        // userId: session?.user?.id, // Example: if you can access session here
+    };
+    // -----------------------------
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: line_items,
       mode: "payment",
       success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`, // Redirect here on success
       cancel_url: `${origin}/cart`, // Redirect here if canceled
-      // Optionally add metadata, customer email, etc.
-      // metadata: { userId: 'user_123' }, // Example
-      // customer_email: 'customer@example.com', // If you have the user's email
+      metadata: metadata, // Pass the metadata
+      // Optionally add customer email if known
+      // customer_email: customerEmail,
     });
 
-    // Return the session ID to the client
     return NextResponse.json({ sessionId: session.id }, { status: 200 });
   } catch (err) {
     console.error("Error creating Stripe session:", err);

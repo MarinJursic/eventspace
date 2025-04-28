@@ -1,0 +1,27 @@
+Figma design requirements:
+
+Task D1: Create Presentation (.pdf/.mp4):
+Define the Concept: Clearly state what EventSpace is, who it's for (customers, vendors), and why it's needed (the problem it solves).
+Develop User Personas: Create detailed representations of your target customer(s) and vendor(s).
+Establish Visual Guidelines:
+Design a Logo.
+Define a Color Palette (primary, secondary, accent, neutral, status colors - ensure consistency with tailwind.config.ts).
+Choose Typography (ensure consistency with tailwind.config.ts and globals.css). Define font families, sizes, weights for headings, body text, buttons, etc.
+Select or design an Icon Set (Leverage Lucide, but ensure consistency).
+Task D2: Create Figma Prototip (.fig file & link):
+Design at least 5 key screens (e.g., Homepage, Venue Listing, Venue Detail, Booking Cart, User Dashboard).
+Ensure screens are interconnected and clickable to demonstrate user flow.
+Apply the visual guidelines defined in D1.
+Task D3: UI Refinement (Implementation):
+Review all existing pages and components (/app, /components).
+Ensure consistent application of the defined color palette, typography, and iconography (from D1).
+Improve layout, spacing, and visual hierarchy based on the Figma prototype (D2).
+Ensure responsiveness across different screen sizes.
+Refine the look and feel of Shadcn components to match the brand identity if needed.
+Task D4: UX Refinement & Testing:
+Map out key user flows (e.g., finding & booking a venue, vendor listing creation, admin approval).
+Test these flows using the prototype (D2) and the actual application.
+Identify and fix usability issues (confusing navigation, unclear buttons, difficult forms).
+Optimize loading states (use skeletons, spinners consistently).
+Improve feedback mechanisms (e.g., better toast messages, form validation feedback).
+Ensure navigation is intuitive (Navbar, Sidebars, Breadcrumbs).
