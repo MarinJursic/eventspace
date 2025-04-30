@@ -1,7 +1,6 @@
 // components/service/details/ServiceTabs.tsx
 "use client";
 
-<<<<<<< HEAD
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
@@ -51,30 +50,6 @@ interface SerializedReviewData {
   comment?: string;
   createdAt: string;
   updatedAt: string;
-=======
-import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { Star, Check } from 'lucide-react';
-// Import the icon mapping and default icon for features
-import { serviceFeatureIconMap, DefaultFeatureIcon } from './serviceFeatureIcons';
-
-// --- Define Serialized Types (Matching Server Action Output) ---
-interface SerializedRating { average: number; count: number; }
-interface SerializedPolicyItem { name: string; description: string; }
-interface SerializedPolicies { listOfPolicies?: SerializedPolicyItem[]; }
-// Define Populated Feature Type (matching Server Action output)
-interface PopulatedFeatureClient { _id: string; id: string; key: string; label: string; icon?: string; }
-interface SerializedServiceData {
-    id: string; _id: string; name: string; description?: string;
-    features?: PopulatedFeatureClient[]; // Expect populated features
-    policies?: SerializedPolicies; rating: SerializedRating;
-    // Add other fields if needed by tabs
-}
-interface SerializedReviewData {
-    id: string; _id: string; user: string; rating: number; comment?: string; createdAt: string; updatedAt: string;
->>>>>>> development
 }
 // --- End Type Definitions ---
 
