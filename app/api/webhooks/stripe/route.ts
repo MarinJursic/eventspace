@@ -1,8 +1,8 @@
 // /app/api/webhooks/stripe/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
-import { Resend } from 'resend';
-import { headers } from 'next/headers';
+import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
+import { Resend } from "resend";
+import { headers } from "next/headers";
 // Import your Order/Booking model and database connection logic if needed
 // import Order from '@/models/Order'; // Example
 // import connectToDatabase from '@/lib/database/mongodb';
@@ -13,7 +13,7 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
-  const signature = headers().get('stripe-signature')!;
+  const signature = (await headers()).get("stripe-signature")!;
 
   let event: Stripe.Event;
 
@@ -21,18 +21,21 @@ export async function POST(req: NextRequest) {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     console.log(`Webhook received: ${event.id}, Type: ${event.type}`);
   } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
     console.error(`Webhook signature verification failed: ${errorMessage}`);
-    return NextResponse.json({ error: 'Webhook error: Invalid signature' }, { status: 400 });
+    return NextResponse.json(
+      { error: "Webhook error: Invalid signature" },
+      { status: 400 }
+    );
   }
 
   // Handle the checkout.session.completed event
-  if (event.type === 'checkout.session.completed') {
+  if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
 
-    console.log('Checkout session completed:', session.id);
-    console.log('Metadata:', session.metadata); // Log metadata passed from checkout
-    console.log('Customer details:', session.customer_details);
+    console.log("Checkout session completed:", session.id);
+    console.log("Metadata:", session.metadata); // Log metadata passed from checkout
+    console.log("Customer details:", session.customer_details);
 
     // --- TODO: Database Update Logic ---
     // 1. **Retrieve your internal booking/order ID** from `session.metadata`.
@@ -41,44 +44,50 @@ export async function POST(req: NextRequest) {
 
     // 2. If you have the ID, find the booking in your database.
     if (internalBookingId) {
-        try {
-            // await connectToDatabase(); // Connect if needed
-            // const booking = await YourBookingModel.findById(internalBookingId);
-            // if (booking) {
-            //    booking.status = 'confirmed'; // Or 'paid'
-            //    booking.stripeCheckoutId = session.id; // Store Stripe session ID for reference
-            //    await booking.save();
-            //    console.log(`Internal Booking ${internalBookingId} updated to confirmed.`);
-            // } else {
-            //    console.error(`Internal Booking ${internalBookingId} not found for session ${session.id}`);
-            // }
-             console.log(`Placeholder: Would update internal booking ${internalBookingId} for session ${session.id}`);
-        } catch (dbError) {
-            console.error(`Database update failed for booking ${internalBookingId}:`, dbError);
-            // Log this error but still proceed to send email and respond 200 to Stripe
-        }
+      try {
+        // await connectToDatabase(); // Connect if needed
+        // const booking = await YourBookingModel.findById(internalBookingId);
+        // if (booking) {
+        //    booking.status = 'confirmed'; // Or 'paid'
+        //    booking.stripeCheckoutId = session.id; // Store Stripe session ID for reference
+        //    await booking.save();
+        //    console.log(`Internal Booking ${internalBookingId} updated to confirmed.`);
+        // } else {
+        //    console.error(`Internal Booking ${internalBookingId} not found for session ${session.id}`);
+        // }
+        console.log(
+          `Placeholder: Would update internal booking ${internalBookingId} for session ${session.id}`
+        );
+      } catch (dbError) {
+        console.error(
+          `Database update failed for booking ${internalBookingId}:`,
+          dbError
+        );
+        // Log this error but still proceed to send email and respond 200 to Stripe
+      }
     } else {
-        console.error(`Missing internalBookingId in metadata for session ${session.id}. Cannot update database status.`);
-        // Critical issue - investigate why metadata wasn't passed or received.
+      console.error(
+        `Missing internalBookingId in metadata for session ${session.id}. Cannot update database status.`
+      );
+      // Critical issue - investigate why metadata wasn't passed or received.
     }
     // --- End Database Update Logic ---
 
-
     // --- Send Confirmation Email ---
     const customerEmail = session.customer_details?.email;
-    const customerName = session.customer_details?.name || 'Valued Customer';
-    const amountTotal = session.amount_total ? (session.amount_total / 100).toFixed(2) : 'N/A'; // Amount in dollars
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'; // Get base URL
-    const accountUrl = `${siteUrl}/account/bookings`; // Link to bookings page
+    const customerName = session.customer_details?.name || "Valued Customer";
+    const amountTotal = session.amount_total
+      ? (session.amount_total / 100).toFixed(2)
+      : "N/A"; // Amount in dollars
 
     console.log(`Customer Email: ${customerEmail}`);
-     console.log(`Customer Name: ${customerName}`);
-     console.log(`Total Amount: $${amountTotal}`);
+    console.log(`Customer Name: ${customerName}`);
+    console.log(`Total Amount: $${amountTotal}`);
 
     if (customerEmail) {
       try {
-       // --- STYLED HTML TEMPLATE ---
-       const emailHtml = `
+        // --- STYLED HTML TEMPLATE ---
+        const emailHtml = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -184,11 +193,11 @@ export async function POST(req: NextRequest) {
 </body>
 </html>
        `;
-       // --- END STYLED HTML TEMPLATE ---
+        // --- END STYLED HTML TEMPLATE ---
         const { data, error } = await resend.emails.send({
-          from: 'EventSpace <onboarding@resend.dev>', // CHANGE THIS to your verified domain email
+          from: "EventSpace <onboarding@resend.dev>", // CHANGE THIS to your verified domain email
           to: [customerEmail], // Must be an array
-          subject: 'Your EventSpace Booking Confirmation',
+          subject: "Your EventSpace Booking Confirmation",
           html: emailHtml,
           /*`
             <h1>Booking Confirmed!</h1>
@@ -204,21 +213,23 @@ export async function POST(req: NextRequest) {
         });
 
         if (error) {
-          console.error('Resend API Error:', error);
+          console.error("Resend API Error:", error);
           // Log error but don't fail webhook response
         } else {
-          console.log(`Confirmation email sent successfully to ${customerEmail}, ID: ${data?.id}`);
+          console.log(
+            `Confirmation email sent successfully to ${customerEmail}, ID: ${data?.id}`
+          );
         }
-
       } catch (emailError) {
-        console.error('Resend email sending failed (exception):', emailError);
+        console.error("Resend email sending failed (exception):", emailError);
         // Log this error, but don't fail the webhook response to Stripe
       }
     } else {
-      console.warn(`No customer email found for session: ${session.id}. Cannot send confirmation.`);
+      console.warn(
+        `No customer email found for session: ${session.id}. Cannot send confirmation.`
+      );
     }
     // --- End Email Sending ---
-
   } else {
     console.log(`Webhook received but unhandled event type: ${event.type}`);
   }
