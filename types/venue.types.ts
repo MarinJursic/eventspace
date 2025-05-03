@@ -5,7 +5,7 @@ export interface IVenueClientState {
     address: string;
     city: string;
     street: string;
-    houseNumber: number;
+    houseNumber: string;
     country: string;
     postalCode: string;
     lat?: number;

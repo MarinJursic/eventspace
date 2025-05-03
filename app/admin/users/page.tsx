@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -8,12 +9,9 @@ import {
   Shield,
   User,
   UserCog,
-  Filter,
   Mail,
   UserPlus,
   Ban,
-  Check,
-  X,
 } from "lucide-react";
 import {
   Card,
@@ -45,7 +43,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Switch } from "@/components/ui/switch";
 
 // --- Mock data for users ---
 const mockUsers = [
@@ -597,8 +594,8 @@ const AdminUsers: React.FC = () => {
           <DialogHeader>
             <DialogTitle>Delete User</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete {selectedUser?.name}'s account?
-              This action cannot be undone.
+              Are you sure you want to delete {selectedUser?.name}&apos;s
+              account? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

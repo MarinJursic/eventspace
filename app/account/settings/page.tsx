@@ -334,7 +334,8 @@ const Settings: React.FC = () => {
                     >
                       <span>Service Updates</span>
                       <span className="font-normal text-sm text-muted-foreground">
-                        Get notified about changes to services you've booked
+                        Get notified about changes to services you&apos;ve
+                        booked
                       </span>
                     </Label>
                     <Switch

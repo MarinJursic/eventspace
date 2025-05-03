@@ -1,9 +1,17 @@
 // src/components/venue/amenityIcons.ts
-import React from 'react';
+import React from "react";
 import {
-  ParkingCircle, Wifi, UtensilsCrossed, Tv, Wind, PersonStanding,
-  Sun, Volume2, Dog, Sparkles, Check, // Add more as needed
-} from 'lucide-react';
+  ParkingCircle,
+  Wifi,
+  UtensilsCrossed,
+  Tv,
+  Wind,
+  PersonStanding,
+  Sun,
+  Volume2,
+  Dog,
+  Sparkles, // Add more as needed
+} from "lucide-react";
 
 // Define the mapping from amenity *key* (lowercase string) to Icon component
 // NOTE: The 'key' here should match the 'key' field you expect to have

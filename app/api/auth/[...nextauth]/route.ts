@@ -1,10 +1,26 @@
-import NextAuth, { User } from "next-auth";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { compare, hash } from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
 import connectToDatabase from "@/lib/database/mongodb";
+
+declare module "next-auth" {
+  interface User {
+    role?: string;
+    id?: string;
+  }
+  interface Session {
+    user: {
+      id?: string;
+      role?: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }
+}
 
 const clientPromise = connectToDatabase().then((mongoose) =>
   mongoose.connection.getClient()
@@ -114,14 +130,14 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
+        token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub;
-        session.user.role = token.role;
+        session.user.role = token.role as string | undefined;
       }
       return session;
     },

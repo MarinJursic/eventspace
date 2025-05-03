@@ -6,10 +6,11 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import CartIcon from "@/components/ui/CartIcon";
 import UserDropdown from "./UserDropdown";
+import { User } from "next-auth";
 
 type DesktopNavbarProps = {
   isAuthenticated: boolean;
-  user: any;
+  user: User;
   openAuthModal: (tab: "login" | "signup") => void;
 };
 

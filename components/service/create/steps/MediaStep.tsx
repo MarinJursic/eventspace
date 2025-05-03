@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-// File: /components/service/create/steps/MediaStep.tsx
+"use client";
 
 import {
   useState,

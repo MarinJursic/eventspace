@@ -36,9 +36,8 @@ Figma - pretvoriti cilu str u design i napraviti prototype koji more cili flow o
 
 Autorizacija - protectati sve API rute, middleware
 
-Venue Details Page - kada se stisne book now triba vodit na cart
-
-Footer - fixat gatherly
+Venue Details Page - kada se stisne book now triba vodit na cart - rijeseno
+Footer - fixat gatherly - rijeseno
 
 Static site generation - stavit na static pageve, SSR isto
 

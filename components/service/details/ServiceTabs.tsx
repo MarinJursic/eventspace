@@ -5,13 +5,13 @@ import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Star, Check } from "lucide-react";
+import { Star } from "lucide-react";
 // Import the icon mapping and default icon for features
 import {
   serviceFeatureIconMap,
   DefaultFeatureIcon,
 } from "./serviceFeatureIcons";
-
+import { SerializedPopulatedReview } from "@/lib/actions/serviceActions";
 // --- Define Serialized Types (Matching Server Action Output) ---
 interface SerializedRating {
   average: number;
@@ -42,15 +42,7 @@ interface SerializedServiceData {
   rating: SerializedRating;
   // Add other fields if needed by tabs
 }
-interface SerializedReviewData {
-  id: string;
-  _id: string;
-  user: string;
-  rating: number;
-  comment?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+
 // --- End Type Definitions ---
 
 // --- Tab Content Components ---
@@ -105,7 +97,7 @@ const ServiceFeaturesTab: React.FC<ServiceFeaturesTabProps> = ({
 // ServiceReviewsTab (Handles visibility state)
 const DEFAULT_VISIBLE_REVIEWS: number = 3;
 interface ServiceReviewsTabProps {
-  reviews: SerializedReviewData[];
+  reviews: SerializedPopulatedReview[];
   rating: SerializedRating;
 }
 const ServiceReviewsTab: React.FC<ServiceReviewsTabProps> = ({
@@ -149,7 +141,7 @@ const ServiceReviewsTab: React.FC<ServiceReviewsTabProps> = ({
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <p className="font-medium text-sm">
-                      User (...{review.user.slice(-6)})
+                      {review.user?.name || "Anonymous User"}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {new Date(review.createdAt).toLocaleDateString()}
@@ -226,7 +218,7 @@ const ServicePoliciesTab: React.FC<ServicePoliciesTabProps> = ({
 // --- Main Tabs Component Props ---
 interface ServiceTabsProps {
   service: SerializedServiceData; // Expect serialized service data
-  reviews: SerializedReviewData[]; // Expect serialized review data passed separately
+  reviews: SerializedPopulatedReview[]; // Expect serialized review data passed separately
 }
 
 // --- Main Tabs Component ---

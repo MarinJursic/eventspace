@@ -11,13 +11,13 @@ import {
   Star,
   Shield,
   Clock,
-  Calendar,
   Save,
   Upload,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -101,9 +101,10 @@ const VendorProfile: React.FC = () => {
       {/* Cover Image and Profile section */}
       <div className="relative rounded-xl overflow-hidden">
         <div className="h-64 bg-muted relative">
-          <img
+          <Image
             src={vendorData.coverImage}
             alt="Cover"
+            fill
             className="w-full h-full object-cover"
           />
           <Button

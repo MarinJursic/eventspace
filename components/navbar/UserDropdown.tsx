@@ -14,9 +14,10 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogOut, Shield } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { User } from "next-auth";
 
 type UserDropdownProps = {
-  user: any;
+  user: User;
 };
 
 const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
@@ -119,8 +120,8 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
         {user?.role === "admin"
           ? renderAdminMenuItems()
           : user?.role === "vendor"
-          ? renderVendorMenuItems()
-          : renderCustomerMenuItems()}
+            ? renderVendorMenuItems()
+            : renderCustomerMenuItems()}
 
         {user?.role === "vendor" && (
           <>

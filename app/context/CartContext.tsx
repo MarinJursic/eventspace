@@ -1,13 +1,16 @@
 // app/context/CartContext.tsx
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { useToast } from "../../hooks/useToast"; // Adjust path if needed
 // Import the actual Mongoose schema interface (or a simplified version)
-// If you are passing serialized data, create a matching type here
-import { IVenue } from "@/lib/database/schemas/venue"; // Adjust path
-import { IReview } from "@/lib/database/schemas/review"; // Needed for Venue type if including reviews
-import { v4 as uuidv4 } from 'uuid'; // For generating unique IDs for external venues
+import { v4 as uuidv4 } from "uuid"; // For generating unique IDs for external venues
 
 // --- Define the structure of the Venue object AS IT WILL BE STORED in the cart ---
 // This might be simpler than the full IVenue from Mongoose if you don't need all fields
@@ -15,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid'; // For generating unique IDs for external v
 export interface CartVenue {
   id: string; // Use string for ID consistency (can be Mongoose ObjectId string or custom external ID)
   name: string;
+  description?: string;
   location: {
     address: string;
     city?: string; // Make optional if not always needed
@@ -22,7 +26,7 @@ export interface CartVenue {
   };
   price: {
     basePrice: number;
-    model: 'hour' | 'day' | 'week';
+    model: "hour" | "day" | "week";
   };
   images: {
     url: string;
@@ -31,8 +35,8 @@ export interface CartVenue {
   }[]; // Need at least one image for display
   // Add other fields *if* they are used by the Cart page or downstream logic
   // For example:
-   type?: string;
-   rating?: { average: number; count: number }; // If displaying rating in cart
+  type?: string;
+  rating?: { average: number; count: number }; // If displaying rating in cart
 }
 
 // --- Define the Service type AS STORED in the cart ---
@@ -42,7 +46,7 @@ export type CartService = {
   name: string;
   image: string;
   price: number; // Base price
-  priceModel: 'hour' | 'day' | 'week';
+  priceModel: "hour" | "day" | "week";
   selectedDays: string[];
   totalCalculatedPrice: number; // Pre-calculated price
 };
@@ -58,8 +62,16 @@ export type CartItem = {
 // --- Define the Context Type ---
 type CartContextType = {
   cart: CartItem | null;
-  addVenue: (venue: CartVenue, selectedDates: string[], timeSlot: string) => void; // Expects CartVenue
-  addExternalVenue: (venueName: string, location: string, selectedDates: string[]) => void;
+  addVenue: (
+    venue: CartVenue,
+    selectedDates: string[],
+    timeSlot: string
+  ) => void; // Expects CartVenue
+  addExternalVenue: (
+    venueName: string,
+    location: string,
+    selectedDates: string[]
+  ) => void;
   addService: (service: CartService) => void; // Expects CartService
   removeService: (serviceId: string) => void;
   clearCart: () => void;
@@ -73,7 +85,9 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 // --- Create Provider Component ---
-export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const CartProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [cart, setCart] = useState<CartItem | null>(null);
   const { toast } = useToast();
 
@@ -90,7 +104,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             // (localStorage stores strings) - Although current types use strings
             setCart(parsedCart);
           } else {
-            console.warn("Invalid cart structure found in localStorage. Clearing.");
+            console.warn(
+              "Invalid cart structure found in localStorage. Clearing."
+            );
             localStorage.removeItem("eventCart");
           }
         } catch (e) {
@@ -123,7 +139,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const existingServices = shouldClearServices ? [] : cart?.services || [];
 
     if (shouldClearServices && existingServices.length > 0) {
-        toast({ title: "Venue Changed", description: `Venue updated to ${venue.name}. Previous services removed.`, variant: "default" });
+      toast({
+        title: "Venue Changed",
+        description: `Venue updated to ${venue.name}. Previous services removed.`,
+        variant: "default",
+      });
     }
 
     setCart({
@@ -133,11 +153,15 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       services: existingServices,
     });
 
-    const dateText = selectedDates.length === 1
+    const dateText =
+      selectedDates.length === 1
         ? selectedDates[0]
         : `${selectedDates.length} dates (${selectedDates[0]} to ${selectedDates[selectedDates.length - 1]})`;
 
-    toast({ title: "Venue Added", description: `${venue.name} added for ${dateText}.` });
+    toast({
+      title: "Venue Added",
+      description: `${venue.name} added for ${dateText}.`,
+    });
   };
 
   // --- addExternalVenue ---
@@ -151,18 +175,28 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       id: `external-${uuidv4()}`, // Unique ID for external
       name: venueName,
       location: { address: location, city: "" }, // Use the location string for address
-      price: { basePrice: 0, model: 'day' }, // Default price
-      images: [{ url: 'https://via.placeholder.com/300x200?text=External+Venue', alt: venueName }], // Placeholder image
+      price: { basePrice: 0, model: "day" }, // Default price
+      images: [
+        {
+          url: "https://via.placeholder.com/300x200?text=External+Venue",
+          alt: venueName,
+        },
+      ], // Placeholder image
       // Add defaults for any other fields required by CartVenue
       type: "External",
-      rating: { average: 0, count: 0},
-       // Ensure all fields required by CartVenue are present
+      rating: { average: 0, count: 0 },
+      // Ensure all fields required by CartVenue are present
     };
 
-    const shouldClearServices = cart?.venue && !cart.venue.id.startsWith('external-');
+    const shouldClearServices =
+      cart?.venue && !cart.venue.id.startsWith("external-");
     const existingServices = shouldClearServices ? [] : cart?.services || [];
     if (shouldClearServices && existingServices.length > 0) {
-        toast({ title: "Venue Changed", description: `External venue ${venueName} added. Previous services removed.`, variant: "default" });
+      toast({
+        title: "Venue Changed",
+        description: `External venue ${venueName} added. Previous services removed.`,
+        variant: "default",
+      });
     }
 
     setCart({
@@ -172,41 +206,66 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       services: existingServices,
     });
 
-    const dateText = selectedDates.length === 1
+    const dateText =
+      selectedDates.length === 1
         ? selectedDates[0]
         : `${selectedDates.length} dates (${selectedDates[0]} to ${selectedDates[selectedDates.length - 1]})`;
 
-    toast({ title: "External Venue Added", description: `${venueName} added for ${dateText}.` });
+    toast({
+      title: "External Venue Added",
+      description: `${venueName} added for ${dateText}.`,
+    });
   };
 
   // --- addService ---
-  const addService = (service: CartService) => { // Expects CartService type
+  const addService = (service: CartService) => {
+    // Expects CartService type
     if (!cart || !cart.venue) {
-      toast({ title: "No venue selected", variant: "destructive" }); return;
+      toast({ title: "No venue selected", variant: "destructive" });
+      return;
     }
     if (cart.services.some((s) => s.id === service.id)) {
-      toast({ title: "Service already added", description: `${service.name} is already in your booking.` }); return;
+      toast({
+        title: "Service already added",
+        description: `${service.name} is already in your booking.`,
+      });
+      return;
     }
 
     setCart({ ...cart, services: [...cart.services, service] });
 
     const daysCount = service.selectedDays.length;
-    const daysText = daysCount === 0 ? "your event date" : `${daysCount} day(s)`;
-    toast({ title: "Service Added", description: `${service.name} added for ${daysText}.` });
+    const daysText =
+      daysCount === 0 ? "your event date" : `${daysCount} day(s)`;
+    toast({
+      title: "Service Added",
+      description: `${service.name} added for ${daysText}.`,
+    });
   };
 
   // --- removeService ---
   const removeService = (serviceId: string) => {
     if (!cart) return;
     const service = cart.services.find((s) => s.id === serviceId);
-    setCart({ ...cart, services: cart.services.filter((s) => s.id !== serviceId) });
-    if (service) { toast({ title: "Service removed", description: `${service.name} removed.` }); }
+    setCart({
+      ...cart,
+      services: cart.services.filter((s) => s.id !== serviceId),
+    });
+    if (service) {
+      toast({
+        title: "Service removed",
+        description: `${service.name} removed.`,
+      });
+    }
   };
 
   // --- clearCart ---
   const clearCart = () => {
     setCart(null);
-    toast({ title: "Booking Cleared", description: "Your booking details have been cleared." });
+    toast({
+      title: "Booking Cleared",
+      description: "Your booking details have been cleared.",
+    });
   };
 
   // --- Derived State ---

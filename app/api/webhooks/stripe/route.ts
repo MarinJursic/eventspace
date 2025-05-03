@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { Resend } from "resend";
 import { headers } from "next/headers";
 // Import your Order/Booking model and database connection logic if needed
-// import Order from '@/models/Order'; // Example
+// import Order from '@/Order'; // Example
 // import connectToDatabase from '@/lib/database/mongodb';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);

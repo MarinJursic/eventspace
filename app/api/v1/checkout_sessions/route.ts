@@ -1,11 +1,8 @@
-// /app/api/checkout_sessions/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { headers } from "next/headers";
-import { Resend } from 'resend';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const resend = new Resend(process.env.RESEND_API_KEY!);
 
 // Update interface to include optional image
 interface CheckoutItem {
@@ -53,8 +50,8 @@ export async function POST(req: NextRequest) {
     // back to your internal booking or order ID. You'll need this in the webhook.
     // You might need to get the user ID from the session or pass your internal ID from the frontend.
     const metadata = {
-        // internalBookingId: cart.internalId, // Example: if you have an ID in your cart context
-        // userId: session?.user?.id, // Example: if you can access session here
+      // internalBookingId: cart.internalId, // Example: if you have an ID in your cart context
+      // userId: session?.user?.id, // Example: if you can access session here
     };
     // -----------------------------
 

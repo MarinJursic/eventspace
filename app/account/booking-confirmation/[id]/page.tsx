@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Check,
   Calendar,
@@ -59,7 +59,6 @@ const mockBooking = {
 };
 
 const BookingConfirmation: React.FC = () => {
-  const { id } = useParams() as { id?: string };
   const router = useRouter();
   const { toast } = useToast();
   const { data: session } = useSession();

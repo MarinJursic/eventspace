@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 import { useToast } from "@/hooks/useToast";
+import Image from "next/image";
 import { useSession } from "next-auth/react";
 
 // Mock booking data
@@ -116,19 +117,6 @@ const Bookings: React.FC = () => {
 
   const handleViewBooking = (bookingId: string) => {
     router.push(`/account/booking-confirmation/${bookingId}`);
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "upcoming":
-        return <Badge className="bg-blue-500">Upcoming</Badge>;
-      case "completed":
-        return <Badge className="bg-green-500">Completed</Badge>;
-      case "cancelled":
-        return <Badge variant="destructive">Cancelled</Badge>;
-      default:
-        return <Badge>{status}</Badge>;
-    }
   };
 
   return (
@@ -322,11 +310,15 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onView }) => {
       <CardContent className="p-0">
         <div className="flex flex-col md:flex-row">
           <div className="w-full md:w-1/4 h-48 md:h-auto">
-            <img
-              src={booking.venueImage}
-              alt={booking.venueName}
-              className="w-full h-full object-cover"
-            />
+            <div className="relative w-full h-full">
+              <Image
+                src={booking.venueImage}
+                alt={booking.venueName}
+                className="w-full h-full object-cover"
+                fill
+                objectFit="cover"
+              />
+            </div>
           </div>
           <div className="flex-1 p-6">
             <div className="flex justify-between items-start">

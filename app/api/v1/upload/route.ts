@@ -1,7 +1,7 @@
 // File: /app/api/upload/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
-import cloudinary from "@/lib/cloudinary"; // Your configured Cloudinary instance
+import cloudinary from "@/lib/config/cloudinary"; // Your configured Cloudinary instance
 import { Readable } from "stream";
 import { UploadApiResponse, UploadApiErrorResponse } from "cloudinary"; // Import Cloudinary types
 

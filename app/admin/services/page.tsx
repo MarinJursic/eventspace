@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -275,8 +276,8 @@ const AdminServices: React.FC = () => {
               <DialogTitle>Delete Service</DialogTitle>
             </DialogHeader>
             <p>
-              Are you sure you want to delete "{selectedService.name}"? This
-              action cannot be undone.
+              Are you sure you want to delete &quot;{selectedService.name}
+              &quot;? This action cannot be undone.
             </p>
             <DialogFooter>
               <Button

@@ -1,9 +1,7 @@
-// /app/thank-you/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 import {
   Calendar,
   ArrowLeft,
@@ -13,7 +11,6 @@ import {
   MapPin,
   CreditCard,
   Home, // Added for button
-  ArrowRight, // Added for button
   PhoneCall, // Added for button
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +22,7 @@ import { Separator } from "@/components/ui/separator"; // Correct import for sha
 import { useCart } from "../context/CartContext"; // Import useCart
 import { useSession } from "next-auth/react"; // Import useSession for user context
 import { useToast } from "@/hooks/useToast"; // Import useToast
+import Image from "next/image";
 
 // Helper function to format price (assuming it exists or define it)
 const formatDisplayPrice = (
@@ -34,17 +32,21 @@ const formatDisplayPrice = (
   if (amount === undefined) return "N/A";
   const base = `$${amount.toFixed(2)}`;
   switch (model) {
-    case "hour": return `${base} / hour*`;
-    case "day": return `${base} / event day`;
-    case "week": return `${base} / week`;
-    default: return base;
+    case "hour":
+      return `${base} / hour*`;
+    case "day":
+      return `${base} / event day`;
+    case "week":
+      return `${base} / week`;
+    default:
+      return base;
   }
 };
 
 export default function ThankYou() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { cart, clearCart } = useCart(); // Get cart data and clear function
+  const { cart } = useCart(); // Get cart data and clear function
   const { data: session } = useSession(); // Get user session
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true); // Add loading state
@@ -79,79 +81,101 @@ export default function ThankYou() {
 
   useEffect(() => {
     if (stripeSessionId) {
-      console.log("Thank You page loaded with Stripe session, clearing cart:", stripeSessionId);
+      console.log(
+        "Thank You page loaded with Stripe session, clearing cart:",
+        stripeSessionId
+      );
       setIsLoading(false); // Stop loading once session ID is confirmed
     } else {
       // If no session ID, maybe redirect or show an error/different message
       console.warn("Thank You page loaded without Stripe session ID.");
       toast({
-          title: "Invalid Access",
-          description: "Booking confirmation requires a valid session.",
-          variant: "destructive"
+        title: "Invalid Access",
+        description: "Booking confirmation requires a valid session.",
+        variant: "destructive",
       });
       // Redirect after a delay if no session ID and no cart (likely direct access)
       if (!cart) {
-          const redirectTimer = setTimeout(() => router.push(rootRoute.value), 3000);
-          return () => clearTimeout(redirectTimer);
+        const redirectTimer = setTimeout(
+          () => router.push(rootRoute.value),
+          3000
+        );
+        return () => clearTimeout(redirectTimer);
       } else {
-          // If there's a cart but no session ID, maybe it was a different flow?
-          // Or just show the cart data without confirming payment? For now, stop loading.
-          setIsLoading(false);
+        // If there's a cart but no session ID, maybe it was a different flow?
+        // Or just show the cart data without confirming payment? For now, stop loading.
+        setIsLoading(false);
       }
     }
-  }, [stripeSessionId, router, toast]); // Add cart to dependencies
+  }, [stripeSessionId, router, toast, cart]); // Add cart to dependencies
 
   // Show loading or invalid access message
   if (isLoading && stripeSessionId) {
-      return (
-          <div className="min-h-screen flex flex-col items-center justify-center bg-background">
-              <p>Loading confirmation...</p>
-          </div>
-      );
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background">
+        <p>Loading confirmation...</p>
+      </div>
+    );
   }
 
   // Handle case where cart is empty but we expected data (e.g., after clearCart or direct access)
   // We check specifically if we expected data because of stripeSessionId
   if (!venue && stripeSessionId) {
-     return (
-          <div className="min-h-screen flex flex-col bg-background">
-              <Navbar />
-              <main className="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
-                  <div className="text-center">
-                      <h1 className="text-2xl font-bold mb-4">Confirmation Details Unavailable</h1>
-                      <p className="text-muted-foreground mb-6">Could not load booking details. Please check your email or account dashboard.</p>
-                      <Button onClick={() => router.push(rootRoute.value)}>Return to Home</Button>
-                  </div>
-              </main>
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <main className="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-4">
+              Confirmation Details Unavailable
+            </h1>
+            <p className="text-muted-foreground mb-6">
+              Could not load booking details. Please check your email or account
+              dashboard.
+            </p>
+            <Button onClick={() => router.push(rootRoute.value)}>
+              Return to Home
+            </Button>
           </div>
-     )
+        </main>
+      </div>
+    );
   }
   // If no stripeSessionId and no cart, show generic message or redirect (handled partly in useEffect)
   if (!venue && !stripeSessionId) {
-       return (
-          <div className="min-h-screen flex flex-col bg-background">
-              <Navbar />
-              <main className="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
-                  <div className="text-center">
-                      <h1 className="text-2xl font-bold mb-4">No Booking Found</h1>
-                      <p className="text-muted-foreground mb-6">It seems there's no active booking to display.</p>
-                      <Button onClick={() => router.push(rootRoute.value)}>Return to Home</Button>
-                  </div>
-              </main>
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <main className="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-4">No Booking Found</h1>
+            <p className="text-muted-foreground mb-6">
+              It seems there&apos;s no active booking to display.
+            </p>
+            <Button onClick={() => router.push(rootRoute.value)}>
+              Return to Home
+            </Button>
           </div>
-       )
+        </main>
+      </div>
+    );
   }
 
   // --- Render Confirmation Details using Cart Data ---
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      <main className="flex-grow container mx-auto px-4 py-8 mt-10"> {/* Added margin-top */}
-        <Button variant="ghost" className="mb-6 hover:bg-transparent hover:text-primary" onClick={() => router.push(rootRoute.value)}>
+      <main className="flex-grow container mx-auto px-4 py-8 mt-10">
+        {" "}
+        {/* Added margin-top */}
+        <Button
+          variant="ghost"
+          className="mb-6 hover:bg-transparent hover:text-primary"
+          onClick={() => router.push(rootRoute.value)}
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to home
         </Button>
-
         <div className="max-w-6xl mx-auto">
           <AnimatedSection animation="fade-in">
             <div className="flex flex-col items-center text-center mb-10">
@@ -160,7 +184,8 @@ export default function ThankYou() {
               </div>
               <h1 className="text-3xl font-bold mb-2">Booking Confirmed!</h1>
               <p className="text-muted-foreground max-w-lg">
-                We've sent a confirmation email to {session?.user?.email || 'your email address'}.
+                We&apos;ve sent a confirmation email to{" "}
+                {session?.user?.email || "your email address"}.
               </p>
             </div>
           </AnimatedSection>
@@ -174,9 +199,9 @@ export default function ThankYou() {
                     <CardTitle className="flex justify-between items-center text-xl md:text-2xl">
                       <span>Booked Venue Details</span>
                       {stripeSessionId && (
-                          <span className="text-sm md:text-base font-normal rounded-lg bg-green-100 px-2 py-1 text-green-800">
-                              Ref: ...{stripeSessionId.slice(-8)}
-                          </span>
+                        <span className="text-sm md:text-base font-normal rounded-lg bg-green-100 px-2 py-1 text-green-800">
+                          Ref: ...{stripeSessionId.slice(-8)}
+                        </span>
                       )}
                     </CardTitle>
                   </CardHeader>
@@ -190,7 +215,9 @@ export default function ThankYou() {
                             {venue?.rating && venue.rating.count > 0 && (
                               <div className="flex items-center bg-secondary px-2 py-1 rounded-full">
                                 <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 mr-1" />
-                                <span className="text-xs font-medium">{venue.rating.average.toFixed(1)}</span>
+                                <span className="text-xs font-medium">
+                                  {venue.rating.average.toFixed(1)}
+                                </span>
                               </div>
                             )}
                           </h3>
@@ -205,22 +232,29 @@ export default function ThankYou() {
                         <div className="flex items-start space-x-3">
                           <Calendar className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
                           <div>
-                            <p className="text-sm text-muted-foreground">Event Date(s)</p>
+                            <p className="text-sm text-muted-foreground">
+                              Event Date(s)
+                            </p>
                             <p className="font-medium">
-                                {selectedDates.length === 0 ? "N/A" :
-                                 selectedDates.length === 1 ? selectedDates[0] :
-                                 `${selectedDates[0]} to ${selectedDates[selectedDates.length - 1]}`}
-                                 {selectedDates.length > 1 && ` (${selectedDates.length} days)`}
+                              {selectedDates.length === 0
+                                ? "N/A"
+                                : selectedDates.length === 1
+                                  ? selectedDates[0]
+                                  : `${selectedDates[0]} to ${selectedDates[selectedDates.length - 1]}`}
+                              {selectedDates.length > 1 &&
+                                ` (${selectedDates.length} days)`}
                             </p>
                           </div>
                         </div>
 
                         <div className="flex items-start space-x-3">
                           <Clock className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
-                           <div>
-                               <p className="text-sm text-muted-foreground">Time Slot</p>
-                               <p className="font-medium">{timeSlot}</p>
-                           </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">
+                              Time Slot
+                            </p>
+                            <p className="font-medium">{timeSlot}</p>
+                          </div>
                         </div>
                       </div>
 
@@ -228,9 +262,13 @@ export default function ThankYou() {
                       <div className="flex items-start space-x-3">
                         <MapPin className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-sm text-muted-foreground">Location</p>
+                          <p className="text-sm text-muted-foreground">
+                            Location
+                          </p>
                           <p className="font-medium">
-                            {venue?.location?.address || venue?.location?.city || "Location N/A"}
+                            {venue?.location?.address ||
+                              venue?.location?.city ||
+                              "Location N/A"}
                           </p>
                           {/* Optional: Add Get Directions button if lat/lng available */}
                         </div>
@@ -239,11 +277,14 @@ export default function ThankYou() {
                       {/* Venue Image */}
                       {venue?.images && venue.images.length > 0 && (
                         <div className="rounded-lg overflow-hidden aspect-[16/9] mt-2">
-                          <img
-                            src={venue.images[0].url}
-                            alt={venue.images[0].alt || venue.name}
-                            className="w-full h-full object-cover"
-                          />
+                          <div className="relative w-full h-full">
+                            <Image
+                              src={venue.images[0].url}
+                              alt={venue.images[0].alt || venue.name}
+                              fill
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
                         </div>
                       )}
                       {/* Optional: View Photos Button */}
@@ -255,45 +296,64 @@ export default function ThankYou() {
 
               {/* Services Details Card */}
               {services.length > 0 && (
-                <AnimatedSection animation="fade-in" delay={200} className="mt-8">
+                <AnimatedSection
+                  animation="fade-in"
+                  delay={200}
+                  className="mt-8"
+                >
                   <Card>
                     <CardHeader className="border-b">
-                      <CardTitle className="text-xl md:text-2xl">Booked Services</CardTitle>
+                      <CardTitle className="text-xl md:text-2xl">
+                        Booked Services
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-6">
                       <div className="space-y-6">
                         {services.map((service) => (
-                          <div key={service.id} className="flex flex-col sm:flex-row gap-4">
+                          <div
+                            key={service.id}
+                            className="flex flex-col sm:flex-row gap-4"
+                          >
                             {/* Service Image */}
                             <div className="w-full sm:w-1/4 flex-shrink-0">
                               <div className="rounded-lg overflow-hidden aspect-video bg-muted">
-                                {service.image && (
-                                    <img
-                                        src={service.image}
-                                        alt={service.name}
-                                        className="w-full h-full object-cover"
+                                <div className="relative w-full h-full">
+                                  {service.image && (
+                                    <Image
+                                      fill
+                                      src={service.image}
+                                      alt={service.name}
+                                      className="w-full h-full object-cover"
                                     />
-                                )}
+                                  )}
+                                </div>
                               </div>
                             </div>
                             {/* Service Info */}
                             <div className="flex-1">
                               <div className="flex justify-between items-start">
                                 <div>
-                                  <h3 className="font-semibold">{service.name}</h3>
+                                  <h3 className="font-semibold">
+                                    {service.name}
+                                  </h3>
                                   {/* Display service dates */}
                                   <div className="flex items-center mt-1 text-xs bg-secondary px-1.5 py-0.5 rounded-full w-fit border">
-                                      <Calendar className="h-3 w-3 mr-1 text-muted-foreground" />
-                                      <span className="text-muted-foreground">
-                                          {/* Logic to display service dates based on selection */}
-                                          {service.selectedDays.length === 0 && selectedDates.length === 1 ? `Event day (${selectedDates[0]})` :
-                                           service.selectedDays.length > 0 ? `${service.selectedDays.length} day(s)` :
-                                           'Event duration'}
-                                      </span>
+                                    <Calendar className="h-3 w-3 mr-1 text-muted-foreground" />
+                                    <span className="text-muted-foreground">
+                                      {/* Logic to display service dates based on selection */}
+                                      {service.selectedDays.length === 0 &&
+                                      selectedDates.length === 1
+                                        ? `Event day (${selectedDates[0]})`
+                                        : service.selectedDays.length > 0
+                                          ? `${service.selectedDays.length} day(s)`
+                                          : "Event duration"}
+                                    </span>
                                   </div>
                                 </div>
                                 <span className="font-semibold">
-                                    {formatDisplayPrice(service.totalCalculatedPrice)}
+                                  {formatDisplayPrice(
+                                    service.totalCalculatedPrice
+                                  )}
                                 </span>
                               </div>
                               {/* Optional: View Details Button */}
@@ -315,20 +375,27 @@ export default function ThankYou() {
                 <AnimatedSection animation="fade-in" delay={300}>
                   <Card>
                     <CardHeader className="border-b">
-                      <CardTitle className="text-xl md:text-2xl">Payment Summary</CardTitle>
+                      <CardTitle className="text-xl md:text-2xl">
+                        Payment Summary
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-6">
                       <div className="space-y-2">
                         {/* Display calculated totals */}
                         <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Venue ({selectedDates.length} day{selectedDates.length !== 1 ? 's' : ''})</span>
+                          <span className="text-muted-foreground">
+                            Venue ({selectedDates.length} day
+                            {selectedDates.length !== 1 ? "s" : ""})
+                          </span>
                           <span>{formatDisplayPrice(venuePrice)}</span>
                         </div>
                         {servicesTotal > 0 && (
-                            <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">Services ({services.length})</span>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">
+                              Services ({services.length})
+                            </span>
                             <span>{formatDisplayPrice(servicesTotal)}</span>
-                            </div>
+                          </div>
                         )}
                         {/* Add placeholders for fees/taxes if needed, otherwise omit */}
                         {/* <div className="flex justify-between text-sm">...</div> */}
@@ -346,7 +413,9 @@ export default function ThankYou() {
                           <CreditCard className="h-4 w-4 mr-2 text-muted-foreground shrink-0 mt-0.5" />
                           <div>
                             <p className="font-medium">Payment Method</p>
-                            <p className="text-muted-foreground">Card (via Stripe)</p>
+                            <p className="text-muted-foreground">
+                              Card (via Stripe)
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -358,28 +427,31 @@ export default function ThankYou() {
                 <AnimatedSection animation="fade-in" delay={400}>
                   <Card>
                     <CardHeader className="border-b">
-                      <CardTitle className="text-xl md:text-2xl">Need Help?</CardTitle>
+                      <CardTitle className="text-xl md:text-2xl">
+                        Need Help?
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-6">
                       <div className="space-y-4">
                         <p className="text-sm text-muted-foreground">
-                          Questions about your booking? Contact our support team or view your bookings in your dashboard.
+                          Questions about your booking? Contact our support team
+                          or view your bookings in your dashboard.
                         </p>
                         <Button
                           variant="outline"
                           className="w-full"
-                          onClick={() => router.push('/help-center')} // Update with your help route
+                          onClick={() => router.push("/help-center")} // Update with your help route
                         >
                           <PhoneCall className="mr-2 h-4 w-4" /> Contact Support
                         </Button>
                         {session?.user && (
-                            <Button
-                                variant="outline"
-                                className="w-full"
-                                onClick={() => router.push('/account/bookings')}
-                            >
-                                <Calendar className="mr-2 h-4 w-4" /> My Bookings
-                            </Button>
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => router.push("/account/bookings")}
+                          >
+                            <Calendar className="mr-2 h-4 w-4" /> My Bookings
+                          </Button>
                         )}
                       </div>
                     </CardContent>
@@ -393,7 +465,7 @@ export default function ThankYou() {
                     size="lg" // Make it prominent
                     onClick={() => router.push(rootRoute.value)}
                   >
-                     <Home className="mr-2 h-5 w-5" /> Return to Homepage
+                    <Home className="mr-2 h-5 w-5" /> Return to Homepage
                   </Button>
                 </AnimatedSection>
               </div>
@@ -403,4 +475,4 @@ export default function ThankYou() {
       </main>
     </div>
   );
-};
+}
