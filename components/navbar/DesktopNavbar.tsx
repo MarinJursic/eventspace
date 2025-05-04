@@ -10,7 +10,7 @@ import { User } from "next-auth";
 
 type DesktopNavbarProps = {
   isAuthenticated: boolean;
-  user: User;
+  user: User | undefined;
   openAuthModal: (tab: "login" | "signup") => void;
 };
 

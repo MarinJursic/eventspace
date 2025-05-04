@@ -6,7 +6,7 @@ export const defaultVenueClientState: IVenueClientState = {
     address: "",
     city: "",
     street: "",
-    houseNumber: 0,
+    houseNumber: "",
     country: "",
     postalCode: "",
     lat: 45.813093,

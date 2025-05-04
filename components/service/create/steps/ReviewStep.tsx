@@ -134,12 +134,15 @@ export default function ReviewStep({
                         key={index}
                         className="aspect-square rounded-md overflow-hidden"
                       >
-                        <Image
-                          src={image.url}
-                          alt={image.alt}
-                          fill
-                          className="w-full h-full object-cover"
-                        />
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={image.url}
+                            alt={image.alt}
+                            fill
+                            className="w-full h-full object-cover"
+                            objectFit="cover"
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>

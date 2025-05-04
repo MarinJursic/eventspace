@@ -4,11 +4,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ServiceCard from "../ui/ServiceCard"; // Assuming path is correct
 import AnimatedSection from "@/components/ui/AnimatedSection";
-import { SerializedService } from "../service/details/ServiceDetailClient";
 import { Badge } from "@/components/ui/badge"; // Import Badge
+import { SerializedServiceListItem } from "@/lib/actions/serviceActions";
 
 // Helper function to format price (can be moved to utils)
-const formatPrice = (service: SerializedService): string => {
+const formatPrice = (service: SerializedServiceListItem): string => {
   if (!service?.price) return "N/A"; // Add safety check
   const base = `$${service.price.basePrice.toLocaleString()}`;
   switch (service.price.model) {
@@ -25,7 +25,7 @@ const formatPrice = (service: SerializedService): string => {
 
 // Define props for the component to accept fetched data
 interface FeaturedServicesProps {
-  services: SerializedService[]; // Expect services as a prop
+  services: SerializedServiceListItem[]; // Expect services as a prop
 }
 
 // Make it a regular functional component accepting props

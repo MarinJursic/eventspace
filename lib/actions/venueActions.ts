@@ -13,7 +13,7 @@ import EnumModel, { IEnum, IEnumValue } from "../database/schemas/enum";
 import User from "../database/schemas/user";
 import { createVenueSchema } from "../database/zod-schema-validators/venue";
 import cloudinary from "../config/cloudinary";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Adjust path if needed
+import { authOptions } from "../config/nextAuthConfig";
 import { serializeData } from "../utils/serializeData"; // Adjust path if needed
 import Review from "../database/schemas/review";
 import Enum from "../database/schemas/enum";
@@ -221,7 +221,7 @@ export async function createVenueAction(
   if (!session?.user?.id) {
     return { success: false, message: "Unauthorized: Not logged in." };
   }
-  if (!["vendor", "admin"].includes(session.user.role)) {
+  if (!session.user.role || !["vendor", "admin"].includes(session.user.role)) {
     return { success: false, message: "Forbidden: Insufficient permissions." };
   }
   console.log(

@@ -12,9 +12,10 @@ import Review from "../database/schemas/review"; // Import Review model for popu
 import Enum, { IEnum, IEnumValue } from "../database/schemas/enum"; // Import Enum model & interfaces
 import User from "../database/schemas/user"; // Import User model for population
 import { createServiceSchema } from "../database/zod-schema-validators/service"; // Import Service Zod schema
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Adjust path if needed
+import { authOptions } from "../config/nextAuthConfig"; // Import auth options
 import cloudinary from "../config/cloudinary";
 import { serializeData } from "../utils/serializeData";
+import { SerializedService } from "@/components/service/details/ServiceDetailClient";
 
 // --- Define Types for Serialized Data (Client-Facing) ---
 // (These should ideally live in a shared types file, e.g., types/shared.types.ts)
@@ -201,7 +202,7 @@ export async function createServiceAction(
   if (!session?.user?.id) {
     return { success: false, message: "Unauthorized: Not logged in." };
   }
-  if (!["vendor", "admin"].includes(session.user.role)) {
+  if (!["vendor", "admin"].includes(session.user.role ?? "")) {
     return { success: false, message: "Forbidden: Insufficient permissions." };
   }
   console.log(
@@ -475,7 +476,7 @@ export async function getServiceById(
 // --- Fetch All Services (List View) ---
 export async function getAllServices(searchParams: {
   [key: string]: string | string[] | undefined;
-}): Promise<SerializedServiceListItem[]> {
+}): Promise<SerializedService[]> {
   // Return type for list items
   try {
     await connectToDatabase();
@@ -567,7 +568,7 @@ export async function getAllServices(searchParams: {
 
     // console.log(`Found and processed ${servicesDocs.length} services for list view.`);
     // Cast to the list item type
-    return serializeData(servicesDocs) as SerializedServiceListItem[];
+    return serializeData(servicesDocs) as SerializedService[];
   } catch (error) {
     console.error("Error fetching all services:", error);
     return [];

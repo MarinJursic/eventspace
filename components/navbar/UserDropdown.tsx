@@ -17,7 +17,7 @@ import { signOut } from "next-auth/react";
 import { User } from "next-auth";
 
 type UserDropdownProps = {
-  user: User;
+  user: User | undefined;
 };
 
 const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {

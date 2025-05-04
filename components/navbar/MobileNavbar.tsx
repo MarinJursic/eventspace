@@ -8,7 +8,7 @@ import { User } from "next-auth";
 
 type MobileNavbarProps = {
   isAuthenticated: boolean;
-  user: User;
+  user: User | undefined;
   toggleMenu: () => void;
   openAuthModal: (tab: "login" | "signup") => void;
 };

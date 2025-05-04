@@ -106,7 +106,7 @@ const CreateService: React.FC = () => {
   useEffect(() => {
     if (formState?.success) {
       toast({
-        title: "Venue Submitted",
+        title: "Service Submitted",
         description: formState.message,
       });
       // Optionally redirect after a delay or based on response

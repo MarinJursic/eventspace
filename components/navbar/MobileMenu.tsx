@@ -9,7 +9,7 @@ import { User } from "next-auth";
 
 type MobileMenuProps = {
   isAuthenticated: boolean;
-  user: User;
+  user: User | undefined;
   toggleMenu: () => void;
   handleLogout: () => void;
 };
