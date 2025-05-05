@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Edit, Trash, Search, Star } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,11 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/useToast";
-import { createServiceRoute, createVenueRoute } from "@/lib/constants/route.constants";
+import {
+  createServiceRoute,
+  createVenueRoute,
+} from "@/lib/constants/route.constants";
+import Image from "next/image";
 
 // Mock data for venues
 const mockVenues = [
@@ -147,7 +151,7 @@ const VendorVenues: React.FC = () => {
   const handleDeleteItem = (type: string, id: number) => {
     toast({
       title: `${type} Deleted`,
-      description: `The ${type.toLowerCase()} has been deleted.`,
+      description: `The ${type.toLowerCase()} #${id} has been deleted.`,
     });
   };
 
@@ -162,7 +166,7 @@ const VendorVenues: React.FC = () => {
             <Plus className="mr-2 h-4 w-4" /> Create Venue
           </Button>
         ) : (
-            <Button onClick={() => router.push(createServiceRoute.value)}>
+          <Button onClick={() => router.push(createServiceRoute.value)}>
             <Plus className="mr-2 h-4 w-4" /> Create Service
           </Button>
         )}
@@ -192,11 +196,14 @@ const VendorVenues: React.FC = () => {
               <Card key={venue.id} className="overflow-hidden">
                 <div className="flex flex-col md:flex-row">
                   <div className="md:w-1/4 h-48 md:h-auto">
-                    <img
-                      src={venue.image}
-                      alt={venue.name}
-                      className="w-full h-full object-cover"
-                    />
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={venue.image}
+                        alt={venue.name}
+                        fill
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   </div>
                   <div className="flex-1 p-6">
                     <div className="flex justify-between">
@@ -278,11 +285,14 @@ const VendorVenues: React.FC = () => {
               <Card key={service.id} className="overflow-hidden">
                 <div className="flex flex-col md:flex-row">
                   <div className="md:w-1/4 h-48 md:h-auto">
-                    <img
-                      src={service.image}
-                      alt={service.name}
-                      className="w-full h-full object-cover"
-                    />
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={service.image}
+                        alt={service.name}
+                        fill
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   </div>
                   <div className="flex-1 p-6">
                     <div className="flex justify-between">

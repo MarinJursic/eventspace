@@ -163,8 +163,9 @@ export default function ReviewStep({ venue }: { venue: IVenueClientState }) {
                         <Image
                           src={image.url}
                           alt={image.alt}
-                          className="w-full h-full object-cover"
-                          fill
+                          width={200}
+                          height={200}
+                          objectFit="cover"
                         />
                       </div>
                     ))}

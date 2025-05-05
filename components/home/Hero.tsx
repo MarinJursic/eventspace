@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import SearchBar from "../ui/SearchBar";
 import AnimatedSection from "../ui/AnimatedSection";
 import { Building, ShoppingBag } from "lucide-react";
+import Image from "next/image";
 
 const Hero: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -108,26 +109,55 @@ const Hero: React.FC = () => {
 
           <AnimatedSection animation="fade-in" delay={700}>
             <div className="flex flex-wrap justify-center items-center gap-8 opacity-70">
-              <img
-                src="https://sm-img.imgix.net/cms/eventim_e5a9c39a35.png"
-                alt="Partner 1"
-                className="h-9 md:h-12"
-              />
-              <img
-                src="https://download.logo.wine/logo/WeWork/WeWork-Logo.wine.png"
-                alt="Partner 2"
-                className="h-9 md:h-12"
-              />
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Airbnb_Logo_B%C3%A9lo.svg/2560px-Airbnb_Logo_B%C3%A9lo.svg.png"
-                alt="Partner 3"
-                className="h-6 md:h-8"
-              />
-              <img
-                src="https://i0.wp.com/www.kruzovi.com/wp-content/uploads/2018/08/bookingcom-logo.png?fit=512%2C512"
-                alt="Partner 4"
-                className="h-16 md:h-24"
-              />
+              {/* Partner 1 */}
+              <div className="relative h-9 md:h-12 w-1/5 aspect-[W/H]">
+                {" "}
+                {/* Adjust aspect ratio if known, or let objectFit handle width */}
+                {/* Note: You might need to estimate aspect ratio 'W/H' or give it enough width */}
+                {/* Example: If aspect is 3:1, maybe add w-28 md:w-36 */}
+                <Image
+                  src="https://sm-img.imgix.net/cms/eventim_e5a9c39a35.png"
+                  alt="Partner 1"
+                  layout="fill"
+                  objectFit="contain" // Ensures the whole image fits within the dimensions
+                />
+              </div>
+
+              {/* Partner 2 */}
+              <div className="relative h-9 md:h-12 w-1/5 aspect-[W/H]">
+                {" "}
+                {/* Estimate aspect, e.g., w-16 md:w-24 */}
+                <Image
+                  src="https://download.logo.wine/logo/WeWork/WeWork-Logo.wine.png"
+                  alt="Partner 2"
+                  layout="fill"
+                  objectFit="contain"
+                />
+              </div>
+
+              {/* Partner 3 */}
+              <div className="relative h-6 md:h-8 w-1/5 aspect-[W/H]">
+                {" "}
+                {/* Estimate aspect, e.g., w-24 md:w-32 */}
+                <Image
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Airbnb_Logo_B%C3%A9lo.svg/2560px-Airbnb_Logo_B%C3%A9lo.svg.png"
+                  alt="Partner 3"
+                  layout="fill"
+                  objectFit="contain"
+                />
+              </div>
+
+              {/* Partner 4 */}
+              <div className="relative h-16 md:h-24 w-1/5 aspect-[W/H]">
+                {" "}
+                {/* Estimate aspect, e.g., w-32 md:w-48 */}
+                <Image
+                  src="https://i0.wp.com/www.kruzovi.com/wp-content/uploads/2018/08/bookingcom-logo.png?fit=512%2C512"
+                  alt="Partner 4"
+                  layout="fill"
+                  objectFit="contain"
+                />
+              </div>
             </div>
           </AnimatedSection>
         </div>

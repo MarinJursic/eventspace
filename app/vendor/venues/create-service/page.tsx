@@ -1,270 +1,350 @@
-// /app/vendor/venues/create-service/page.tsx
-
 "use client";
 
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useFormStatus } from "react-dom";
+import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Save, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { useSession } from "next-auth/react";
+import clsx from "clsx";
+import BasicInfoStep from "@/components/service/create/steps/basic-info/BasicInfoStep";
+import LocationStep from "@/components/service/create/steps/location/LocationStep";
+import MediaStep from "@/components/MediaStep";
+import FeaturesStep from "@/components/service/create/steps/features/FeaturesStep";
+import PoliciesStep from "@/components/service/create/steps/PoliciesStep";
+import AvailabilityStep from "@/components/service/create/steps/availability/AvailabilityStep";
+import PricingStep from "@/components/service/create/steps/PricingStep";
+import ReviewStep from "@/components/service/create/steps/ReviewStep";
+import {
+  createServiceAction,
+  CreateServiceActionState,
+} from "@/lib/actions/serviceActions";
+import { IServiceClientState } from "@/types/service.types";
+import { defaultServiceClientState } from "@/lib/defaults/service.default";
+import checkServiceValidityOnStep from "@/lib/utils/create-service/checkServiceValidity";
 
-// Step Component Imports (Ensure paths point to SERVICE steps)
-import BasicInfoStep from '@/components/service/create/steps/basic-info/BasicInfoStep';
-import LocationStep from '@/components/service/create/steps/location/LocationStep';
-import CategoriesStep from '@/components/service/create/steps/categories/CategoriesStep';
-import MediaStep from '@/components/service/create/steps/MediaStep'; // Use the generic MediaStep
-import FeaturesStep from '@/components/service/create/steps/features/FeaturesStep'; // Corrected import
-import PoliciesStep from '@/components/service/create/steps/PoliciesStep';
-import AvailabilityStep from '@/components/service/create/steps/availability/AvailabilityStep';
-import PricingStep from '@/components/service/create/steps/PricingStep';
-import ReviewStep from '@/components/service/create/steps/ReviewStep'; // ReviewStep displays previews
+function SubmitButton() {
+  const { pending } = useFormStatus();
 
-// Utility, API, Types, Defaults, Mappers
-import checkServiceValidityOnStep from '@/lib/utils/create-service/checkServiceValidity';
-import createService from '@/lib/api/services/createService'; // Use service API
-import getUserByEmail from '@/lib/api/users/getUserByEmail';
-import { IServiceClientState } from '@/types/service.types'; // Use service type
-import { defaultServiceClientState } from '@/lib/defaults/service.default'; // Use service default
-import { mapClientStateToServiceData } from '@/lib/mappers/service.mapper'; // Use service mapper
-import { IService } from '@/lib/database/schemas/service'; // Use service schema type
-import { API_CONFIG } from "@/lib/api/config";
-// import { Stepper } from '@/components/ui/Stepper'; // Optional
+  return (
+    <Button type="submit" disabled={pending} className="min-w-[150px]">
+      {" "}
+      {/* Added min-width */}
+      {pending ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Submitting...
+        </>
+      ) : (
+        <>
+          <Save className="mr-2 h-4 w-4" /> Submit Service
+        </>
+      )}
+    </Button>
+  );
+}
 
-// Define steps if using a Stepper component
-// const serviceSteps = [ ... ];
+const CreateService: React.FC = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [currentStep, setCurrentStep] = useState(0);
+  // State for building the service data across steps (includes image previews with blob URLs)
+  const [service, setService] = useState<IServiceClientState>(
+    defaultServiceClientState
+  );
+  // State specifically for holding the actual File objects selected in MediaStep
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
-export default function CreateService () {
-    const router = useRouter();
-    const { toast } = useToast();
-    const [currentStep, setCurrentStep] = useState(0);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+  // --- useActionState Hook for Server Action ---
+  const initialState: CreateServiceActionState = {
+    success: false,
+    message: "",
+  };
+  // `formAction` is the function to call the server action.
+  // `formState` holds the latest return value from `createServiceAction`.
+  const [formState, formAction] = useActionState(
+    createServiceAction,
+    initialState
+  );
+  // --- End useActionState ---
 
-    const { data: session } = useSession({
-        required: true,
-        onUnauthenticated() {
-            toast({ title: "Authentication Required", description: "Please log in to create a service.", variant: "destructive" });
-            router.push('/');
-        },
+  // Session check
+  const { data: session } = useSession({
+    required: true, // Redirects if not authenticated
+    onUnauthenticated() {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to create a service.",
+        variant: "destructive",
+      });
+      router.push("/"); // Redirect to home or login page
+    },
+  });
+
+  if (!session) {
+    router.push("/");
+  }
+
+  // Callback passed to MediaStep to update the list of actual File objects
+  const handleFilesUpdate = useCallback((files: File[]) => {
+    setSelectedFiles(files);
+    console.log("Parent (CreateService) received updated files:", files.length);
+  }, []); // Empty dependency array as it only calls setSelectedFiles
+
+  // --- Effect to handle action response ---
+  useEffect(() => {
+    if (formState?.success) {
+      toast({
+        title: "Service Submitted",
+        description: formState.message,
+      });
+      // Optionally redirect after a delay or based on response
+      // router.push('/vendor/venues');
+      // Reset local state maybe? Or rely on redirect.
+      // setVenue(defaultVenueClientState);
+      // setCurrentStep(0);
+    } else if (formState && !formState.success && formState.message) {
+      // Display specific field errors if available
+      let description = formState.message;
+      if (formState.errors?.fieldErrors) {
+        description +=
+          "\n" +
+          Object.entries(formState.errors.fieldErrors)
+            .map(([field, errors]) => `${field}: ${errors?.join(", ")}`)
+            .join("\n");
+      }
+      toast({
+        title: "Submission Failed",
+        description: description,
+        variant: "destructive",
+      });
+    }
+  }, [formState, toast, router]);
+  // --- End Response Handling Effect ---
+
+  // --- Effect for Cleaning Up Blob URLs ---
+  // Runs when the component unmounts
+  useEffect(() => {
+    const imagesToClean = service.images; // Capture the current images array
+    return () => {
+      console.log("CreateService cleanup: Revoking blob URLs...");
+      imagesToClean?.forEach((image) => {
+        // Check if the URL is a blob URL before revoking
+        if (image.url?.startsWith("blob:")) {
+          console.log("Revoking:", image.url);
+          URL.revokeObjectURL(image.url);
+        }
+      });
+    };
+  }, [service.images]); // Dependency ensures cleanup uses the latest image list if it changes
+  // --- End Cleanup Effect ---
+
+  // --- Navigation Handlers ---
+  const handleNext = () => {
+    if (!isStepValid) {
+      toast({
+        title: "Incomplete Step",
+        description: "Please fill all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+    window.scrollTo(0, 0);
+    setCurrentStep(Math.min(currentStep + 1, 8)); // 9 steps total (0-8)
+  };
+
+  const handlePrevious = () => {
+    window.scrollTo(0, 0);
+    setCurrentStep((prev) => Math.max(prev - 1, 0));
+  };
+  // --- End Navigation Handlers ---
+
+  // --- Step Validation ---
+  const isStepValid = checkServiceValidityOnStep(service, currentStep);
+  // --- End Step Validation ---
+
+  // --- Client Action Wrapper to Append Files ---
+  // This function intercepts the form submission, adds files, then calls the server action
+  const clientActionWrapper = async (formData: FormData) => {
+    console.log("Client Action Wrapper (Service): Appending files...");
+    selectedFiles.forEach((file) => {
+      // Use the key "files" that the server action expects
+      formData.append("files", file, file.name);
     });
-
-    // Initialize state using the default service state
-    const [service, setService] = useState<IServiceClientState>(defaultServiceClientState);
-
-    // --- Navigation ---
-    const handleNext = () => {
-        window.scrollTo(0, 0);
-        setCurrentStep(Math.min(currentStep + 1, 8)); // 9 steps total (0-8)
-    };
-
-    const handlePrevious = () => {
-        window.scrollTo(0, 0);
-        setCurrentStep((prev) => Math.max(prev - 1, 0));
-    };
-
-    // --- Submission Logic (with Cloudinary Upload) ---
-    const handleSubmit = async () => {
-        setIsSubmitting(true);
-        let uploadedImageUrls: { url: string; alt: string; caption: string }[] = [];
-        // Filter images that have a File object for upload
-        const imagesWithFiles = service.images?.filter((img) => img.file instanceof File) || [];
-        // Keep track of blob URLs to revoke later
-        const blobUrlsToRevoke: string[] = imagesWithFiles
-            .map((img) => img.url)
-            .filter((url) => url?.startsWith("blob:"));
-
-        try {
-            if (!session?.user?.email) {
-                toast({ title: "Authentication Error", description: "User session not found.", variant: "destructive" });
-                setIsSubmitting(false);
-                return;
-            }
-
-            // --- 1. Upload Images to Cloudinary (if new files exist) ---
-            if (imagesWithFiles.length > 0) {
-                const formData = new FormData();
-                imagesWithFiles.forEach((imgData) => {
-                    if (imgData.file) {
-                        formData.append("files", imgData.file, imgData.file.name); // Key 'files'
-                    }
-                });
-
-                console.log(`Attempting to upload ${imagesWithFiles.length} service image(s)...`);
-                const uploadResponse = await fetch(API_CONFIG.getApiRoute({ endpoint: "upload" }), {
-                    method: "POST",
-                    body: formData,
-                });
-
-                if (!uploadResponse.ok) {
-                    let errorMsg = "Service image upload failed";
-                    try {
-                        const errorData = await uploadResponse.json();
-                        errorMsg = errorData.error || errorMsg;
-                        console.error("Upload API Error Response:", errorData);
-                    } catch (e) {
-                        console.error("Failed to parse upload error response:", uploadResponse.statusText);
-                    }
-                    throw new Error(errorMsg);
-                }
-
-                const uploadResult = await uploadResponse.json();
-                console.log("Upload API Success Response:", uploadResult);
-
-                if (!uploadResult.urls || !Array.isArray(uploadResult.urls) || uploadResult.urls.length !== imagesWithFiles.length) {
-                    console.error("Mismatched upload results:", uploadResult);
-                    throw new Error("Image upload succeeded but response format was unexpected.");
-                }
-
-                // Map uploaded URLs back with original alt/caption
-                uploadedImageUrls = uploadResult.urls.map((url: string, index: number) => ({
-                    url: url, // Cloudinary URL
-                    alt: imagesWithFiles[index].alt || `Image of ${service.name || "service"}`,
-                    caption: imagesWithFiles[index].caption || imagesWithFiles[index]?.file?.name || `Uploaded Image ${index + 1}`,
-                }));
-            } else {
-                console.log("No new service images with File objects found to upload.");
-            }
-
-            // Combine existing Cloudinary URLs (if any) with newly uploaded ones
-            const finalImages = [
-                ...(service.images?.filter((img) => !img.file && img.url && !img.url.startsWith("blob:")).map(img => ({ url: img.url, alt: img.alt, caption: img.caption })) || []),
-                ...uploadedImageUrls,
-            ];
-            console.log("Final service images prepared for saving:", finalImages);
-
-            // --- 2. Prepare Final Service Data ---
-            let users = await getUserByEmail(session.user.email);
-            if (!users?.data?._id) {
-                throw new Error("Could not find user data.");
-            }
-
-            const finalServiceData: IServiceClientState = {
-                ...service,
-                owner: users.data._id.toString(),
-                location: { ...service.location, address: service.location.address || "/" }, // Ensure address exists
-                images: finalImages, // Use the combined list with Cloudinary URLs
-                // Ensure other potentially optional fields are correctly handled
-                features: service.features || [],
-                policies: service.policies || { listOfPolicies: [] },
-                bookedDates: service.bookedDates || [],
-                availabilityRules: service.availabilityRules || { blockedWeekdays: [] },
-                description: service.description || "",
-                type: service.type || "",
-            };
-
-            // --- 3. Map to Backend Schema and Submit ---
-            console.log("Mapping final client state to service data...");
-            const serviceDataToSave: IService = mapClientStateToServiceData(finalServiceData);
-            console.log("Service data ready for API:", serviceDataToSave);
-            const creationResult = await createService(serviceDataToSave); // Calls POST /api/v1/services
-
-            // --- 4. Final Toast (Success or Failure) ---
-            if (creationResult) {
-                toast({
-                    title: "Service Created Successfully",
-                    description: "Your service has been submitted for approval.",
-                });
-                router.push('/vendor/venues'); // Navigate back to the listings page
-            } else {
-                toast({
-                    title: "Failed to Create Service",
-                    description: "Could not save service data. Please check details and try again.",
-                    variant: "destructive",
-                });
-            }
-
-        } catch (error) {
-            console.error('Error submitting service:', error);
-            toast({
-                title: "Submission Error",
-                description: error instanceof Error ? error.message : "An unexpected error occurred during submission.",
-                variant: "destructive",
-            });
-        } finally {
-            setIsSubmitting(false);
-            // --- 5. Cleanup Blob URLs AFTER submission attempt ---
-            console.log("Revoking blob URLs for service images:", blobUrlsToRevoke);
-            blobUrlsToRevoke.forEach((url) => URL.revokeObjectURL(url));
-        }
-    };
-
-    // --- Step Rendering ---
-    const renderStepContent = () => {
-        switch (currentStep) {
-            case 0:
-                return <BasicInfoStep service={service} setService={setService} />;
-            case 1:
-                return <LocationStep service={service} setService={setService} />;
-            case 2:
-                return <CategoriesStep service={service} setService={setService} />;
-            case 3:
-                return <MediaStep service={service} setService={setService} />; // Use the generic MediaStep
-            case 4:
-                return <FeaturesStep service={service} setService={setService} />; // Features step
-            case 5:
-                return <PoliciesStep service={service} setService={setService} />;
-            case 6:
-                return <AvailabilityStep service={service} setService={setService} />;
-            case 7:
-                return <PricingStep service={service} setService={setService} />;
-            case 8:
-                // Pass the current service state (with blob URLs for previews)
-                return <ReviewStep service={service} />;
-            default:
-                return null;
-        }
-    };
-
-    // --- Validation ---
-    const isStepValid = checkServiceValidityOnStep(service, currentStep);
-
-    // --- JSX ---
-    return (
-        <div className="max-w-3xl mx-auto mt-20 pb-16">
-            {/* Optional Stepper */}
-            {/* <Stepper steps={serviceSteps} currentStep={currentStep} onStepClick={!isSubmitting ? setCurrentStep : undefined} /> */}
-
-            <div className="mt-8 bg-white rounded-xl border shadow-sm p-6 min-h-[450px]">
-                {renderStepContent()}
-            </div>
-
-            {/* Navigation Buttons */}
-            <div className="flex justify-between mt-6">
-                <Button
-                    variant="outline"
-                    onClick={handlePrevious}
-                    disabled={currentStep === 0 || isSubmitting}
-                >
-                    <ArrowLeft className="mr-2 h-4 w-4" /> Previous
-                </Button>
-
-                <div className="flex gap-2">
-                    {currentStep < 8 ? ( // Check if not the last step (Review step is 8)
-                        <Button
-                            onClick={handleNext}
-                            disabled={!isStepValid || isSubmitting}
-                        >
-                            Next <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                    ) : (
-                        <Button
-                            onClick={handleSubmit}
-                            disabled={isSubmitting || !isStepValid} // Ensure last step is also validated if needed
-                        >
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Submitting...
-                                </>
-                            ) : (
-                                <>
-                                    <Save className="mr-2 h-4 w-4" /> Submit Service
-                                </>
-                            )}
-                        </Button>
-                    )}
-                </div>
-            </div>
-        </div>
+    console.log(
+      `Client Action Wrapper (Service): Appended ${selectedFiles.length} files.`
     );
+    // Call the actual server action function bound by useActionState
+    formAction(formData);
+  };
+  // --- End Client Action Wrapper ---
+
+  // --- Function to Render Step Content (Excluding Media Step) ---
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 0:
+        return <BasicInfoStep service={service} setService={setService} />;
+      case 1:
+        return <LocationStep service={service} setService={setService} />;
+      //case 2:
+      //  return <CategoriesStep service={service} setService={setService} />;
+      // Step 3 (MediaStep) is handled separately
+      case 2:
+        return <FeaturesStep service={service} setService={setService} />;
+      case 4:
+        return <PoliciesStep service={service} setService={setService} />;
+      case 5:
+        return <AvailabilityStep service={service} setService={setService} />;
+      case 6:
+        return <PricingStep service={service} setService={setService} />;
+      case 7:
+        return <ReviewStep service={service} />; // Review step shows current state
+      default:
+        return null;
+    }
+  };
+  // --- End renderStepContent ---
+
+  // --- Render Logic ---
+  return (
+    <div className="max-w-3xl mx-auto mt-20 pb-16">
+      {/* Form uses the clientActionWrapper to ensure files are appended */}
+      <form action={clientActionWrapper}>
+        {/* --- Hidden Inputs for Service State Data --- */}
+        {/* Pass all relevant state fields needed by the server action */}
+        <input type="hidden" name="name" value={service.name} />
+        <input
+          type="hidden"
+          name="description"
+          value={service.description || ""}
+        />
+        <input type="hidden" name="type" value={service.type || ""} />
+        <input type="hidden" name="category" value={service.category} />
+        <input
+          type="hidden"
+          name="location.address"
+          value={service.location.address}
+        />
+        <input
+          type="hidden"
+          name="location.city"
+          value={service.location.city}
+        />
+        <input
+          type="hidden"
+          name="location.street"
+          value={service.location.street}
+        />
+        <input
+          type="hidden"
+          name="location.houseNumber"
+          value={service.location.houseNumber}
+        />
+        <input
+          type="hidden"
+          name="location.country"
+          value={service.location.country}
+        />
+        <input
+          type="hidden"
+          name="location.postalCode"
+          value={service.location.postalCode}
+        />
+        <input
+          type="hidden"
+          name="location.lat"
+          value={service.location.lat ?? ""}
+        />
+        <input
+          type="hidden"
+          name="location.lng"
+          value={service.location.lng ?? ""}
+        />
+        <input
+          type="hidden"
+          name="price.basePrice"
+          value={service.price.basePrice}
+        />
+        <input type="hidden" name="price.model" value={service.price.model} />
+        <input
+          type="hidden"
+          name="features"
+          value={service.features?.join(",") || ""}
+        />
+        <input
+          type="hidden"
+          name="policies.listOfPolicies"
+          value={JSON.stringify(service.policies?.listOfPolicies || [])}
+        />
+        <input
+          type="hidden"
+          name="availabilityRules.blockedWeekdays"
+          value={JSON.stringify(
+            service.availabilityRules?.blockedWeekdays || []
+          )}
+        />
+        {/* --- End Hidden Inputs --- */}
+
+        {/* --- Step Content Area --- */}
+        {/* Container for steps OTHER than MediaStep */}
+        <div
+          className={clsx(
+            "mt-8 bg-white rounded-xl border shadow-sm p-6 min-h-[450px]",
+            currentStep === 3 ? "hidden" : "block" // Hide when on MediaStep
+          )}
+        >
+          {renderStepContent()} {/* Renders steps 0, 1, 2, 4, 5, 6, 7, 8 */}
+        </div>
+
+        {/* Dedicated Container for MediaStep */}
+        <div
+          className={clsx(
+            "mt-8 bg-white rounded-xl border shadow-sm p-6 min-h-[450px]",
+            currentStep === 3 ? "block" : "hidden" // Show ONLY on MediaStep
+          )}
+        >
+          {/* Pass the handleFilesUpdate callback */}
+          <MediaStep
+            entity={service} // Pass service state
+            setEntity={setService} // Pass setter
+            onFilesUpdate={handleFilesUpdate} // Pass callback
+          />
+        </div>
+        {/* --- End Step Content Area --- */}
+
+        {/* --- Navigation Buttons --- */}
+        <div className="flex justify-between mt-6">
+          <Button
+            type="button" // Prevent form submission
+            variant="outline"
+            onClick={handlePrevious}
+            disabled={currentStep === 0} // Disable if first step or submitting
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" /> Previous
+          </Button>
+
+          <div className="flex gap-2">
+            {currentStep < 7 ? ( // If not the last step (Review step is 8)
+              <Button
+                type="button" // Prevent form submission
+                onClick={handleNext}
+                disabled={!isStepValid} // Disable if step invalid or submitting
+              >
+                Next <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            ) : (
+              // If on the last step (Review step)
+              <SubmitButton /> // Renders the submit button with pending state
+            )}
+          </div>
+        </div>
+        {/* --- End Navigation Buttons --- */}
+      </form>{" "}
+      {/* --- End Form Element --- */}
+    </div>
+  );
 };
+
+export default CreateService;

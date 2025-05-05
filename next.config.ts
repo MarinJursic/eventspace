@@ -1,15 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  typescript: {
-    // WARNING: This option will allow production builds even if there are type errors.
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    // WARNING: This will ignore ESLint errors during production builds.
-    ignoreDuringBuilds: true,
-  },
   images: {
     // --- Add or modify this section ---
     remotePatterns: [
@@ -27,7 +18,18 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "via.placeholder.com", // If you use placeholder images
+        hostname: "via.placeholder.com", // If you use placeholder imagescc
+      },
+      {
+        protocol: "https",
+        hostname: "sm-img.imgix.net",
+      },
+      // Allow all other domains (not recommended for production)
+      {
+        protocol: "https",
+        hostname: "**", // This will allow all domains
+        // port: '',
+        // pathname: '/**', // This will allow all paths
       },
     ],
     // --- End of images section ---

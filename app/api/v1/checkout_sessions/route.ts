@@ -1,11 +1,10 @@
-// /app/api/checkout_sessions/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { headers } from "next/headers";
-import { Resend } from 'resend';
+import { getVenueById } from "@/lib/actions/venueActions";
+import { getServiceById } from "@/lib/actions/serviceActions";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const resend = new Resend(process.env.RESEND_API_KEY!);
 
 // Update interface to include optional image
 interface CheckoutItem {
@@ -14,6 +13,7 @@ interface CheckoutItem {
   price: number;
   quantity: number;
   image?: string; // Make image optional
+  type: string;
 }
 
 export async function POST(req: NextRequest) {
@@ -31,21 +31,46 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    console.log("Items received for checkout:", items);
+
     // --- MODIFY line_items MAPPING ---
-    const line_items = items.map((item) => ({
-      price_data: {
-        currency: "usd",
-        product_data: {
-          name: item.name,
-          // --- USE THE IMAGE URL ---
-          // Stripe expects an array of image URLs
-          images: item.image ? [item.image] : [],
-          // -------------------------
+    const line_items = items.map(async (initItem) => {
+      let item = undefined;
+
+      if (initItem.type === "venue") {
+        item = await getVenueById(initItem.id);
+        if (!item) {
+          console.error(`Item with ID ${initItem.id} not found`);
+          return null; // Skip this item if not found
+        }
+      } else if (initItem.type === "service") {
+        item = await getServiceById(initItem.id);
+        if (!item) {
+          console.error(`Item with ID ${initItem.id} not found`);
+          return null; // Skip this item if not found
+        }
+      }
+
+      if (!item) {
+        console.error(`Item with ID ${initItem.id} not found`);
+        return null; // Skip this item if not found
+      }
+
+      return {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: item.name,
+            // --- USE THE IMAGE URL ---
+            // Stripe expects an array of image URLs
+            images: initItem.image ? [initItem.image] : [],
+            // -------------------------
+          },
+          unit_amount: Math.round(item.price.basePrice * 100), // Price in cents
         },
-        unit_amount: Math.round(item.price * 100), // Price in cents
-      },
-      quantity: item.quantity,
-    }));
+        quantity: initItem.quantity,
+      };
+    });
     // ---------------------------------
 
     // --- Add Metadata (Example) ---
@@ -53,14 +78,18 @@ export async function POST(req: NextRequest) {
     // back to your internal booking or order ID. You'll need this in the webhook.
     // You might need to get the user ID from the session or pass your internal ID from the frontend.
     const metadata = {
-        // internalBookingId: cart.internalId, // Example: if you have an ID in your cart context
-        // userId: session?.user?.id, // Example: if you can access session here
+      // internalBookingId: cart.internalId, // Example: if you have an ID in your cart context
+      // userId: session?.user?.id, // Example: if you can access session here
     };
     // -----------------------------
 
+    const resolvedLineItems = (await Promise.all(line_items)).filter(
+      (item): item is NonNullable<typeof item> => item !== null
+    );
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      line_items: line_items,
+      line_items: resolvedLineItems,
       mode: "payment",
       success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`, // Redirect here on success
       cancel_url: `${origin}/cart`, // Redirect here if canceled

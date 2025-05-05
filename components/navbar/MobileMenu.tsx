@@ -5,10 +5,11 @@ import Link from "next/link";
 import { X, LogOut, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
+import { User } from "next-auth";
 
 type MobileMenuProps = {
   isAuthenticated: boolean;
-  user: any;
+  user: User | undefined;
   toggleMenu: () => void;
   handleLogout: () => void;
 };
@@ -44,13 +45,13 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                   <p className="text-xs text-muted-foreground">
                     {user?.email}{" "}
                     <span className="capitalize ml-1">
-                      {user?.accountType === "admin" ? (
+                      {user?.role === "admin" ? (
                         <span className="flex items-center">
                           <Shield className="h-3 w-3 mr-1" />
                           Admin
                         </span>
                       ) : (
-                        `(${user?.accountType})`
+                        `(${user?.role})`
                       )}
                     </span>
                   </p>
@@ -95,7 +96,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           {isAuthenticated && (
             <>
               <div className="w-full h-px bg-border my-2"></div>
-              {user?.accountType === "admin" ? (
+              {user?.role === "admin" ? (
                 <>
                   <Link
                     href="/admin"
@@ -133,7 +134,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                     Switch to Vendor View
                   </Link>
                 </>
-              ) : user?.accountType === "vendor" ? (
+              ) : user?.role === "vendor" ? (
                 <>
                   <Link
                     href="/vendor"

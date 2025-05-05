@@ -23,7 +23,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSession } from "next-auth/react";
-import {venues} from "@/lib/mockVenues"
+import { venues } from "@/lib/mocks/mockVenues";
+import Image from "next/image";
 
 // Mock favorites data
 const mockVenueFavorites = venues;
@@ -79,8 +80,11 @@ const Favorites: React.FC = () => {
   const filteredVenues = venueFavorites.filter(
     (venue) =>
       venue.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      venue.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (venue.type && venue.type.toLowerCase().includes(searchQuery.toLowerCase()))
+      venue.location.address
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      (venue.type &&
+        venue.type.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const filteredServices = mockServiceFavorites.filter(
@@ -141,7 +145,7 @@ const Favorites: React.FC = () => {
                     key={venue.id}
                     venue={venue}
                     onRemove={() => removeVenueFavorite(venue.id)}
-                    onView={() => router.push(`/venues/${venue.id}`)}
+                    onView={() => console.log("View venue", venue.id)}
                   />
                 ))
               ) : (
@@ -168,7 +172,7 @@ const Favorites: React.FC = () => {
                     key={service.id}
                     service={service}
                     onRemove={() => removeServiceFavorite(service.id)}
-                    onView={() => router.push(`/services/${service.id}`)}
+                    onView={() => console.log("View service", service.id)}
                   />
                 ))
               ) : (
@@ -204,11 +208,15 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onRemove, onView }) => {
       <CardContent className="p-0">
         <div className="flex flex-col md:flex-row">
           <div className="w-full md:w-1/3 h-48 md:h-auto">
-            <img
-              src={venue.images[0]}
-              alt={venue.name}
-              className="w-full h-full object-cover"
-            />
+            <div className="relative w-full h-full">
+              <Image
+                src={venue.images[0].url}
+                alt={venue.name}
+                fill
+                className="w-full h-full object-cover"
+                objectFit="cover"
+              />
+            </div>
           </div>
           <div className="flex-1 p-6">
             <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
@@ -217,26 +225,26 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onRemove, onView }) => {
                 <div className="flex items-center space-x-2 mb-2">
                   <MapPin className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm text-muted-foreground">
-                    {venue.location}
+                    {venue.location.street} {venue.location.houseNumber}
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2 mb-4">
                   <Badge variant="outline">{venue.type}</Badge>
                   <Badge variant="outline">Up to {venue.capacity} guests</Badge>
-                  <Badge variant="outline">{venue.pricePerDay}</Badge>
+                  <Badge variant="outline">{venue.price.basePrice}</Badge>
                 </div>
               </div>
               <div className="flex flex-col items-start md:items-end gap-2">
                 <div className="flex items-center">
                   <span className="text-sm font-medium mr-1">
-                    {venue.rating}
+                    {venue.rating.average}
                   </span>
                   <div className="flex">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <svg
                         key={i}
                         className={`h-4 w-4 ${
-                          i < Math.floor(venue.rating)
+                          i < Math.floor(venue.rating.average)
                             ? "text-yellow-400"
                             : "text-gray-300"
                         }`}
@@ -303,11 +311,15 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       <CardContent className="p-0">
         <div className="flex flex-col md:flex-row">
           <div className="w-full md:w-1/4 h-48 md:h-auto">
-            <img
-              src={service.image}
-              alt={service.name}
-              className="w-full h-full object-cover"
-            />
+            <div className="relative w-full h-full">
+              <Image
+                src={service.image}
+                alt={service.name}
+                fill
+                className="w-full h-full object-cover"
+                objectFit="cover"
+              />
+            </div>
           </div>
           <div className="flex-1 p-6">
             <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">

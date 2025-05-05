@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Check, X, Search, Filter, Eye } from "lucide-react";
+import { Check, X, Search, Eye } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/useToast";
+import Image from "next/image";
 
 // --- Mock Data ---
 const mockVenues = [
@@ -40,7 +41,10 @@ const mockVenues = [
     email: "maria@example.com",
     capacity: 250,
     type: "Beach Resort",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    images: [
+      "https://res.cloudinary.com/dcelboq45/image/upload/v1745883904/eventspace_uploads/ynfv7w6nufjz7v4qevoa.jpg",
+      "https://res.cloudinary.com/dcelboq45/image/upload/v1745883904/eventspace_uploads/ynfv7w6nufjz7v4qevoa.jpg",
+    ],
     description:
       "A beautiful beach resort with ocean views and spacious event areas",
     price: "$3,500 - $5,200",
@@ -55,7 +59,10 @@ const mockVenues = [
     email: "sarah@example.com",
     capacity: 180,
     type: "Estate",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    images: [
+      "https://res.cloudinary.com/dcelboq45/image/upload/v1745883904/eventspace_uploads/ynfv7w6nufjz7v4qevoa.jpg",
+      "https://res.cloudinary.com/dcelboq45/image/upload/v1745883904/eventspace_uploads/ynfv7w6nufjz7v4qevoa.jpg",
+    ],
     description: "Elegant estate nestled in the mountains with panoramic views",
     price: "$2,800 - $4,500",
     location: "Denver, CO",
@@ -69,7 +76,10 @@ const mockVenues = [
     email: "james@example.com",
     capacity: 120,
     type: "Loft",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    images: [
+      "https://res.cloudinary.com/dcelboq45/image/upload/v1745883904/eventspace_uploads/ynfv7w6nufjz7v4qevoa.jpg",
+      "https://res.cloudinary.com/dcelboq45/image/upload/v1745883904/eventspace_uploads/ynfv7w6nufjz7v4qevoa.jpg",
+    ],
     description:
       "Modern urban loft with industrial charm in the heart of downtown",
     price: "$1,800 - $3,200",
@@ -86,7 +96,10 @@ const mockServices = [
     submitted: "2023-07-16",
     email: "david@example.com",
     type: "Catering",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    images: [
+      "https://res.cloudinary.com/dcelboq45/image/upload/v1745883904/eventspace_uploads/ynfv7w6nufjz7v4qevoa.jpg",
+      "https://res.cloudinary.com/dcelboq45/image/upload/v1745883904/eventspace_uploads/ynfv7w6nufjz7v4qevoa.jpg",
+    ],
     description: "Premium catering services with customizable menu options",
     price: "$45 - $85 per person",
     location: "Multiple Locations",
@@ -99,7 +112,10 @@ const mockServices = [
     submitted: "2023-07-17",
     email: "emily@example.com",
     type: "Photography",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    images: [
+      "https://res.cloudinary.com/dcelboq45/image/upload/v1745883904/eventspace_uploads/ynfv7w6nufjz7v4qevoa.jpg",
+      "https://res.cloudinary.com/dcelboq45/image/upload/v1745883904/eventspace_uploads/ynfv7w6nufjz7v4qevoa.jpg",
+    ],
     description: "Capturing your special moments with artistic flair",
     price: "$1,200 - $3,500 per event",
     location: "New York, NY",
@@ -112,7 +128,10 @@ const mockServices = [
     submitted: "2023-07-18",
     email: "michael@example.com",
     type: "Audio/Visual",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    images: [
+      "https://res.cloudinary.com/dcelboq45/image/upload/v1745883904/eventspace_uploads/ynfv7w6nufjz7v4qevoa.jpg",
+      "https://res.cloudinary.com/dcelboq45/image/upload/v1745883904/eventspace_uploads/ynfv7w6nufjz7v4qevoa.jpg",
+    ],
     description: "Professional sound and lighting solutions for any event",
     price: "$800 - $2,500",
     location: "Los Angeles, CA",
@@ -123,7 +142,7 @@ const mockServices = [
 type DetailItemType = (typeof mockVenues)[0] | (typeof mockServices)[0];
 
 const AdminApprovals: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("venues");
+  const [, setActiveTab] = useState("venues");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState<DetailItemType | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -242,8 +261,8 @@ const AdminApprovals: React.FC = () => {
                               venue.status === "pending"
                                 ? "outline"
                                 : venue.status === "approved"
-                                ? "default"
-                                : "destructive"
+                                  ? "default"
+                                  : "destructive"
                             }
                           >
                             {venue.status}
@@ -319,8 +338,8 @@ const AdminApprovals: React.FC = () => {
                               service.status === "pending"
                                 ? "outline"
                                 : service.status === "approved"
-                                ? "default"
-                                : "destructive"
+                                  ? "default"
+                                  : "destructive"
                             }
                           >
                             {service.status}
@@ -379,12 +398,16 @@ const AdminApprovals: React.FC = () => {
                 <h4 className="font-medium mb-2">Images</h4>
                 <div className="grid grid-cols-2 gap-2">
                   {selectedItem.images.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image}
-                      alt={`${selectedItem.name} image ${index + 1}`}
-                      className="w-full h-40 object-cover rounded-md"
-                    />
+                    <div className="relative w-full h-40" key={index}>
+                      <Image
+                        key={index}
+                        src={image}
+                        fill
+                        alt={`${selectedItem.name} image ${index + 1}`}
+                        className="w-full h-40 object-cover rounded-md"
+                        objectFit="cover"
+                      />
+                    </div>
                   ))}
                 </div>
 
@@ -424,8 +447,8 @@ const AdminApprovals: React.FC = () => {
                     selectedItem.status === "pending"
                       ? "outline"
                       : selectedItem.status === "approved"
-                      ? "default"
-                      : "destructive"
+                        ? "default"
+                        : "destructive"
                   }
                 >
                   {selectedItem.status}

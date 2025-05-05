@@ -1,14 +1,11 @@
 "use client";
 
 import React from "react";
-import { useRouter, usePathname } from "next/navigation";
-import Link from "next/link";
 import {
   Calendar,
   DollarSign,
   Users,
   Package,
-  BarChart3,
   Clock,
   TrendingUp,
   Award,
@@ -85,9 +82,6 @@ const recentBookings = [
 ];
 
 const VendorDashboard: React.FC = () => {
-  const router = useRouter();
-  const pathname = usePathname();
-
   return (
     <>
       {/* Summary Cards */}
