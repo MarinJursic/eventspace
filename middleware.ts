@@ -13,6 +13,8 @@ const publicPaths = [
   "/",
   "/venues", // Public listing
   "/services", // Public listing
+  "/cart",
+  "/thank-you",
   // Add other specific public pages like /about, /contact, etc. if they exist
 ];
 const publicApiPrefixes = [
