@@ -27,8 +27,6 @@ const adminPaths = ["/admin", "/api/admin"]; // Includes sub-paths like /admin/u
 const vendorPaths = ["/vendor", "/api/vendor"]; // Includes sub-paths like /vendor/bookings
 const authenticatedUserPaths = [
   "/account", // User dashboard
-  "/cart", // Cart requires login
-  "/thank-you", // Thank you page likely needs context, protect it
   "/api/v1/checkout_sessions", // Creating checkout needs auth
   "/api/v1/upload", // Uploading needs auth
   "/api/v1/bookings", // Creating/viewing own bookings needs auth
