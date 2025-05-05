@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   Calendar,
   Search,
@@ -117,7 +116,6 @@ const mockBookings = [
 type BookingStatus = "confirmed" | "pending" | "cancelled";
 
 const VendorBookings: React.FC = () => {
-  const router = useRouter();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");

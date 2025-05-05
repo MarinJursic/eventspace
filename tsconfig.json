@@ -1,5 +1,11 @@
 {
   "compilerOptions": {
+    "types": [
+      "vitest/globals",
+      "@testing-library/jest-dom",
+      "@testing-library/react",
+      "@testing-library/user-event"
+    ],
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -28,7 +34,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "types/**/*.d.ts",
-    "types/next-auth.d.ts"
+    "types/next-auth.d.ts",
+    "vitest.setup.ts", // <--- INCLUDE SETUP FILE
+    "vitest.config.ts" // <--- INCLUDE VITEST CONFIG
   ],
   "exclude": ["node_modules"]
 }

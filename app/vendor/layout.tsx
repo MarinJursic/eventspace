@@ -34,7 +34,11 @@ export default function VendorLayout (
             isExcludedFromVenueSidebar(pathname) ? <></> : <VenueSidebar />
           }
           <div className="flex-1">
-            <h1 className="text-3xl font-bold mb-6">{title}</h1>
+            <h1 className="text-3xl font-bold mb-6">
+              {
+                isExcludedFromVenueSidebar(pathname) ? "" : title
+              }
+            </h1>
             {children}
           </div>
         </div>

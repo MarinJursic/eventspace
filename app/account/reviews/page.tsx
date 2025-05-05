@@ -9,18 +9,8 @@ import {
   Edit,
   Trash,
   AlertCircle,
-  X,
-  CalendarIcon,
-  ChevronRight,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -35,6 +25,7 @@ import {
 import { useToast } from "@/hooks/useToast";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 // --- Define the valid types for reviews ---
 type ItemType = "venue" | "service";
@@ -293,7 +284,7 @@ const Reviews: React.FC = () => {
                 <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-medium mb-2">No reviews yet</h3>
                 <p className="text-muted-foreground mb-4">
-                  You haven't submitted any reviews yet
+                  You haven&apos;t submitted any reviews yet
                 </p>
                 {pendingReviews.length > 0 && (
                   <Button onClick={() => setActiveTab("pending")}>
@@ -318,7 +309,7 @@ const Reviews: React.FC = () => {
                 <CheckCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-medium mb-2">No pending reviews</h3>
                 <p className="text-muted-foreground">
-                  You don't have any pending reviews at the moment
+                  You don&apos;t have any pending reviews at the moment
                 </p>
               </div>
             )}
@@ -342,11 +333,15 @@ const Reviews: React.FC = () => {
               </DialogHeader>
               <div className="space-y-6 py-4">
                 <div className="flex items-center space-x-4">
-                  <img
-                    src={review.itemImage}
-                    alt={review.itemName}
-                    className="h-16 w-20 md:h-20 md:w-28 rounded-md object-cover"
-                  />
+                  <div className="relative h-16 w-16 md:h-20 md:w-20">
+                    <Image
+                      src={review.itemImage}
+                      alt={review.itemName}
+                      fill
+                      className="rounded-md object-cover"
+                    />
+                  </div>
+
                   <div>
                     <h3 className="font-medium">{review.itemName}</h3>
                     <p className="text-sm text-muted-foreground capitalize">
@@ -409,8 +404,8 @@ const Reviews: React.FC = () => {
                   {isSubmitting
                     ? "Submitting..."
                     : reviews.some((r) => r.id === review.id)
-                    ? "Update Review"
-                    : "Submit Review"}
+                      ? "Update Review"
+                      : "Submit Review"}
                 </Button>
               </DialogFooter>
             </>
@@ -437,11 +432,16 @@ const SubmittedReviewCard: React.FC<SubmittedReviewCardProps> = ({
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex items-start space-x-4">
-            <img
-              src={review.itemImage}
-              alt={review.itemName}
-              className="h-16 w-16 md:h-20 md:w-20 rounded-md object-cover"
-            />
+            <div className="relative h-16 w-16 md:h-20 md:w-20">
+              <Image
+                src={review.itemImage}
+                alt={review.itemName}
+                fill
+                className="h-16 w-16 md:h-20 md:w-20 rounded-md object-cover"
+                objectFit="cover"
+              />
+            </div>
+
             <div>
               <h3 className="font-medium">{review.itemName}</h3>
               <p className="text-sm text-muted-foreground capitalize">
@@ -507,11 +507,16 @@ const PendingReviewCard: React.FC<PendingReviewCardProps> = ({
     <Card>
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row items-center gap-4">
-          <img
-            src={pendingReview.itemImage}
-            alt={pendingReview.itemName}
-            className="h-16 w-16 md:h-20 md:w-20 rounded-md object-cover"
-          />
+          <div className="relative h-16 w-16 md:h-20 md:w-20">
+            <Image
+              fill
+              src={pendingReview.itemImage}
+              alt={pendingReview.itemName}
+              className="h-16 w-16 md:h-20 md:w-20 rounded-md object-cover"
+              objectFit="cover"
+            />
+          </div>
+
           <div className="flex-1">
             <h3 className="font-medium">{pendingReview.itemName}</h3>
             <p className="text-sm text-muted-foreground capitalize">

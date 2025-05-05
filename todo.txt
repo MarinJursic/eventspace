@@ -10,10 +10,6 @@ Evidencija booking-a: Postavljanje modela za booking (rezervacije) kako bi se us
 
 Slike i fileovi - treba dodat storage za to, cloudinary moja preporuka al ak se nade jos nes bolje recite. - Marin
 
-Landing page search funkcionalnost - Brkic
-
-Filter funkcionalnost i fixevi - na /services - Brkic
-
 Booking system i cart context - pobosljati ako se more viditi kako trenutno sve stoji - Luka
 
 UI popraviti - di god se nadu greske to risavati - Svi
@@ -30,10 +26,46 @@ Popravit typescript errore - SVI
 
 Optimizirat kod - splittat sve hookove napravit typeove performance poboljsat etc etc sve znas kume - SVI
 
----------------NAKON----------------------
 
-Customer Dashboard napraviti - Brkic
 
-Vendor Dashboard napraviti - Marin 
 
-Admin Dashboard napraviti
+
+NOVO
+
+Figma - pretvoriti cilu str u design i napraviti prototype koji more cili flow odraditi. (design.txt)
+
+Autorizacija - protectati sve API rute, middleware
+
+Venue Details Page - kada se stisne book now triba vodit na cart - rijeseno
+Footer - fixat gatherly - rijeseno
+
+Static site generation - stavit na static pageve, SSR isto
+
+Connect to MongoDB - fixat da se samo jednom connecta
+
+Booking thank you - lokacija se pokazuje samo "/", cart se ne emptya
+
+Mapa - dodati da se moze otvorit u novom tabu google maps
+
+External Venue - sjebano radi, triba fixat ili mozda maknut
+
+Hydration error - fixat
+
+Error handling - dodat loganje, Sentry koristit. Monitoring svega, /api/health ruta za provjeru da li servisi rade
+
+Build errori - build treba raditi bez ikakvih erorra il warninga
+
+npm errori - npm triba moc installat bez forcea ili iceg
+
+Security - Stripe, podatci iz baze, booking itd
+
+Metadata - dodat metadata na pageve
+
+Optimizirat kod - u svakom pogledu, imat 4 sloja, componenta, hook,service,api
+
+Testing - unit a i dok se builda i to, ako failaju testovi nemoze se buildat ni deployat
+
+CI/CD
+
+POPRAVITI Footer
+

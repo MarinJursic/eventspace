@@ -6,9 +6,11 @@ export const defaultServiceClientState: IServiceClientState = {
         address: '',
         city: '',
         street: '',
-        houseNumber: 0,
+        houseNumber: '',
         country: '',
-        postalCode: 0,
+        postalCode: '',
+        lat: 45.813093,
+        lng: 15.977643
     },
     price: {
         basePrice: 0,
