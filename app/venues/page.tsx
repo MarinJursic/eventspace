@@ -41,8 +41,6 @@ export default async function VenuesPage({ searchParams }: VenuesPageProps) {
     : [];
   const allCities = Array.isArray(citiesData) ? citiesData : [];
 
-  console.log(initialVenuesData);
-
   // Note: No need to handle notFound here unless getAllVenues throws an error
   // An empty list is a valid result for the listing page.
 

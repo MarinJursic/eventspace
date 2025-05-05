@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     // --- End Database Update Logic ---
 
     // --- Send Confirmation Email ---
-    const customerEmail = session.customer_details?.email;
+    const customerEmail = "marin.jursic@gmail.com"; //session.customer_details?.email;
     const customerName = session.customer_details?.name || "Valued Customer";
     const amountTotal = session.amount_total
       ? (session.amount_total / 100).toFixed(2)

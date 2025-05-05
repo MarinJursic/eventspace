@@ -266,9 +266,11 @@ export default function ThankYou() {
                             Location
                           </p>
                           <p className="font-medium">
-                            {venue?.location?.address ||
-                              venue?.location?.city ||
-                              "Location N/A"}
+                            {venue?.location?.street
+                              ? venue?.location?.street +
+                                " " +
+                                venue?.location?.houseNumber
+                              : "/"}
                           </p>
                           {/* Optional: Add Get Directions button if lat/lng available */}
                         </div>

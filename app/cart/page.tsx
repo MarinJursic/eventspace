@@ -154,6 +154,8 @@ const Cart: React.FC = () => {
         price: venuePrice, // Send the calculated TOTAL price for the venue duration
         quantity: 1,
         image: cart.venue.images?.[0]?.url || undefined, // Send the first venue image URL
+        dates: cart.selectedDates, // Send selected dates for the venue
+        type: "venue", // Optional: specify type for backend processing
       });
     }
 
@@ -168,6 +170,8 @@ const Cart: React.FC = () => {
           price: service.totalCalculatedPrice,
           quantity: 1,
           image: service.image || undefined, // Send the service image URL
+          dates: service.selectedDays, // Send selected days for the service
+          type: "service", // Optional: specify type for backend processing
         });
       }
     });

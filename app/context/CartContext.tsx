@@ -22,6 +22,8 @@ export interface CartVenue {
   location: {
     address: string;
     city?: string; // Make optional if not always needed
+    street?: string; // Optional
+    houseNumber?: string; // Optional
     // Add other location fields if needed by cart display
   };
   price: {
