@@ -155,6 +155,6 @@ export const config = {
      * - Files with extensions (e.g., .png, .jpg, .css)
      * This aims to run the middleware on pages and API routes.
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)",
+    "/((?!api/webhooks/stripe|_next/static|_next/image|favicon.ico).*)",
   ],
 };
