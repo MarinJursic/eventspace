@@ -1,31 +1,26 @@
-// components/venue/VenueDetailClient.tsx
-"use client"; // This component handles state and interactivity
+"use client";
 
 import React, { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link"; // Import Link for the Back button
-import { ArrowLeft } from "lucide-react"; // Import icon for Back button
-
-// Import Context Hooks
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import {
   useCart,
   CartVenue as CartContextVenueType,
-} from "@/app/context/CartContext"; // Adjust path as needed
-import { useToast } from "@/hooks/useToast"; // Adjust path as needed
-
-// Import UI Components
+} from "@/app/context/CartContext";
+import { useToast } from "@/hooks/useToast";
 import AnimatedSection from "@/components/ui/AnimatedSection";
-import VenueGallery from "./VenueGallery"; // Adjust path
-import VenueOverview from "./VenueOverview"; // Adjust path
-import VenueTabs from "./VenueTabs"; // Adjust path
-import VenueBookingSidebar from "./VenueBookingSidebar"; // Adjust path
-import DatePicker from "./DateTimePickerModal"; // Adjust path
-import ExternalVenueModal from "./ExternalVenueModal"; // Adjust path
-import { Button } from "@/components/ui/button"; // Import Button for fallbacks
-import { SerializedPopulatedVenue } from "@/lib/actions/venueActions";
+import VenueGallery from "./VenueGallery";
+import VenueOverview from "./VenueOverview";
+import VenueTabs from "./VenueTabs";
+import VenueBookingSidebar from "./VenueBookingSidebar";
+import DatePicker from "./DateTimePickerModal";
+import ExternalVenueModal from "./ExternalVenueModal";
+import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
+import { SerializedPopulatedVenue } from "@/types/venue.types";
 
 // --- Define Serialized Data Types (matching Server Action output) ---
-// Ensure these accurately reflect the structure AFTER serializeData() in venueActions.ts
 interface SerializedLocation {
   address: string;
   city?: string;
@@ -117,13 +112,14 @@ export interface SerializedVenueData {
 
 // --- Component Props ---
 interface VenueDetailClientProps {
-  venue: SerializedPopulatedVenue | null; // Accept serialized data or null
+  venue: SerializedPopulatedVenue | null;
 }
 
 const VenueDetailClient: React.FC<VenueDetailClientProps> = ({
   venue: initialVenue,
 }) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const { addVenue, addExternalVenue } = useCart();
   const { toast } = useToast();
 
@@ -163,6 +159,14 @@ const VenueDetailClient: React.FC<VenueDetailClientProps> = ({
   );
 
   const handleBookVenue = useCallback(() => {
+    if (!session) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to book a venue.",
+        variant: "destructive",
+      });
+      return;
+    }
     if (!initialVenue) {
       toast({
         title: "Error",
@@ -193,6 +197,7 @@ const VenueDetailClient: React.FC<VenueDetailClientProps> = ({
 
     addVenue(venueForCart, sortedDates, selectedTimeSlot);
     router.push("/cart");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     initialVenue,
     selectedVenueDates,
@@ -284,7 +289,7 @@ const VenueDetailClient: React.FC<VenueDetailClientProps> = ({
                     " " +
                     initialVenue.location.houseNumber
                   }
-                  rating={initialVenue.rating} // Pass rating object
+                  rating={initialVenue.rating}
                   capacity={initialVenue.capacity}
                   seating={initialVenue.seating}
                 />
@@ -294,8 +299,8 @@ const VenueDetailClient: React.FC<VenueDetailClientProps> = ({
                   name={initialVenue.name}
                   description={initialVenue.description || ""}
                   location={initialVenue.location}
-                  amenities={initialVenue.amenities || []} // Pass populated amenities
-                  reviews={reviews} // Pass extracted reviews
+                  amenities={initialVenue.amenities || []}
+                  reviews={reviews}
                   policies={initialVenue.policies?.listOfPolicies || []}
                 />
               </AnimatedSection>

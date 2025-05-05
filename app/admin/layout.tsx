@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/useToast";
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 

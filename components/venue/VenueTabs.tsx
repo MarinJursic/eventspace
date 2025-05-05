@@ -1,19 +1,14 @@
-// src/components/venue/VenueTabs.tsx
 "use client";
 
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator"; // Corrected path
-import { Button } from "@/components/ui/button"; // Corrected path
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import "leaflet/dist/leaflet.css";
-
-// Import amenity mapping and default icon
-import { amenityIconMap, DefaultAmenityIcon } from "./amenityIcons"; // Adjust path
-
-// Import icons needed within this component
-import { Star } from "lucide-react"; // Removed Check unless needed elsewhere
-import { SerializedPopulatedReview } from "@/lib/actions/serviceActions";
+import { amenityIconMap, DefaultAmenityIcon } from "./amenityIcons";
+import { Star } from "lucide-react";
+import { SerializedPopulatedReview } from "@/types/venue.types";
 
 // Dynamically import VenueMap
 const VenueMap = dynamic(() => import("./VenueMap"), {

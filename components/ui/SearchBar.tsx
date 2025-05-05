@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react"; // Removed ChevronDown as Combobox handles it
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { Button } from "@/components/ui/button";
 import { LocationCombobox } from "@/components/ui/LocationCombobox"; // Import the new component
 import { venues as mockVenues } from "@/lib/mocks/mockVenues"; // Import venues for cities

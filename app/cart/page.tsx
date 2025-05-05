@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// /app/cart/page.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -21,86 +20,13 @@ import {
 } from "@/app/context/CartContext";
 import { useToast } from "@/hooks/useToast";
 import AnimatedSection from "@/components/ui/AnimatedSection";
-import { mockServices } from "@/lib/mocks/mockServices"; // Assuming you still use this for recommendations
-import ServiceCard from "@/components/ui/ServiceCard"; // Added for recommended section
-import { Badge } from "@/components/ui/badge"; // Added for recommended section
 import Image from "next/image";
-// Stripe imports
 import { loadStripe, StripeError } from "@stripe/stripe-js";
+import { formatDisplayPrice } from "@/lib/utils/formatDisplayPrice";
 
-// Make sure to place your publishable key in the .env.local file
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
-
-// Helper function to format price
-const formatDisplayPrice = (
-  amount: number,
-  model?: "hour" | "day" | "week"
-): string => {
-  // Use toLocaleString for currency formatting if desired, otherwise keep simple
-  const base = `$${amount.toFixed(2)}`; // Ensure two decimal places
-  switch (model) {
-    case "hour":
-      return `${base} / hour*`;
-    case "day":
-      return `${base} / event day`;
-    case "week":
-      return `${base} / week`;
-    default:
-      return base;
-  }
-};
-
-// Recommended services data (adjust as needed or fetch dynamically)
-// Ensure IDs match actual service IDs if possible
-const recommendedServicesData = [
-  {
-    id: mockServices[2]?.id || "rec-101", // Use actual ID or fallback
-    name: mockServices[2]?.name || "Gourmet Gatherings Catering",
-    image:
-      mockServices[2]?.images[0]?.url ||
-      "https://via.placeholder.com/300x200?text=Catering",
-    category: mockServices[2]?.type || "Catering",
-    price: formatDisplayPrice(
-      mockServices[2]?.price.basePrice || 95,
-      mockServices[2]?.price.model
-    ),
-    rating: mockServices[2]?.rating.average || 4.6,
-    reviewCount: mockServices[2]?.rating.count || 115,
-    sponsored: mockServices[2]?.sponsored.isActive || false,
-  },
-  {
-    id: mockServices[3]?.id || "rec-102",
-    name: mockServices[3]?.name || "Rhythm Revolution DJ Services",
-    image:
-      mockServices[3]?.images[0]?.url ||
-      "https://via.placeholder.com/300x200?text=DJ",
-    category: mockServices[3]?.type || "Entertainment",
-    price: formatDisplayPrice(
-      mockServices[3]?.price.basePrice || 1200,
-      mockServices[3]?.price.model
-    ),
-    rating: mockServices[3]?.rating.average || 4.8,
-    reviewCount: mockServices[3]?.rating.count || 68,
-    sponsored: mockServices[3]?.sponsored.isActive || false,
-  },
-  {
-    id: mockServices[0]?.id || "rec-103",
-    name: mockServices[0]?.name || "Ethereal Blooms Floral Design",
-    image:
-      mockServices[0]?.images[0]?.url ||
-      "https://via.placeholder.com/300x200?text=Florist",
-    category: mockServices[0]?.type || "Decoration",
-    price: formatDisplayPrice(
-      mockServices[0]?.price.basePrice || 1500,
-      mockServices[0]?.price.model
-    ),
-    rating: mockServices[0]?.rating.average || 4.9,
-    reviewCount: mockServices[0]?.rating.count || 55,
-    sponsored: mockServices[0]?.sponsored.isActive || false,
-  },
-];
 
 const Cart: React.FC = () => {
   const { cart, removeService, clearCart } = useCart();
@@ -456,36 +382,10 @@ const Cart: React.FC = () => {
                 <h2 className="text-xl font-display font-semibold mb-4">
                   You Might Also Need
                 </h2>
-                {recommendedServicesData.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {recommendedServicesData.map((recService) => (
-                      <ServiceCard
-                        key={recService.id}
-                        id={recService.id}
-                        name={recService.name}
-                        image={recService.image}
-                        category={recService.category}
-                        price={recService.price}
-                        rating={recService.rating}
-                        reviewCount={recService.reviewCount}
-                        className="h-full" // Ensure card takes full height if grid items vary
-                      >
-                        {recService.sponsored && (
-                          <Badge
-                            variant="secondary"
-                            className="absolute top-3 right-3 z-10 bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-none px-2 py-0.5 text-xs"
-                          >
-                            Sponsored
-                          </Badge>
-                        )}
-                      </ServiceCard>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground text-center py-4">
-                    No recommendations available.
-                  </p>
-                )}
+
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  No recommendations available.
+                </p>
               </div>
             </div>
 

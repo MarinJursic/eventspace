@@ -1,4 +1,3 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { NextRequest } from "next/server";
@@ -13,8 +12,6 @@ const publicPaths = [
   "/",
   "/venues", // Public listing
   "/services", // Public listing
-  "/cart",
-  "/thank-you",
   // Add other specific public pages like /about, /contact, etc. if they exist
 ];
 const publicApiPrefixes = [
@@ -28,6 +25,8 @@ const authPaths = ["/api/auth"]; // NextAuth internal paths
 const adminPaths = ["/admin", "/api/admin"]; // Includes sub-paths like /admin/users
 const vendorPaths = ["/vendor", "/api/vendor"]; // Includes sub-paths like /vendor/bookings
 const authenticatedUserPaths = [
+  "/cart",
+  "/thank-you", // After checkout
   "/account", // User dashboard
   "/api/v1/checkout_sessions", // Creating checkout needs auth
   "/api/v1/upload", // Uploading needs auth

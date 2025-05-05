@@ -2,14 +2,12 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useFormStatus } from "react-dom"; // Import hooks
+import { useFormStatus } from "react-dom";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Save, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { useSession } from "next-auth/react";
-
-// Step Component Imports (Keep these)
 import BasicInfoStep from "@/components/venue/create/steps/basic-info/BasicInfoStep";
 import LocationStep from "@/components/venue/create/steps/location/LocationStep";
 import MediaStep from "@/components/MediaStep";
@@ -19,20 +17,17 @@ import PoliciesStep from "@/components/venue/create/steps/policies/PoliciesStep"
 import AvailabilityStep from "@/components/venue/create/steps/availability/AvailabilityStep";
 import PricingStep from "@/components/venue/create/steps/PricingStep";
 import ReviewStep from "@/components/venue/create/steps/ReviewStep";
-
-// Import Server Action and State Type
 import {
   createVenueAction,
   CreateVenueActionState,
-} from "@/lib/actions/venueActions"; // Adjust path
+} from "@/lib/actions/venueActions";
 import { IVenueClientState } from "@/types/venue.types";
 import { defaultVenueClientState } from "@/lib/defaults/venue.default";
 import checkVenueValidityOnStep from "@/lib/utils/create-venue/checkVenueValidity";
 import clsx from "clsx";
 
-// --- Submit Button Component (for useFormStatus) ---
 function SubmitButton() {
-  const { pending } = useFormStatus(); // Get pending state from form
+  const { pending } = useFormStatus();
 
   return (
     <Button type="submit" disabled={pending}>
@@ -49,7 +44,6 @@ function SubmitButton() {
     </Button>
   );
 }
-// --- End Submit Button ---
 
 const CreateVenue: React.FC = () => {
   const router = useRouter();
@@ -59,8 +53,6 @@ const CreateVenue: React.FC = () => {
     defaultVenueClientState
   );
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-
-  // --- useFormState Hook ---
   const initialState: CreateVenueActionState = { success: false, message: "" };
   // `action` will be passed to the form's action prop
   // `formState` will hold the result from the server action
@@ -68,7 +60,6 @@ const CreateVenue: React.FC = () => {
     createVenueAction,
     initialState
   );
-  // --- End useFormState ---
 
   const { data: session } = useSession({
     required: true,

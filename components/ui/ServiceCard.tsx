@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { Star } from "lucide-react"; // Only Star needed here directly
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { Button } from "./button";
 import { Badge } from "./badge"; // Import Badge
 import Image from "next/image";
@@ -100,7 +100,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         <div className="mt-2 text-sm">
           {" "}
           {/* Consistent margin/size */}
-          <span className="font-semibold text-foreground">{price}</span>
+          <span className="font-semibold text-foreground">{price} / day</span>
         </div>
         {/* Review Count */}
         {reviewCount > 0 && (

@@ -1,4 +1,3 @@
-// app/context/CartContext.tsx
 "use client";
 
 import React, {
@@ -8,23 +7,17 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { useToast } from "../../hooks/useToast"; // Adjust path if needed
-// Import the actual Mongoose schema interface (or a simplified version)
-import { v4 as uuidv4 } from "uuid"; // For generating unique IDs for external venues
-
-// --- Define the structure of the Venue object AS IT WILL BE STORED in the cart ---
-// This might be simpler than the full IVenue from Mongoose if you don't need all fields
-// Ensure it has all fields you USE in the cart page and pass to addVenue/addExternalVenue
+import { useToast } from "../../hooks/useToast";
+import { v4 as uuidv4 } from "uuid";
 export interface CartVenue {
-  id: string; // Use string for ID consistency (can be Mongoose ObjectId string or custom external ID)
+  id: string;
   name: string;
   description?: string;
   location: {
     address: string;
-    city?: string; // Make optional if not always needed
-    street?: string; // Optional
-    houseNumber?: string; // Optional
-    // Add other location fields if needed by cart display
+    city?: string;
+    street?: string;
+    houseNumber?: string;
   };
   price: {
     basePrice: number;
@@ -34,31 +27,26 @@ export interface CartVenue {
     url: string;
     alt?: string;
     caption?: string;
-  }[]; // Need at least one image for display
-  // Add other fields *if* they are used by the Cart page or downstream logic
-  // For example:
+  }[];
   type?: string;
-  rating?: { average: number; count: number }; // If displaying rating in cart
+  rating?: { average: number; count: number };
 }
 
-// --- Define the Service type AS STORED in the cart ---
-// This should match what ServiceDetail provides
 export type CartService = {
   id: string;
   name: string;
   image: string;
-  price: number; // Base price
+  price: number;
   priceModel: "hour" | "day" | "week";
   selectedDays: string[];
-  totalCalculatedPrice: number; // Pre-calculated price
+  totalCalculatedPrice: number;
 };
 
-// --- Define the structure of the entire Cart ---
 export type CartItem = {
-  venue: CartVenue; // Use the defined CartVenue type
+  venue: CartVenue;
   selectedDates: string[];
   timeSlot: string;
-  services: CartService[]; // Use the defined CartService type
+  services: CartService[];
 };
 
 // --- Define the Context Type ---

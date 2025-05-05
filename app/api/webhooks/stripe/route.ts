@@ -2,9 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { Resend } from "resend";
 import { headers } from "next/headers";
-// Import your Order/Booking model and database connection logic if needed
-// import Order from '@/Order'; // Example
-// import connectToDatabase from '@/lib/database/mongodb';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const resend = new Resend(process.env.RESEND_API_KEY!);
@@ -27,33 +24,16 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
-
-  // Handle the checkout.session.completed event
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
 
     console.log("Checkout session completed:", session.id);
-    console.log("Metadata:", session.metadata); // Log metadata passed from checkout
+    console.log("Metadata:", session.metadata);
     console.log("Customer details:", session.customer_details);
 
-    // --- TODO: Database Update Logic ---
-    // 1. **Retrieve your internal booking/order ID** from `session.metadata`.
-    //    You MUST pass this ID in the metadata when creating the checkout session.
-    const internalBookingId = session.metadata?.internalBookingId; // Example key
-
-    // 2. If you have the ID, find the booking in your database.
+    const internalBookingId = session.metadata?.internalBookingId;
     if (internalBookingId) {
       try {
-        // await connectToDatabase(); // Connect if needed
-        // const booking = await YourBookingModel.findById(internalBookingId);
-        // if (booking) {
-        //    booking.status = 'confirmed'; // Or 'paid'
-        //    booking.stripeCheckoutId = session.id; // Store Stripe session ID for reference
-        //    await booking.save();
-        //    console.log(`Internal Booking ${internalBookingId} updated to confirmed.`);
-        // } else {
-        //    console.error(`Internal Booking ${internalBookingId} not found for session ${session.id}`);
-        // }
         console.log(
           `Placeholder: Would update internal booking ${internalBookingId} for session ${session.id}`
         );
@@ -62,22 +42,17 @@ export async function POST(req: NextRequest) {
           `Database update failed for booking ${internalBookingId}:`,
           dbError
         );
-        // Log this error but still proceed to send email and respond 200 to Stripe
       }
     } else {
       console.error(
         `Missing internalBookingId in metadata for session ${session.id}. Cannot update database status.`
       );
-      // Critical issue - investigate why metadata wasn't passed or received.
     }
-    // --- End Database Update Logic ---
-
-    // --- Send Confirmation Email ---
     const customerEmail = "marin.jursic@gmail.com"; //session.customer_details?.email;
     const customerName = session.customer_details?.name || "Valued Customer";
     const amountTotal = session.amount_total
       ? (session.amount_total / 100).toFixed(2)
-      : "N/A"; // Amount in dollars
+      : "N/A";
 
     console.log(`Customer Email: ${customerEmail}`);
     console.log(`Customer Name: ${customerName}`);
@@ -192,28 +167,16 @@ export async function POST(req: NextRequest) {
 </body>
 </html>
        `;
-        // --- END STYLED HTML TEMPLATE ---
+
         const { data, error } = await resend.emails.send({
-          from: "EventSpace <onboarding@resend.dev>", // CHANGE THIS to your verified domain email
-          to: [customerEmail], // Must be an array
+          from: "EventSpace <onboarding@resend.dev>",
+          to: [customerEmail],
           subject: "Your EventSpace Booking Confirmation",
           html: emailHtml,
-          /*`
-            <h1>Booking Confirmed!</h1>
-            <p>Hi ${customerName},</p>
-            <p>Thank you for your booking with EventSpace. Your payment was successful.</p>
-            <p><strong>Booking Reference (Stripe Session):</strong> ${session.id}</p>
-            <p><strong>Total Amount Paid:</strong> $${amountTotal}</p>
-            <p>You can view your booking details in your account dashboard soon (once processed).</p>
-            <p>Best regards,<br/>The EventSpace Team</p>
-          `,*/
-          // Example using React Email (install @react-email/components, create email template)
-          // react: <BookingConfirmationEmail name={customerName} sessionId={session.id} amount={amountTotal} />
         });
 
         if (error) {
           console.error("Resend API Error:", error);
-          // Log error but don't fail webhook response
         } else {
           console.log(
             `Confirmation email sent successfully to ${customerEmail}, ID: ${data?.id}`
@@ -221,14 +184,12 @@ export async function POST(req: NextRequest) {
         }
       } catch (emailError) {
         console.error("Resend email sending failed (exception):", emailError);
-        // Log this error, but don't fail the webhook response to Stripe
       }
     } else {
       console.warn(
         `No customer email found for session: ${session.id}. Cannot send confirmation.`
       );
     }
-    // --- End Email Sending ---
   } else {
     console.log(`Webhook received but unhandled event type: ${event.type}`);
   }

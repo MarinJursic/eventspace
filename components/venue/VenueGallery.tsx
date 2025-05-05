@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { cn } from "@/lib/utils"; // Import cn if needed for styling consistency
+import { cn } from "@/lib/utils/cn"; // Import cn if needed for styling consistency
 import Image from "next/image";
 
 interface VenueGalleryProps {

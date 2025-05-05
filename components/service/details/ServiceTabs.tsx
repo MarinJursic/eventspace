@@ -1,4 +1,3 @@
-// components/service/details/ServiceTabs.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -6,12 +5,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
-// Import the icon mapping and default icon for features
 import {
   serviceFeatureIconMap,
   DefaultFeatureIcon,
 } from "./serviceFeatureIcons";
-import { SerializedPopulatedReview } from "@/lib/actions/serviceActions";
+import { SerializedPopulatedReview } from "@/types/venue.types";
+
 // --- Define Serialized Types (Matching Server Action Output) ---
 interface SerializedRating {
   average: number;

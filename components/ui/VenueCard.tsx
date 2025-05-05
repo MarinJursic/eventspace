@@ -1,11 +1,11 @@
-// components/ui/VenueCard.tsx
 import React from "react";
 import Link from "next/link";
-import { Star, MapPin } from "lucide-react"; // Added MapPin
-import { cn } from "@/lib/utils"; // Assuming path is correct
-import { Button } from "./button"; // Assuming path is correct
-import { Badge } from "./badge"; // Import Badge for consistency
+import { Star, MapPin } from "lucide-react";
+import { cn } from "@/lib/utils/cn";
+import { Button } from "./button";
+import { Badge } from "./badge";
 import Image from "next/image";
+import { formatDisplayPrice } from "@/lib/utils/formatDisplayPrice";
 
 // --- Define Serialized Types (matching VenueListClient and Server Action Output) ---
 // Define the structure of the populated/serialized amenity data
@@ -56,24 +56,6 @@ interface VenueCardProps {
   venue: SerializedVenue; // Use the specific serialized type
   className?: string;
 }
-
-// --- Helper function (can be moved to utils) ---
-const formatDisplayPrice = (
-  amount: number,
-  model?: "hour" | "day" | "week"
-): string => {
-  const base = `$${amount.toLocaleString()}`;
-  switch (model) {
-    case "hour":
-      return `${base}/hr`; // Shorter labels
-    case "day":
-      return `${base}/day`;
-    case "week":
-      return `${base}/wk`;
-    default:
-      return base; // Fallback if model is undefined or unexpected
-  }
-};
 
 // --- Venue Card Component ---
 const VenueCard: React.FC<VenueCardProps> = ({ venue, className }) => {

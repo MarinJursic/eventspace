@@ -1,17 +1,14 @@
-// File: /app/vendor/venues/create-service/page.tsx
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useFormStatus } from "react-dom"; // React hooks for Server Actions
+import { useFormStatus } from "react-dom";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Save, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { useSession } from "next-auth/react";
-import clsx from "clsx"; // For conditional classes
-
-// Step Component Imports (Service Specific)
+import clsx from "clsx";
 import BasicInfoStep from "@/components/service/create/steps/basic-info/BasicInfoStep";
 import LocationStep from "@/components/service/create/steps/location/LocationStep";
 import MediaStep from "@/components/MediaStep";
@@ -20,20 +17,16 @@ import PoliciesStep from "@/components/service/create/steps/PoliciesStep";
 import AvailabilityStep from "@/components/service/create/steps/availability/AvailabilityStep";
 import PricingStep from "@/components/service/create/steps/PricingStep";
 import ReviewStep from "@/components/service/create/steps/ReviewStep";
-
-// Import Server Action and State Type (Service Specific)
 import {
   createServiceAction,
   CreateServiceActionState,
-} from "@/lib/actions/serviceActions"; // Adjust path
-import { IServiceClientState } from "@/types/service.types"; // Adjust path
-import { defaultServiceClientState } from "@/lib/defaults/service.default"; // Adjust path
-import checkServiceValidityOnStep from "@/lib/utils/create-service/checkServiceValidity"; // Adjust path
+} from "@/lib/actions/serviceActions";
+import { IServiceClientState } from "@/types/service.types";
+import { defaultServiceClientState } from "@/lib/defaults/service.default";
+import checkServiceValidityOnStep from "@/lib/utils/create-service/checkServiceValidity";
 
-// --- Submit Button Component ---
-// Uses useFormStatus to automatically track the form's pending state
 function SubmitButton() {
-  const { pending } = useFormStatus(); // Get pending state from form context
+  const { pending } = useFormStatus();
 
   return (
     <Button type="submit" disabled={pending} className="min-w-[150px]">
@@ -52,9 +45,7 @@ function SubmitButton() {
     </Button>
   );
 }
-// --- End Submit Button ---
 
-// --- Main CreateService Component ---
 const CreateService: React.FC = () => {
   const router = useRouter();
   const { toast } = useToast();

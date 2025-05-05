@@ -10,15 +10,12 @@ import {
 } from "react";
 import { Button } from "@/components/ui/button";
 import { Upload, ImagePlus, X } from "lucide-react";
-// Import both types - the component needs to handle either
-import { IVenueClientState } from "@/types/venue.types"; // Adjust path if needed
-import { IServiceClientState } from "@/types/service.types"; // Adjust path
-import { useToast } from "@/hooks/useToast"; // Adjust path if needed
-import { cn } from "@/lib/utils"; // Adjust path if needed
+import { IVenueClientState } from "@/types/venue.types";
+import { IServiceClientState } from "@/types/service.types";
+import { useToast } from "@/hooks/useToast";
+import { cn } from "@/lib/utils/cn";
 import Image from "next/image";
 
-// Type for the image object within the state during this step (used for previews)
-// This structure should be compatible with both IVenueClientState['images'] and IServiceClientState['images']
 type ImageUploadPreviewState = {
   file?: File; // Keep track of the file associated with the preview
   url: string; // Blob URL for preview
@@ -31,9 +28,9 @@ type EntityClientState = IVenueClientState | IServiceClientState;
 
 // Props for the generic MediaStep component
 interface MediaStepProps<T extends EntityClientState> {
-  entity: T; // Use generic 'entity' instead of 'venue' or 'service'
-  setEntity: Dispatch<SetStateAction<T>>; // Use generic setter
-  onFilesUpdate: (files: File[]) => void; // Callback to update parent's file list
+  entity: T;
+  setEntity: Dispatch<SetStateAction<T>>;
+  onFilesUpdate: (files: File[]) => void;
 }
 
 export default function MediaStep<T extends EntityClientState>({

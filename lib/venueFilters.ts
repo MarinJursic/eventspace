@@ -1,5 +1,3 @@
-// src/lib/venueFilters.ts
-
 import { Venue } from "./mocks/mockVenues";
 
 // Venue Types (matches Venues page)

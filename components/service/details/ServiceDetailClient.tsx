@@ -1,30 +1,25 @@
-// components/service/ServiceDetailClient.tsx
 "use client";
 
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react"; // Only ArrowLeft needed for back link if moved here
-
-// Import Context and Hooks
+import { ArrowLeft } from "lucide-react";
 import {
   useCart,
   CartService as CartServiceType,
-} from "@/app/context/CartContext"; // Adjust path
-import { useToast } from "@/hooks/useToast"; // Adjust path
-
-// Import UI Components
-import AnimatedSection from "@/components/ui/AnimatedSection"; // Adjust path
-import ServiceImageGallery from "@/components/service/details/ServiceImageGallery"; // Adjust path
-import ServiceHeaderInfo from "@/components/service/details/ServiceHeaderInfo"; // Adjust path
-import ServiceTabs from "@/components/service/details/ServiceTabs"; // Adjust path
-import ServiceBookingSidebar from "@/components/service/details/ServiceBookingSidebar"; // Adjust path
-import ExternalVenueModal from "@/components/venue/ExternalVenueModal"; // Adjust path
-import { Button } from "@/components/ui/button"; // For fallback display
-import { SerializedPopulatedService } from "@/lib/actions/serviceActions";
+} from "@/app/context/CartContext";
+import { useToast } from "@/hooks/useToast";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import ServiceImageGallery from "@/components/service/details/ServiceImageGallery";
+import ServiceHeaderInfo from "@/components/service/details/ServiceHeaderInfo";
+import ServiceTabs from "@/components/service/details/ServiceTabs";
+import ServiceBookingSidebar from "@/components/service/details/ServiceBookingSidebar";
+import ExternalVenueModal from "@/components/venue/ExternalVenueModal";
+import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
+import { SerializedPopulatedService } from "@/types/service.types";
 
 // --- Define Serialized Data Types (matching Server Action output) ---
-// Ensure these match the structure after JSON.parse(JSON.stringify(data))
 interface SerializedLocation {
   address: string;
   city?: string;
@@ -94,7 +89,7 @@ export interface SerializedService {
   owner: string;
   rating: SerializedRating;
   sponsored?: { isActive: boolean; until?: string; planType?: string };
-  reviews?: SerializedReviewData[]; // Reviews included here
+  reviews?: SerializedReviewData[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -108,6 +103,7 @@ const ServiceDetailClient: React.FC<ServiceDetailClientProps> = ({
   service: initialService,
 }) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const { addService, addExternalVenue, hasVenue, selectedDates } = useCart();
   const { toast } = useToast();
 
@@ -160,6 +156,14 @@ const ServiceDetailClient: React.FC<ServiceDetailClientProps> = ({
 
   // --- Handlers ---
   const handleAddToBooking = useCallback(() => {
+    if (!session) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to add services to your booking.",
+        variant: "destructive",
+      });
+      return;
+    }
     if (!initialService) {
       toast({
         title: "Error",
@@ -199,6 +203,7 @@ const ServiceDetailClient: React.FC<ServiceDetailClientProps> = ({
     addService(serviceToAdd);
     // Toast handled by context
     router.push("/cart");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     initialService,
     hasVenue,

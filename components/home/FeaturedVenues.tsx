@@ -1,11 +1,9 @@
-// components/home/FeaturedVenues.tsx
-import React from "react"; // No longer needs useMemo if data comes from props
+import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import VenueCard from "../ui/VenueCard";
 import AnimatedSection from "@/components/ui/AnimatedSection";
-// Removed import { getFeaturedVenues } from "@/lib/actions/venueActions";
-import { SerializedVenueListItem } from "../../lib/actions/venueActions";
+import { SerializedVenueListItem } from "../../types/venue.types";
 
 // Define props for the component
 interface FeaturedVenuesProps {

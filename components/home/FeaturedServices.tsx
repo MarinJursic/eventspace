@@ -1,27 +1,11 @@
-// components/home/FeaturedServices.tsx
 import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import ServiceCard from "../ui/ServiceCard"; // Assuming path is correct
+import ServiceCard from "../ui/ServiceCard";
 import AnimatedSection from "@/components/ui/AnimatedSection";
-import { Badge } from "@/components/ui/badge"; // Import Badge
-import { SerializedServiceListItem } from "@/lib/actions/serviceActions";
-
-// Helper function to format price (can be moved to utils)
-const formatPrice = (service: SerializedServiceListItem): string => {
-  if (!service?.price) return "N/A"; // Add safety check
-  const base = `$${service.price.basePrice.toLocaleString()}`;
-  switch (service.price.model) {
-    case "hour":
-      return `${base} / hour`;
-    case "day":
-      return `${base} / event day`;
-    case "week":
-      return `${base} / week`;
-    default:
-      return `From ${base}`;
-  }
-};
+import { Badge } from "@/components/ui/badge";
+import { formatDisplayPrice } from "@/lib/utils/formatDisplayPrice";
+import { SerializedServiceListItem } from "@/types/service.types";
 
 // Define props for the component to accept fetched data
 interface FeaturedServicesProps {
@@ -74,7 +58,7 @@ const FeaturedServices: React.FC<FeaturedServicesProps> = ({ services }) => {
                     "https://via.placeholder.com/300x200?text=No+Image"
                   }
                   category={service.type || "Service"} // Use type field
-                  price={formatPrice(service)} // Use formatter
+                  price={formatDisplayPrice(service.price.basePrice)} // Use formatter
                   rating={service.rating.average}
                   reviewCount={service.rating.count}
                   // className="h-full" // Add to ServiceCard if needed

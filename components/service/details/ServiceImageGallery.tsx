@@ -2,7 +2,7 @@
 "use client"; // Keep client directive if using state/hooks like onSelectImage
 
 import React from "react";
-import { cn } from "@/lib/utils"; // Import cn
+import { cn } from "@/lib/utils/cn"; // Import cn
 import Image from "next/image";
 
 // --- Import or Define Serialized Types ---

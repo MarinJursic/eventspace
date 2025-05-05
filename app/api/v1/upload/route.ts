@@ -1,9 +1,7 @@
-// File: /app/api/upload/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
-import cloudinary from "@/lib/config/cloudinary"; // Your configured Cloudinary instance
+import cloudinary from "@/lib/config/cloudinary";
 import { Readable } from "stream";
-import { UploadApiResponse, UploadApiErrorResponse } from "cloudinary"; // Import Cloudinary types
+import { UploadApiResponse, UploadApiErrorResponse } from "cloudinary";
 
 // Helper function to convert Node.js Readable stream to Buffer
 async function streamToBuffer(readableStream: Readable): Promise<Buffer> {
@@ -146,8 +144,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-
-// Optional: Add GET, PUT, DELETE handlers if needed, otherwise they default to 405 Method Not Allowed
-// export async function GET(req: NextRequest) {
-//   return NextResponse.json({ error: 'Method Not Allowed' }, { status: 405 });
-// }

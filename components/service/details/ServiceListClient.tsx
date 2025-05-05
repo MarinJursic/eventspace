@@ -1,4 +1,3 @@
-// components/service/ServiceListClient.tsx
 "use client";
 
 import React, {
@@ -9,8 +8,6 @@ import React, {
   Suspense,
 } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-
-// --- Import UI Components ---
 import ServiceCard from "@/components/ui/ServiceCard";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
@@ -21,11 +18,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-
-// --- Import Context and Utils ---
+import { formatDisplayPrice } from "@/lib/utils/formatDisplayPrice";
 import { useCart } from "@/app/context/CartContext";
-
-// --- Import Types ---
 import { SerializedService } from "./ServiceDetailClient";
 import { LocationCombobox } from "@/components/ui/LocationCombobox";
 
@@ -52,23 +46,6 @@ const parseSetParam = (str: string | null): Set<string> => {
     .map((item) => item.trim().toLowerCase())
     .filter((item) => item !== "");
   return new Set<string>(items);
-};
-
-// Helper to format price (can be moved to utils)
-const formatPrice = (service: SerializedService): string => {
-  // Check if price exists before formatting
-  if (!service || !service.price) return "N/A";
-  const base = `$${service.price.basePrice.toLocaleString()}`;
-  switch (service.price.model) {
-    case "hour":
-      return `${base} / hour`;
-    case "day":
-      return `${base} / event day`;
-    case "week":
-      return `${base} / week`;
-    default:
-      return `From ${base}`; // Or just base
-  }
 };
 
 // --- Client Component Content ---
@@ -481,7 +458,7 @@ const ServiceListClientContent: React.FC<ServiceListClientProps> = ({
                       "https://via.placeholder.com/300x200?text=No+Image"
                     }
                     category={service.type || "Service"} // Use service.type
-                    price={formatPrice(service)} // Use helper
+                    price={formatDisplayPrice(service.price.basePrice)} // Use helper
                     rating={service.rating.average}
                     reviewCount={service.rating.count}
                   >

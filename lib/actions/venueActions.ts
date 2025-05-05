@@ -17,133 +17,16 @@ import { authOptions } from "../config/nextAuthConfig";
 import { serializeData } from "../utils/serializeData"; // Adjust path if needed
 import Review from "../database/schemas/review";
 import Enum from "../database/schemas/enum";
+import {
+  PopulatedAmenityClient,
+  PopulatedOwnerInfo,
+  SerializedPopulatedReview,
+  SerializedPopulatedVenue,
+  SerializedVenueListItem,
+} from "@/types/venue.types";
 
 // --- Define Types for Serialized Data (Client-Facing) ---
 // TODO: Move these interfaces to a dedicated types file (e.g., types/shared.types.ts or types/venue.types.ts)
-
-interface PopulatedOwnerInfo {
-  _id: string;
-  id: string;
-  name: string;
-  email?: string; // Optional: Add if populated and needed
-}
-
-interface PopulatedReviewUserInfo {
-  _id: string;
-  id: string;
-  name: string;
-}
-
-interface PopulatedAmenityClient {
-  _id: string;
-  id: string; // Mongoose virtual added via toObject/serialize
-  key: string;
-  label: string;
-  icon?: string; // Optional icon name string from Enum
-}
-
-interface SerializedLocation {
-  address: string;
-  city?: string;
-  street?: string;
-  houseNumber?: string; // Keep as string to match schema/input
-  country?: string;
-  postalCode?: string; // Keep as string to match schema/input
-  latitude?: number;
-  longitude?: number;
-}
-interface SerializedPrice {
-  basePrice: number;
-  model: "hour" | "day" | "week";
-}
-interface SerializedRating {
-  average: number;
-  count: number;
-}
-interface SerializedSeating {
-  seated: number;
-  standing: number;
-}
-interface SerializedImage {
-  url: string;
-  alt?: string;
-  caption?: string;
-}
-interface SerializedPolicyItem {
-  name: string;
-  description: string;
-}
-// Type for policies with potentially populated banned services
-interface SerializedPopulatedPolicies {
-  bannedServices?: PopulatedAmenityClient[]; // Use the populated type for banned services if they are Enums
-  listOfPolicies?: SerializedPolicyItem[];
-}
-interface SerializedBookedDate {
-  date: string; // Date as ISO string
-  bookingRef?: string; // ObjectId as string
-}
-interface SerializedBlockedWeekday {
-  weekday: string;
-  recurrenceRule: "weekly" | "biweekly" | "monthly";
-}
-interface SerializedAvailabilityRules {
-  blockedWeekdays?: SerializedBlockedWeekday[];
-}
-// Type for serialized reviews with populated user info
-export interface SerializedPopulatedReview {
-  id: string;
-  _id: string;
-  user: PopulatedReviewUserInfo;
-  rating: number;
-  comment?: string;
-  target: string;
-  targetModel: "Venue" | "Service";
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Type for the fully populated and serialized Venue for Detail View
-export interface SerializedPopulatedVenue {
-  id: string;
-  _id: string;
-  name: string;
-  location: SerializedLocation;
-  price: SerializedPrice;
-  seating?: SerializedSeating;
-  description?: string;
-  images: SerializedImage[];
-  amenities?: PopulatedAmenityClient[]; // Populated
-  reviews?: SerializedPopulatedReview[]; // Populated reviews with user
-  policies?: SerializedPopulatedPolicies; // Populated policies
-  bookedDates?: SerializedBookedDate[];
-  availabilityRules?: SerializedAvailabilityRules;
-  category?: PopulatedAmenityClient; // Populated category (assuming it's an Enum ref)
-  type?: string;
-  status: string;
-  capacity?: number;
-  owner: PopulatedOwnerInfo; // Populated owner
-  rating: SerializedRating;
-  sponsored?: { isActive: boolean; until?: string; planType?: string };
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-// Type for the serialized Venue for List View (less populated)
-export interface SerializedVenueListItem {
-  id: string;
-  _id: string;
-  name: string;
-  location: SerializedLocation;
-  price: SerializedPrice;
-  images: SerializedImage[];
-  type?: string;
-  rating: SerializedRating;
-  sponsored?: { isActive: boolean };
-  amenities?: PopulatedAmenityClient[]; // Include populated amenities for card display
-  capacity?: number; // Include capacity if needed for card display
-}
-// --- End Type Definitions ---
 
 // --- Helper Function to Map Amenity/Enum IDs to Details ---
 function mapEnumIdsToDetails(
@@ -663,7 +546,3 @@ export async function getDbCities(): Promise<
     return [];
   }
 }
-
-// --- Placeholder for Update/Delete Venue Actions ---
-// export async function updateVenueAction(...) { ... }
-// export async function deleteVenueAction(...) { ... }

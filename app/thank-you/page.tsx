@@ -10,46 +10,28 @@ import {
   Clock,
   MapPin,
   CreditCard,
-  Home, // Added for button
-  PhoneCall, // Added for button
+  Home,
+  PhoneCall,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AnimatedSection from "@/components/ui/AnimatedSection";
-import Navbar from "@/components/navbar/Navbar"; // Assuming Navbar is needed
+import Navbar from "@/components/navbar/Navbar";
 import { rootRoute } from "@/lib/constants/route.constants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator"; // Correct import for shadcn
-import { useCart } from "../context/CartContext"; // Import useCart
-import { useSession } from "next-auth/react"; // Import useSession for user context
-import { useToast } from "@/hooks/useToast"; // Import useToast
+import { Separator } from "@/components/ui/separator";
+import { useCart } from "../context/CartContext";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/hooks/useToast";
 import Image from "next/image";
-
-// Helper function to format price (assuming it exists or define it)
-const formatDisplayPrice = (
-  amount: number | undefined,
-  model?: "hour" | "day" | "week"
-): string => {
-  if (amount === undefined) return "N/A";
-  const base = `$${amount.toFixed(2)}`;
-  switch (model) {
-    case "hour":
-      return `${base} / hour*`;
-    case "day":
-      return `${base} / event day`;
-    case "week":
-      return `${base} / week`;
-    default:
-      return base;
-  }
-};
+import { formatDisplayPrice } from "@/lib/utils/formatDisplayPrice";
 
 export default function ThankYou() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { cart } = useCart(); // Get cart data and clear function
-  const { data: session } = useSession(); // Get user session
+  const { cart } = useCart();
+  const { data: session } = useSession();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   const stripeSessionId = searchParams.get("session_id");
 
@@ -76,8 +58,6 @@ export default function ThankYou() {
   const venuePrice = getVenuePrice();
   const servicesTotal = getServicesTotal();
   const estimatedTotal = venuePrice + servicesTotal;
-  // Note: Fees/Taxes are not in the cart context, so we can't display the exact breakdown from mock data.
-  // We'll display the calculated total based on cart items.
 
   useEffect(() => {
     if (stripeSessionId) {

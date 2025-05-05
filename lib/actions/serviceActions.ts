@@ -1,129 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// File: lib/actions/serviceActions.ts
-"use server"; // Mark as Server Actions file
+"use server";
 
 import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth/next";
-import { Types, FilterQuery } from "mongoose"; // Import FilterQuery
+import { Types, FilterQuery } from "mongoose";
 
 import connectToDatabase from "../database/mongodb";
-import Service, { IService } from "../database/schemas/service"; // Import Service model & interface
-import Review from "../database/schemas/review"; // Import Review model for population
-import Enum, { IEnum, IEnumValue } from "../database/schemas/enum"; // Import Enum model & interfaces
-import User from "../database/schemas/user"; // Import User model for population
-import { createServiceSchema } from "../database/zod-schema-validators/service"; // Import Service Zod schema
-import { authOptions } from "../config/nextAuthConfig"; // Import auth options
+import Service, { IService } from "../database/schemas/service";
+import Review from "../database/schemas/review";
+import Enum, { IEnum, IEnumValue } from "../database/schemas/enum";
+import User from "../database/schemas/user";
+import { createServiceSchema } from "../database/zod-schema-validators/service";
+import { authOptions } from "../config/nextAuthConfig";
 import cloudinary from "../config/cloudinary";
 import { serializeData } from "../utils/serializeData";
 import { SerializedService } from "@/components/service/details/ServiceDetailClient";
-
-// --- Define Types for Serialized Data (Client-Facing) ---
-// (These should ideally live in a shared types file, e.g., types/shared.types.ts)
-
-interface SerializedLocation {
-  address: string;
-  city?: string;
-  street?: string;
-  houseNumber?: string; // Keep as string
-  country?: string;
-  postalCode?: string;
-  latitude?: number;
-  longitude?: number; // Keep as string
-}
-interface SerializedPrice {
-  basePrice: number;
-  model: "hour" | "day" | "week";
-}
-interface SerializedRating {
-  average: number;
-  count: number;
-}
-interface SerializedImage {
-  url: string;
-  alt?: string;
-  caption?: string;
-}
-interface SerializedPolicyItem {
-  name: string;
-  description: string;
-}
-interface SerializedPolicies {
-  listOfPolicies?: SerializedPolicyItem[];
-}
-interface SerializedBookedDate {
-  date: string;
-  bookingRef?: string;
-} // Date as string
-interface SerializedBlockedWeekday {
-  weekday: string;
-  recurrenceRule: "weekly" | "biweekly" | "monthly";
-}
-interface SerializedAvailabilityRules {
-  blockedWeekdays?: SerializedBlockedWeekday[];
-}
-
-// Structure Expected by the Client for Populated Features (from Enum)
-interface PopulatedFeatureClient {
-  _id: string;
-  id: string; // Mongoose virtual added via toObject/serialize
-  key: string;
-  label: string;
-  icon?: string; // Optional icon name string from Enum
-}
-
-// Structure for serialized reviews with populated user
-export interface SerializedPopulatedReview {
-  id: string;
-  _id: string;
-  user: { _id: string; id: string; name: string }; // Populated user
-  rating: number;
-  comment?: string;
-  target: string;
-  targetModel: "Venue" | "Service";
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Main Serialized Service type reflecting populated fields for Detail View
-export interface SerializedPopulatedService {
-  id: string;
-  _id: string;
-  name: string;
-  location: SerializedLocation;
-  price: SerializedPrice;
-  description?: string;
-  features?: PopulatedFeatureClient[]; // Populated features
-  images: SerializedImage[];
-  policies?: SerializedPolicies;
-  bookedDates?: SerializedBookedDate[];
-  availabilityRules?: SerializedAvailabilityRules;
-  category?: PopulatedFeatureClient; // Populated category (assuming single ref to Enum)
-  type?: string;
-  status: string;
-  owner: { _id: string; id: string; name: string }; // Populated owner
-  rating: SerializedRating;
-  sponsored?: { isActive: boolean; until?: string; planType?: string };
-  reviews?: SerializedPopulatedReview[]; // Populated reviews
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-// Serialized type for List View (less populated)
-export interface SerializedServiceListItem {
-  id: string;
-  _id: string;
-  name: string;
-  location: SerializedLocation;
-  price: SerializedPrice;
-  images: SerializedImage[];
-  type?: string;
-  rating: SerializedRating;
-  sponsored?: { isActive: boolean };
-  // Features might be string IDs or omitted for list view depending on needs
-  features?: string[]; // Or PopulatedFeatureClient[] if needed, but less likely
-}
-// --- End Type Definitions ---
+import {
+  PopulatedFeatureClient,
+  SerializedPopulatedService,
+  SerializedServiceListItem,
+} from "../../types/service.types";
 
 // --- Helper Function to Map Feature IDs to Details ---
 // (Same as in venueActions, could be moved to a shared util if identical)
@@ -629,25 +525,9 @@ export async function getFeaturedServices(
       .lean({ virtuals: true }) // Use lean
       .exec();
 
-    // No complex population needed for featured list usually
-    // const serviceObjects = servicesDocs.map((doc) => {
-    //      // Optionally map features if needed by VenueCard/ServiceCard
-    //      // const populatedFeatures = mapFeatures(doc.features || [], featureEnumDoc);
-    //      return {
-    //          ...doc,
-    //          // features: populatedFeatures, // Or keep as string IDs:
-    //          features: (doc.features || []).map(id => id.toString()),
-    //          reviews: [], // Exclude reviews
-    //      };
-    //  });
-
     return serializeData(servicesDocs) as SerializedServiceListItem[];
   } catch (error) {
     console.error("Error fetching featured services:", error);
     return [];
   }
 }
-
-// --- Placeholder for Update/Delete Service Actions ---
-// export async function updateServiceAction(...) { ... }
-// export async function deleteServiceAction(...) { ... }
